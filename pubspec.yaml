@@ -12,6 +12,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   auto_route: ^10.0.1
+  flutter_hooks: ^0.21.2
 
 dev_dependencies:
   flutter_test:
