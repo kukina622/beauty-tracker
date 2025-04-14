@@ -21,7 +21,7 @@ class BeautyTrackerApp extends StatelessWidget {
           primary: Color(0xFFFF9A9E),
           secondary: Color(0xFF5ECCC4),
           tertiary: Color(0xFFFFB6B9),
-          surface: Colors.white,
+          surface: Color(0xFFFFF5F5),
         ),
         textTheme: TextTheme(
           headlineLarge: TextStyle(
@@ -112,6 +112,19 @@ class BeautyTrackerApp extends StatelessWidget {
           labelStyle: TextStyle(
             fontFamily: 'NotoSansTC',
             color: const Color(0xFF2D3142),
+          ),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          checkColor: WidgetStateProperty.all(Colors.white),
+          side: BorderSide(color: Colors.grey.shade600, width: 2),
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Color(0xFFFF9A9E);
+            }
+            return Theme.of(context).colorScheme.surface;
+          }),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),
