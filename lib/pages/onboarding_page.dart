@@ -85,7 +85,7 @@ class OnboardingPage extends HookWidget {
   }
 
   void toLoginPage(BuildContext context) {
-    AutoRouter.of(context).replacePath('/home');
+    AutoRouter.of(context).replacePath('/login');
   }
 
   @override
