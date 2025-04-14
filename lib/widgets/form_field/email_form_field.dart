@@ -16,6 +16,9 @@ class EmailFormField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

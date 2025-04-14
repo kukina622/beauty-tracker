@@ -18,6 +18,9 @@ class PasswordFormField extends HookWidget {
     final ValueNotifier<bool> isVisiblePassword = useState(false);
 
     return TextFormField(
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
