@@ -9,17 +9,18 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i2;
+import 'package:auto_route/auto_route.dart' as _i3;
 import 'package:beauty_tracker/pages/home_page.dart' as _i1;
-import 'package:flutter/material.dart' as _i3;
+import 'package:beauty_tracker/pages/onboarding_page.dart' as _i2;
+import 'package:flutter/material.dart' as _i4;
 
 /// generated route for
 /// [_i1.MyHomePage]
-class MyHomeRoute extends _i2.PageRouteInfo<MyHomeRouteArgs> {
+class MyHomeRoute extends _i3.PageRouteInfo<MyHomeRouteArgs> {
   MyHomeRoute({
-    _i3.Key? key,
+    _i4.Key? key,
     String title = 'Beauty Tracker',
-    List<_i2.PageRouteInfo>? children,
+    List<_i3.PageRouteInfo>? children,
   }) : super(
          MyHomeRoute.name,
          args: MyHomeRouteArgs(key: key, title: title),
@@ -28,7 +29,7 @@ class MyHomeRoute extends _i2.PageRouteInfo<MyHomeRouteArgs> {
 
   static const String name = 'MyHomeRoute';
 
-  static _i2.PageInfo page = _i2.PageInfo(
+  static _i3.PageInfo page = _i3.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<MyHomeRouteArgs>(
@@ -42,12 +43,46 @@ class MyHomeRoute extends _i2.PageRouteInfo<MyHomeRouteArgs> {
 class MyHomeRouteArgs {
   const MyHomeRouteArgs({this.key, this.title = 'Beauty Tracker'});
 
-  final _i3.Key? key;
+  final _i4.Key? key;
 
   final String title;
 
   @override
   String toString() {
     return 'MyHomeRouteArgs{key: $key, title: $title}';
+  }
+}
+
+/// generated route for
+/// [_i2.OnboardingPage]
+class OnboardingRoute extends _i3.PageRouteInfo<OnboardingRouteArgs> {
+  OnboardingRoute({_i4.Key? key, List<_i3.PageRouteInfo>? children})
+    : super(
+        OnboardingRoute.name,
+        args: OnboardingRouteArgs(key: key),
+        initialChildren: children,
+      );
+
+  static const String name = 'OnboardingRoute';
+
+  static _i3.PageInfo page = _i3.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<OnboardingRouteArgs>(
+        orElse: () => const OnboardingRouteArgs(),
+      );
+      return _i2.OnboardingPage(key: args.key);
+    },
+  );
+}
+
+class OnboardingRouteArgs {
+  const OnboardingRouteArgs({this.key});
+
+  final _i4.Key? key;
+
+  @override
+  String toString() {
+    return 'OnboardingRouteArgs{key: $key}';
   }
 }

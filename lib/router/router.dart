@@ -5,6 +5,7 @@ import 'package:beauty_tracker/router/router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: MyHomeRoute.page, initial: true),
+        AutoRoute(path: '/home', page: MyHomeRoute.page),
+        AutoRoute(path: '/onboarding', page: OnboardingRoute.page, initial: true),
       ];
 }
