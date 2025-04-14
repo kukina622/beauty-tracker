@@ -160,7 +160,9 @@ class LoginPage extends HookWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        AutoRouter.of(context).pushPath('/register');
+                      },
                       child: const Text(
                         '立即註冊',
                         style: TextStyle(
