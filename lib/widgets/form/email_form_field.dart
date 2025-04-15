@@ -9,12 +9,16 @@ class EmailFormField extends HookWidget {
     this.labelText = '電子郵件',
     this.hintText = '輸入您的電子郵件',
     this.invalidEmailMessage = '請輸入有效的電子郵件',
+    this.controller,
     this.validator,
+    this.onChanged,
   });
 
   final String labelText;
   final String hintText;
+  final TextEditingController? controller;
   final String invalidEmailMessage;
+  final void Function(String)? onChanged;
   final String? Function(String?)? validator;
 
   @override
@@ -22,8 +26,10 @@ class EmailFormField extends HookWidget {
     return BaseFormField(
       labelText: labelText,
       hintText: hintText,
+      controller: controller,
       prefixIcon: const Icon(Icons.email_outlined),
       keyboardType: TextInputType.emailAddress,
+      onChanged: onChanged,
       validator: (value) {
         if (!isEmailValid(value)) {
           return invalidEmailMessage;

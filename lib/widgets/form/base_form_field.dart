@@ -6,24 +6,30 @@ class BaseFormField extends HookWidget {
     super.key,
     this.labelText = '',
     this.hintText = '',
+    this.controller,
     this.prefixIcon,
     this.suffixIcon,
     this.obscureText = false,
     this.keyboardType,
+    this.onChanged,
     this.validator,
   });
 
   final String labelText;
   final String hintText;
+  final TextEditingController? controller;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
   final TextInputType? keyboardType;
+
+  final void Function(String)? onChanged;
   final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       onTapOutside: (event) {
         FocusManager.instance.primaryFocus?.unfocus();
       },
@@ -40,6 +46,7 @@ class BaseFormField extends HookWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+      onChanged: onChanged,
     );
   }
 }
