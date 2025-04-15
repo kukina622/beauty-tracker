@@ -7,6 +7,8 @@ class BaseFormField extends HookWidget {
     this.labelText = '',
     this.hintText = '',
     this.prefixIcon,
+    this.suffixIcon,
+    this.obscureText = false,
     this.keyboardType,
     this.validator,
   });
@@ -14,6 +16,8 @@ class BaseFormField extends HookWidget {
   final String labelText;
   final String hintText;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool obscureText;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
@@ -31,7 +35,9 @@ class BaseFormField extends HookWidget {
           (states) =>
               states.contains(WidgetState.focused) ? Theme.of(context).primaryColor : Colors.grey,
         ),
+        suffixIcon: suffixIcon,
       ),
+      obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
     );
