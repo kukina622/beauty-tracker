@@ -7,11 +7,15 @@ class PasswordFormField extends HookWidget {
     super.key,
     this.labelText = '密碼',
     this.hintText = '輸入您的密碼',
+    this.controller,
     this.validator,
+    this.onChanged,
   });
 
   final String labelText;
   final String hintText;
+  final TextEditingController? controller;
+  final void Function(String)? onChanged;
   final String? Function(String?)? validator;
 
   @override
@@ -21,6 +25,7 @@ class PasswordFormField extends HookWidget {
     return BaseFormField(
       labelText: labelText,
       hintText: hintText,
+      controller: controller,
       prefixIcon: const Icon(Icons.lock_outline),
       suffixIcon: IconButton(
         icon: Icon(
@@ -33,6 +38,7 @@ class PasswordFormField extends HookWidget {
       ),
       obscureText: !isVisiblePassword.value,
       validator: validator,
+      onChanged: onChanged,
     );
   }
 }
