@@ -82,6 +82,7 @@ class BeautyTrackerApp extends StatelessWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
+            overlayColor: Colors.transparent,
             foregroundColor: const Color(0xFF2D3142),
             textStyle: TextStyle(
               fontFamily: 'NotoSansTC',
