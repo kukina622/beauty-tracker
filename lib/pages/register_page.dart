@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:beauty_tracker/widgets/common/app_logo.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
@@ -31,8 +30,6 @@ class RegisterPage extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                Center(child: AppLogo()),
-                const SizedBox(height: 20),
                 Text(
                   '創建帳戶',
                   style: Theme.of(context).textTheme.headlineMedium,
