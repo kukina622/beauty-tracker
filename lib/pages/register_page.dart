@@ -30,7 +30,7 @@ class RegisterPage extends HookWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Center(child: AppLogo()),
                 const SizedBox(height: 20),
                 Text(
@@ -72,6 +72,15 @@ class RegisterPage extends HookWidget {
                         labelText: '密碼',
                         hintText: '請輸入密碼',
                         controller: passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '請輸入密碼';
+                          }
+                          if (value.length < 6) {
+                            return '密碼必須至少包含6個字';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       PasswordFormField(
