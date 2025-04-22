@@ -1,7 +1,22 @@
 import 'package:beauty_tracker/router/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
+
+  final supabaseUrl = dotenv.get('SUPABASE_URL');
+  final supabaseKey = dotenv.get('SUPABASE_ANON_KEY');
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseKey,
+  );
+
   runApp(BeautyTrackerApp());
 }
 
@@ -129,6 +144,7 @@ class BeautyTrackerApp extends StatelessWidget {
           ),
         ),
       ),
+      builder: EasyLoading.init(),
     );
   }
 }
