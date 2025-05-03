@@ -1,11 +1,12 @@
 import 'package:beauty_tracker/models/app_user.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SupabaseAuthServiceImpl implements AuthService {
+class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
   SupabaseAuthServiceImpl() {
-    _currentUser = AppUser.fromSupabaseUser(supabase.auth.currentUser);
-    registerListener();
+    _updateUser(AppUser.fromSupabaseUser(supabase.auth.currentUser));
+    supabase.auth.onAuthStateChange.listen((data) => _handleAuth(data.event));
   }
 
   @override
@@ -24,7 +25,7 @@ class SupabaseAuthServiceImpl implements AuthService {
       password: password,
     );
 
-    _currentUser = AppUser.fromSupabaseUser(res.user);
+    _updateUser(AppUser.fromSupabaseUser(res.user));
   }
 
   @override
@@ -47,14 +48,17 @@ class SupabaseAuthServiceImpl implements AuthService {
     throw UnimplementedError();
   }
 
-  void registerListener() {
-    supabase.auth.onAuthStateChange.listen((data) {
-      final AuthChangeEvent event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
-        _currentUser = AppUser.fromSupabaseUser(data.session?.user);
-      } else if (event == AuthChangeEvent.signedOut) {
-        _currentUser = null;
-      }
-    });
+  void _updateUser(AppUser? user) {
+    _currentUser = user;
+    notifyListeners();
+  }
+
+  void _handleAuth(AuthChangeEvent state) {
+    if (state == AuthChangeEvent.signedIn) {
+      _updateUser(AppUser.fromSupabaseUser(supabase.auth.currentUser));
+    } else if (state == AuthChangeEvent.signedOut) {
+      _updateUser(null);
+    }
+    notifyListeners();
   }
 }
