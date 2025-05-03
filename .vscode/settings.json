@@ -4,6 +4,7 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "always"
   },
+  "files.eol": "\n",
   "cSpell.words": [
     "cupertino",
     "dotenv",
