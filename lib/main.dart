@@ -1,8 +1,15 @@
 import 'package:beauty_tracker/router/router.dart';
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:watch_it/watch_it.dart';
+
+void setUpDi() {
+  di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +23,7 @@ Future<void> main() async {
     url: supabaseUrl,
     anonKey: supabaseKey,
   );
+  setUpDi();
 
   runApp(BeautyTrackerApp());
 }
