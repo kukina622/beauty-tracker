@@ -1,3 +1,5 @@
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/errors/result_guard.dart';
 import 'package:beauty_tracker/models/app_user.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -19,32 +21,32 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
   SupabaseClient get supabase => Supabase.instance.client;
 
   @override
-  Future<void> signUpWithEmail(String email, String password) async {
-    final AuthResponse res = await supabase.auth.signUp(
-      email: email,
-      password: password,
-    );
+  Future<Result<void>> signUpWithEmail(String email, String password) => resultGuard(() async {
+        final AuthResponse res = await supabase.auth.signUp(
+          email: email,
+          password: password,
+        );
 
-    _updateUser(AppUser.fromSupabaseUser(res.user));
-  }
+        _updateUser(AppUser.fromSupabaseUser(res.user));
+      });
 
   @override
-  Future<void> signInWithEmail(String email, String password) {
+  Future<Result<void>> signInWithEmail(String email, String password) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> signInWithApple() {
+  Future<Result<void>> signInWithApple() {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> signInWithGoogle() {
+  Future<Result<void>> signInWithGoogle() {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> signOut() {
+  Future<Result<void>> signOut() {
     throw UnimplementedError();
   }
 
