@@ -21,18 +21,27 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
   SupabaseClient get supabase => Supabase.instance.client;
 
   @override
-  Future<Result<void>> signUpWithEmail(String email, String password) => resultGuard(() async {
-        final AuthResponse res = await supabase.auth.signUp(
-          email: email,
-          password: password,
-        );
+  Future<Result<void>> signUpWithEmail(String email, String password) {
+    return resultGuard(() async {
+      final AuthResponse res = await supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
 
-        _updateUser(AppUser.fromSupabaseUser(res.user));
-      });
+      _updateUser(AppUser.fromSupabaseUser(res.user));
+    });
+  }
 
   @override
   Future<Result<void>> signInWithEmail(String email, String password) {
-    throw UnimplementedError();
+    return resultGuard(() async {
+      final AuthResponse res = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      _updateUser(AppUser.fromSupabaseUser(res.user));
+    });
   }
 
   @override

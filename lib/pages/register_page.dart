@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/messages/auth_error_messages.dart';
+import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/social_login/apple_login.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -14,11 +17,23 @@ class RegisterPage extends WatchingWidget {
 
   final _formKey = GlobalKey<FormState>();
 
-  void signUpWithEmail(String email, String password) {
-    try {
-      di<AuthService>().signUpWithEmail(email, password);
-    } catch (e) {
-      print('Error signing up: $e');
+  Future<void> signUpWithEmail(BuildContext context, String email, String password) async {
+    EasyLoading.show(status: '註冊中...', maskType: EasyLoadingMaskType.black);
+
+    final result = await di<AuthService>().signUpWithEmail(email, password).whenComplete(() {
+      EasyLoading.dismiss();
+    });
+    switch (result) {
+      case Ok():
+        if (context.mounted) {
+          EasyLoading.showSuccess('註冊成功', maskType: EasyLoadingMaskType.black);
+          AutoRouter.of(context).replacePath('/home');
+        }
+        break;
+      case Err():
+        final String message = authErrorMessages[result.error.code] ?? '註冊失敗';
+        EasyLoading.showError(message, maskType: EasyLoadingMaskType.black);
+        break;
     }
   }
 
@@ -100,6 +115,7 @@ class RegisterPage extends WatchingWidget {
 
                               if (isFormValid) {
                                 signUpWithEmail(
+                                  context,
                                   emailController.text,
                                   passwordController.text,
                                 );

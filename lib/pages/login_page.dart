@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/util/email.dart';
 import 'package:beauty_tracker/widgets/common/app_logo.dart';
 import 'package:beauty_tracker/widgets/form/checkbox_field.dart';
@@ -7,15 +9,40 @@ import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/social_login/apple_login.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:watch_it/watch_it.dart';
 
 @RoutePage()
 class LoginPage extends HookWidget {
   LoginPage({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  Future<void> signInWithEmail(BuildContext context, String email, String password) async {
+    EasyLoading.show(status: '登入中...', maskType: EasyLoadingMaskType.black);
+
+    final result = await di<AuthService>().signInWithEmail(email, password).whenComplete(() {
+      EasyLoading.dismiss();
+    });
+
+    switch (result) {
+      case Ok():
+        if (context.mounted) {
+          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
+          AutoRouter.of(context).replacePath('/home');
+        }
+        break;
+      case Err():
+        EasyLoading.showError('帳號或密碼錯誤', maskType: EasyLoadingMaskType.black);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -45,6 +72,7 @@ class LoginPage extends HookWidget {
                   child: Column(
                     children: [
                       EmailFormField(
+                        controller: emailController,
                         validator: (value) {
                           if (!isEmailValid(value)) {
                             return '請輸入有效的電子郵件';
@@ -54,6 +82,7 @@ class LoginPage extends HookWidget {
                       ),
                       const SizedBox(height: 16),
                       PasswordFormField(
+                        controller: passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return '請輸入密碼';
@@ -96,7 +125,16 @@ class LoginPage extends HookWidget {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final bool isFormValid = _formKey.currentState?.validate() ?? false;
+                            if (isFormValid) {
+                              signInWithEmail(
+                                context,
+                                emailController.text,
+                                passwordController.text,
+                              );
+                            }
+                          },
                           child: const Text(
                             '登入',
                             style: TextStyle(
