@@ -37,6 +37,22 @@ class RegisterPage extends WatchingWidget {
     }
   }
 
+  Future<void> signInWithGoogle(BuildContext context) async {
+    final result = await di<AuthService>().signInWithGoogle();
+
+    switch (result) {
+      case Ok():
+        if (context.mounted) {
+          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
+          AutoRouter.of(context).replacePath('/home');
+        }
+        break;
+      case Err():
+        EasyLoading.showError('登入失敗', maskType: EasyLoadingMaskType.black);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return HookBuilder(builder: (context) {
@@ -152,7 +168,7 @@ class RegisterPage extends WatchingWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: GoogleLogin(),
+                        child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
