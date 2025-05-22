@@ -11,6 +11,22 @@ void setUpDi() {
   di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
 }
 
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Color(0xFFFFA5B1)
+    ..backgroundColor = Colors.white
+    ..indicatorColor = Color(0xFFFFA5B1)
+    ..textColor = Colors.black
+    ..maskColor = Colors.black.withValues(alpha: .5)
+    ..userInteractions = false
+    ..dismissOnTap = false;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -24,6 +40,7 @@ Future<void> main() async {
     anonKey: supabaseKey,
   );
   setUpDi();
+  configLoading();
 
   runApp(BeautyTrackerApp());
 }
