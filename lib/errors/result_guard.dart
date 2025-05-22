@@ -16,7 +16,7 @@ Future<Result<T>> resultGuard<T>(
 
     // supbase auth error
     if (e is AuthException) {
-      return Err(AuthError(e.message, code: e.statusCode?.toString()));
+      return Err(AuthError(e.message, code: e.code?.toString()));
     }
 
     if (e is PostgrestException) {
