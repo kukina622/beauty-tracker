@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class GoogleLogin extends StatelessWidget {
-  const GoogleLogin({super.key});
+  const GoogleLogin({super.key, this.onPressed});
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 56,
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: onPressed,
         icon: Baseline(
           baseline: 22,
           baselineType: TextBaseline.alphabetic,

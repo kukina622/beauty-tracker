@@ -1,3 +1,16 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.27.4"
+  "dart.flutterSdkPath": ".fvm/versions/3.27.4",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "always"
+  },
+  "files.eol": "\n",
+  "cSpell.words": [
+    "cupertino",
+    "dotenv",
+    "easyloading",
+    "riverpod",
+    "Supabase",
+    "unfocus"
+  ]
 }

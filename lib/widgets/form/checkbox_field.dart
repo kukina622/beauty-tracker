@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CheckboxField extends HookWidget {
+class CheckboxField extends StatelessWidget {
   const CheckboxField({
     super.key,
     required this.label,
@@ -15,8 +14,6 @@ class CheckboxField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<bool> isChecked = useState(value);
-
     return Row(
       children: [
         SizedBox(
@@ -24,18 +21,16 @@ class CheckboxField extends HookWidget {
           height: 24,
           child: Checkbox(
             activeColor: const Color(0xFFFF9A9E),
-            value: isChecked.value,
-            onChanged: (value) {
-              isChecked.value = value ?? false;
-              onChanged?.call(isChecked.value);
+            value: value,
+            onChanged: (newValue) {
+              onChanged?.call(newValue ?? false);
             },
           ),
         ),
         const SizedBox(width: 8),
         GestureDetector(
           onTap: () {
-            isChecked.value = !isChecked.value;
-            onChanged?.call(isChecked.value);
+            onChanged?.call(!value);
           },
           child: label,
         ),

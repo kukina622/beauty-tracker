@@ -1,4 +1,4 @@
-package com.example.beauty_tracker
+package io.github.kukina622.beautytracker
 
 import io.flutter.embedding.android.FlutterActivity
 

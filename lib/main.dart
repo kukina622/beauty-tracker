@@ -1,7 +1,53 @@
 import 'package:beauty_tracker/router/router.dart';
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
+import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:watch_it/watch_it.dart';
 
-void main() {
+import 'services/local_storage_service/local_storage_service.dart';
+
+void setUpDi() {
+  di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
+  di.registerSingleton<LocalStorageService>(
+    SharedPreferencesLocalStorageServiceImpl(),
+  );
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Color(0xFFFFA5B1)
+    ..backgroundColor = Colors.white
+    ..indicatorColor = Color(0xFFFFA5B1)
+    ..textColor = Colors.black
+    ..maskColor = Colors.black.withValues(alpha: .5)
+    ..userInteractions = false
+    ..dismissOnTap = false;
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
+
+  final supabaseUrl = dotenv.get('SUPABASE_URL');
+  final supabaseKey = dotenv.get('SUPABASE_ANON_KEY');
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseKey,
+  );
+  setUpDi();
+  configLoading();
+
   runApp(BeautyTrackerApp());
 }
 
@@ -129,6 +175,7 @@ class BeautyTrackerApp extends StatelessWidget {
           ),
         ),
       ),
+      builder: EasyLoading.init(),
     );
   }
 }

@@ -1,21 +1,107 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/util/email.dart';
 import 'package:beauty_tracker/widgets/common/app_logo.dart';
 import 'package:beauty_tracker/widgets/form/checkbox_field.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
-import 'package:beauty_tracker/widgets/social_login/apple_login.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:watch_it/watch_it.dart';
 
 @RoutePage()
 class LoginPage extends HookWidget {
   LoginPage({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  Future<void> rememberEmail(
+    LocalStorageService localStorageService,
+    String email,
+    bool isRemember,
+  ) async {
+    if (isRemember) {
+      await localStorageService.setString(LocalStorageKeys.userEmail, email);
+    } else {
+      await localStorageService.remove(LocalStorageKeys.userEmail);
+    }
+  }
+
+  Future<void> signInWithEmail(
+    BuildContext context,
+    String email,
+    String password,
+    bool isRemember,
+  ) async {
+    EasyLoading.show(status: '登入中...', maskType: EasyLoadingMaskType.black);
+
+    final result = await di<AuthService>().signInWithEmail(email, password).whenComplete(() {
+      EasyLoading.dismiss();
+    });
+
+    switch (result) {
+      case Ok():
+        await rememberEmail(
+          di<LocalStorageService>(),
+          email,
+          isRemember,
+        );
+        if (context.mounted) {
+          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
+          AutoRouter.of(context).replacePath('/home');
+        }
+        break;
+      case Err():
+        EasyLoading.showError('帳號或密碼錯誤', maskType: EasyLoadingMaskType.black);
+        break;
+    }
+  }
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    final result = await di<AuthService>().signInWithGoogle();
+
+    switch (result) {
+      case Ok():
+        if (context.mounted) {
+          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
+          AutoRouter.of(context).replacePath('/home');
+        }
+        break;
+      case Err():
+        EasyLoading.showError('登入失敗', maskType: EasyLoadingMaskType.black);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final isRemember = useState(false);
+
+    final LocalStorageService localStorageService = useDi<LocalStorageService>();
+
+    final futureRemeberEmail = useMemoized(
+      () => localStorageService.getString(LocalStorageKeys.userEmail),
+      [localStorageService],
+    );
+
+    final snapshot = useFuture(futureRemeberEmail);
+
+    useEffect(() {
+      if (snapshot.connectionState == ConnectionState.done) {
+        final email = snapshot.data;
+        emailController.text = email ?? '';
+        isRemember.value = (email != null);
+      }
+      return null;
+    }, [snapshot.connectionState, snapshot.data]);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -45,6 +131,7 @@ class LoginPage extends HookWidget {
                   child: Column(
                     children: [
                       EmailFormField(
+                        controller: emailController,
                         validator: (value) {
                           if (!isEmailValid(value)) {
                             return '請輸入有效的電子郵件';
@@ -54,6 +141,7 @@ class LoginPage extends HookWidget {
                       ),
                       const SizedBox(height: 16),
                       PasswordFormField(
+                        controller: passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return '請輸入密碼';
@@ -69,6 +157,7 @@ class LoginPage extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CheckboxField(
+                            value: isRemember.value,
                             label: Text(
                               '記住我',
                               style: TextStyle(
@@ -76,6 +165,9 @@ class LoginPage extends HookWidget {
                                 fontSize: 14,
                               ),
                             ),
+                            onChanged: (value) {
+                              isRemember.value = value;
+                            },
                           ),
                           TextButton(
                             onPressed: () {
@@ -96,7 +188,13 @@ class LoginPage extends HookWidget {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final bool isFormValid = _formKey.currentState?.validate() ?? false;
+                            if (isFormValid) {
+                              signInWithEmail(context, emailController.text,
+                                  passwordController.text, isRemember.value);
+                            }
+                          },
                           child: const Text(
                             '登入',
                             style: TextStyle(
@@ -140,11 +238,7 @@ class LoginPage extends HookWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: GoogleLogin(),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: AppleLogin(),
+                      child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
                     ),
                   ],
                 ),
