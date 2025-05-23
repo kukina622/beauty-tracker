@@ -4,7 +4,6 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
-import 'package:beauty_tracker/widgets/social_login/apple_login.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -169,10 +168,6 @@ class RegisterPage extends WatchingWidget {
                     children: [
                       Expanded(
                         child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: AppleLogin(),
                       ),
                     ],
                   ),
