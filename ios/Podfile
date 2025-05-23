@@ -41,4 +41,40 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+
+  generate_env_xcconfig
+end
+
+def generate_env_xcconfig
+  env_file = File.join(File.dirname(__FILE__), '../.env')
+  xcconfig_file = File.join(File.dirname(__FILE__), 'Env.xcconfig')
+  
+  puts "🔧 Generating Env.xcconfig from .env file..."
+  
+  # 創建 xcconfig 內容
+  xcconfig_content = "// Auto-generated from .env - DO NOT EDIT\n"
+  xcconfig_content += "// Generated at: #{Time.now}\n\n"
+  
+  if File.exist?(env_file)
+    File.readlines(env_file).each do |line|
+      line = line.strip
+      next if line.start_with?('#') || line.empty?
+      
+      if line.include?('=')
+        key, value = line.split('=', 2)
+        key = key.strip
+        value = value.strip.gsub(/^["']|["']$/, '')
+        
+        xcconfig_content += "#{key} = #{value}\n"
+        puts "✅ Added #{key} to xcconfig"
+      end
+    end
+  else
+    puts "⚠️  .env file not found, creating empty xcconfig"
+    xcconfig_content += "// No .env file found\n"
+  end
+  
+  # 寫入 xcconfig 文件
+  File.write(xcconfig_file, xcconfig_content)
+  puts "📄 Generated #{xcconfig_file}"
 end
