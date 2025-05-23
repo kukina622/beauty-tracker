@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/util/email.dart';
 import 'package:beauty_tracker/widgets/common/app_logo.dart';
 import 'package:beauty_tracker/widgets/form/checkbox_field.dart';
@@ -17,7 +20,24 @@ class LoginPage extends HookWidget {
   LoginPage({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<void> signInWithEmail(BuildContext context, String email, String password) async {
+  Future<void> rememberEmail(
+    LocalStorageService localStorageService,
+    String email,
+    bool isRemember,
+  ) async {
+    if (isRemember) {
+      await localStorageService.setString(LocalStorageKeys.userEmail, email);
+    } else {
+      await localStorageService.remove(LocalStorageKeys.userEmail);
+    }
+  }
+
+  Future<void> signInWithEmail(
+    BuildContext context,
+    String email,
+    String password,
+    bool isRemember,
+  ) async {
     EasyLoading.show(status: '登入中...', maskType: EasyLoadingMaskType.black);
 
     final result = await di<AuthService>().signInWithEmail(email, password).whenComplete(() {
@@ -26,6 +46,11 @@ class LoginPage extends HookWidget {
 
     switch (result) {
       case Ok():
+        await rememberEmail(
+          di<LocalStorageService>(),
+          email,
+          isRemember,
+        );
         if (context.mounted) {
           EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
           AutoRouter.of(context).replacePath('/home');
@@ -57,6 +82,25 @@ class LoginPage extends HookWidget {
   Widget build(BuildContext context) {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
+    final isRemember = useState(false);
+
+    final LocalStorageService localStorageService = useDi<LocalStorageService>();
+
+    final futureRemeberEmail = useMemoized(
+      () => localStorageService.getString(LocalStorageKeys.userEmail),
+      [localStorageService],
+    );
+
+    final snapshot = useFuture(futureRemeberEmail);
+
+    useEffect(() {
+      if (snapshot.connectionState == ConnectionState.done) {
+        final email = snapshot.data;
+        emailController.text = email ?? '';
+        isRemember.value = (email != null);
+      }
+      return null;
+    }, [snapshot.connectionState, snapshot.data]);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -113,6 +157,7 @@ class LoginPage extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CheckboxField(
+                            value: isRemember.value,
                             label: Text(
                               '記住我',
                               style: TextStyle(
@@ -120,6 +165,9 @@ class LoginPage extends HookWidget {
                                 fontSize: 14,
                               ),
                             ),
+                            onChanged: (value) {
+                              isRemember.value = value;
+                            },
                           ),
                           TextButton(
                             onPressed: () {
@@ -143,11 +191,8 @@ class LoginPage extends HookWidget {
                           onPressed: () {
                             final bool isFormValid = _formKey.currentState?.validate() ?? false;
                             if (isFormValid) {
-                              signInWithEmail(
-                                context,
-                                emailController.text,
-                                passwordController.text,
-                              );
+                              signInWithEmail(context, emailController.text,
+                                  passwordController.text, isRemember.value);
                             }
                           },
                           child: const Text(
