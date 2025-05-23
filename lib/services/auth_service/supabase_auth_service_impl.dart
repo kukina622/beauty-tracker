@@ -3,6 +3,8 @@ import 'package:beauty_tracker/errors/result_guard.dart';
 import 'package:beauty_tracker/models/app_user.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
@@ -51,7 +53,34 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
 
   @override
   Future<Result<void>> signInWithGoogle() {
-    throw UnimplementedError();
+    return resultGuard(() async {
+      final String webClientId = dotenv.get('GOOGLE_WEB_CLIENT_ID').toString();
+      final String iosClientId = dotenv.get('GOOGLE_IOS_CLIENT_ID').toString();
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: iosClientId,
+        serverClientId: webClientId,
+      );
+      final googleUser = await googleSignIn.signIn();
+      final googleAuth = await googleUser!.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) {
+        throw 'No Access Token found.';
+      }
+
+      if (idToken == null) {
+        throw 'No ID Token found.';
+      }
+
+      final AuthResponse res = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+      _updateUser(AppUser.fromSupabaseUser(res.user));
+    });
   }
 
   @override
