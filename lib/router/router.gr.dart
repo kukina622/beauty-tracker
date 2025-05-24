@@ -10,14 +10,53 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i5;
-import 'package:beauty_tracker/pages/home_page.dart' as _i2;
-import 'package:beauty_tracker/pages/login_page.dart' as _i1;
+import 'package:beauty_tracker/pages/home_page.dart' as _i1;
+import 'package:beauty_tracker/pages/login_page.dart' as _i2;
 import 'package:beauty_tracker/pages/onboarding_page.dart' as _i3;
 import 'package:beauty_tracker/pages/register_page.dart' as _i4;
 import 'package:flutter/material.dart' as _i6;
 
 /// generated route for
-/// [_i1.LoginPage]
+/// [_i1.HomePage]
+class HomeRoute extends _i5.PageRouteInfo<HomeRouteArgs> {
+  HomeRoute({
+    _i6.Key? key,
+    String title = 'Beauty Tracker',
+    List<_i5.PageRouteInfo>? children,
+  }) : super(
+         HomeRoute.name,
+         args: HomeRouteArgs(key: key, title: title),
+         initialChildren: children,
+       );
+
+  static const String name = 'HomeRoute';
+
+  static _i5.PageInfo page = _i5.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<HomeRouteArgs>(
+        orElse: () => const HomeRouteArgs(),
+      );
+      return _i1.HomePage(key: args.key, title: args.title);
+    },
+  );
+}
+
+class HomeRouteArgs {
+  const HomeRouteArgs({this.key, this.title = 'Beauty Tracker'});
+
+  final _i6.Key? key;
+
+  final String title;
+
+  @override
+  String toString() {
+    return 'HomeRouteArgs{key: $key, title: $title}';
+  }
+}
+
+/// generated route for
+/// [_i2.LoginPage]
 class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
   LoginRoute({_i6.Key? key, List<_i5.PageRouteInfo>? children})
     : super(
@@ -34,7 +73,7 @@ class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
       final args = data.argsAs<LoginRouteArgs>(
         orElse: () => const LoginRouteArgs(),
       );
-      return _i1.LoginPage(key: args.key);
+      return _i2.LoginPage(key: args.key);
     },
   );
 }
@@ -47,45 +86,6 @@ class LoginRouteArgs {
   @override
   String toString() {
     return 'LoginRouteArgs{key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i2.MyHomePage]
-class MyHomeRoute extends _i5.PageRouteInfo<MyHomeRouteArgs> {
-  MyHomeRoute({
-    _i6.Key? key,
-    String title = 'Beauty Tracker',
-    List<_i5.PageRouteInfo>? children,
-  }) : super(
-         MyHomeRoute.name,
-         args: MyHomeRouteArgs(key: key, title: title),
-         initialChildren: children,
-       );
-
-  static const String name = 'MyHomeRoute';
-
-  static _i5.PageInfo page = _i5.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<MyHomeRouteArgs>(
-        orElse: () => const MyHomeRouteArgs(),
-      );
-      return _i2.MyHomePage(key: args.key, title: args.title);
-    },
-  );
-}
-
-class MyHomeRouteArgs {
-  const MyHomeRouteArgs({this.key, this.title = 'Beauty Tracker'});
-
-  final _i6.Key? key;
-
-  final String title;
-
-  @override
-  String toString() {
-    return 'MyHomeRouteArgs{key: $key, title: $title}';
   }
 }
 

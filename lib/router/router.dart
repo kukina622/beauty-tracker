@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(path: '/home', page: MyHomeRoute.page),
+        AutoRoute(path: '/home', page: HomeRoute.page),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page, initial: true),
         CustomRoute<dynamic>(
           path: '/login',
