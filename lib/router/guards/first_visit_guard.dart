@@ -17,6 +17,6 @@ class FirstVisitGuard extends AutoRouteGuard {
 
   Future<bool> checkFirstVisit() async {
     final isFirstVisit = await di.get<LocalStorageService>().getBool(LocalStorageKeys.isFirstVisit);
-    return isFirstVisit ?? true; // Placeholder for first visit logic
+    return isFirstVisit ?? true;
   }
 }
