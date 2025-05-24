@@ -53,7 +53,7 @@ class LoginPage extends HookWidget {
         );
         if (context.mounted) {
           EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/home');
+          AutoRouter.of(context).replacePath('/');
         }
         break;
       case Err():
@@ -69,7 +69,7 @@ class LoginPage extends HookWidget {
       case Ok():
         if (context.mounted) {
           EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/home');
+          AutoRouter.of(context).replacePath('/');
         }
         break;
       case Err():
