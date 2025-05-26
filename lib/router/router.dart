@@ -11,8 +11,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           path: '/',
           guards: [FirstVisitGuard(), AuthCheckGuard()],
-          page: HomeRoute.page,
           initial: true,
+          page: HomeNavigationRoute.page,
+          children: [
+            AutoRoute(path: '', page: HomeRoute.page),
+          ],
         ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(
