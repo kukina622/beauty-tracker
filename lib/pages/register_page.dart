@@ -26,7 +26,7 @@ class RegisterPage extends WatchingWidget {
       case Ok():
         if (context.mounted) {
           EasyLoading.showSuccess('註冊成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/home');
+          AutoRouter.of(context).replacePath('/');
         }
         break;
       case Err():
@@ -43,7 +43,7 @@ class RegisterPage extends WatchingWidget {
       case Ok():
         if (context.mounted) {
           EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/home');
+          AutoRouter.of(context).replacePath('/');
         }
         break;
       case Err():

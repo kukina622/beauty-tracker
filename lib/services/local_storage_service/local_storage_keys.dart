@@ -1,5 +1,6 @@
 enum LocalStorageKeys {
   userEmail,
+  isFirstVisit,
 }
 
 extension LocalStorageKeysExtension on LocalStorageKeys {
