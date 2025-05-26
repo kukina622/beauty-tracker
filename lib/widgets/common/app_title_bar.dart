@@ -26,6 +26,7 @@ class AppTitleBar extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
             ),
+            SizedBox(height: 4),
             if (subtitle != null)
               Text(
                 subtitle!,

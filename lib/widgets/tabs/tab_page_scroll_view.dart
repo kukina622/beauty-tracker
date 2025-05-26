@@ -10,16 +10,20 @@ class TabPageScrollView extends StatelessWidget {
 
   final List<Widget> header;
   final Widget sliver;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
+    final EdgeInsets headerPadding = header.isNotEmpty
+        ? EdgeInsets.only(top: 24, bottom: 0, left: padding.left, right: padding.right)
+        : EdgeInsets.zero;
+
     return SafeArea(
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: headerPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: header,
