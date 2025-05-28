@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TitleBar extends StatelessWidget {
-  const TitleBar({
+class SubTitleBar extends StatelessWidget {
+  const SubTitleBar({
     super.key,
     required this.title,
     this.enableAddOption = true,
