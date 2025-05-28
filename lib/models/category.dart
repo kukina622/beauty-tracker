@@ -10,13 +10,13 @@ class Category {
     return Category(
       id: json['id'] as String,
       categoryName: json['category_name'] as String,
-      categoryIcon: json['category_icon'] as String,
+      categoryIcon: json['category_icon'] as int,
       categoryColor: json['category_color'] as int,
     );
   }
   final String id;
   final String categoryName;
-  final String categoryIcon;
+  final int categoryIcon;
   final int categoryColor;
 
   Map<String, dynamic> toJson() {
