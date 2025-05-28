@@ -48,6 +48,9 @@ final iconMapping = Map<int, IconData>.fromIterables(
   icons,
 );
 
-IconData getIcon(int iconCode) {
+IconData getIcon(int? iconCode) {
+  if (iconCode == null || iconCode < 0) {
+    return Icons.spa;
+  }
   return iconMapping[iconCode] ?? Icons.spa;
 }
