@@ -4,12 +4,12 @@ class TabPageScrollView extends StatelessWidget {
   const TabPageScrollView({
     super.key,
     this.header = const [],
-    required this.sliver,
+    required this.slivers,
     this.padding = const EdgeInsets.all(24),
   });
 
   final List<Widget> header;
-  final Widget sliver;
+  final List<Widget> slivers;
   final EdgeInsets padding;
 
   @override
@@ -30,10 +30,12 @@ class TabPageScrollView extends StatelessWidget {
               ),
             ),
           ),
-          SliverPadding(
-            padding: padding,
-            sliver: sliver,
-          )
+          ...slivers.map(
+            (sliver) => SliverPadding(
+              padding: padding,
+              sliver: sliver,
+            ),
+          ),
         ],
       ),
     );
