@@ -1,37 +1,11 @@
+import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/util/icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class CategoryFilter extends HookWidget {
-  const CategoryFilter({super.key});
-  List<String> get categories => const [
-        'All',
-        'Skincare',
-        'Makeup',
-        'Haircare',
-        'Fragrance',
-        'Face',
-        'Body',
-        'Lips',
-        'Eyes',
-        'Nails',
-        'Sun Care',
-        'Cleansers',
-        'Treatments',
-        'Tools',
-        'Masks',
-        'Body',
-        'Lips',
-        'Eyes',
-        'Nails',
-        'Sun Care',
-        'Cleansers',
-        'Treatments',
-        'Tools',
-        'Masks',
-        'Serums',
-        'Moisturizers',
-        'Other'
-      ];
+  const CategoryFilter({super.key, this.categories = const []});
+  final List<Category> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +31,11 @@ class CategoryFilter extends HookWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: categories.map((category) {
-              final isSelected = category == selectedCategory.value;
-
-              // TODO: Replace with icon mapping or a more dynamic approach
-              final Color mainColor = Color(0xFFFF9A9E);
-
+              final isSelected = category.id == selectedCategory.value;
+              final Color mainColor = Color(category.categoryColor);
               return GestureDetector(
                 onTap: () {
-                  selectedCategory.value = category;
+                  selectedCategory.value = category.id;
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
@@ -82,16 +53,16 @@ class CategoryFilter extends HookWidget {
                   child: Row(
                     children: [
                       Icon(
-                        Icons.star, // TODO: map this to a specific icon for each category
+                        getIcon(category.categoryIcon),
                         color: isSelected ? Colors.white : mainColor,
                         size: 16,
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        category,
+                        category.categoryName,
                         style: TextStyle(
                           color: isSelected ? Colors.white : const Color(0xFF2D3142),
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],

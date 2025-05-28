@@ -104,6 +104,39 @@ class HomePage extends StatelessWidget {
         ),
       ];
 
+  List<Category> get categories => [
+        Category(
+          id: 'All',
+          categoryName: 'All',
+          categoryIcon: Icons.stars.codePoint,
+          categoryColor: Color(0xFFFF9A9E).value,
+        ),
+        Category(
+          id: '123',
+          categoryName: 'Moisturizer',
+          categoryIcon: Icons.spa.codePoint,
+          categoryColor: Colors.red.shade200.value,
+        ),
+        Category(
+          id: '456',
+          categoryName: 'Hydration',
+          categoryIcon: Icons.water.codePoint,
+          categoryColor: Colors.blue.shade300.value,
+        ),
+        Category(
+          id: '789',
+          categoryName: 'Sunscreen',
+          categoryIcon: Icons.sunny.codePoint,
+          categoryColor: Colors.yellow.shade700.value,
+        ),
+        Category(
+          id: '101',
+          categoryName: 'Serum',
+          categoryIcon: Icons.healing.codePoint,
+          categoryColor: Colors.green.shade200.value,
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
     return TabPageScrollView(
@@ -122,7 +155,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 24),
               SubTitleBar(title: '所有分類'),
               SizedBox(height: 14),
-              CategoryFilter(),
+              CategoryFilter(categories: categories),
               const SizedBox(height: 18),
               SubTitleBar(title: '保養品', enableAddOption: false),
             ],
