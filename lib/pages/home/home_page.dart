@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/category/category_filter.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
@@ -27,13 +28,13 @@ class HomePage extends StatelessWidget {
                 id: '123',
                 categoryName: 'Moisturizer',
                 categoryIcon: Icons.spa.codePoint,
-                categoryColor: Colors.red.shade200.value,
+                categoryColor: Colors.red.shade200.toInt(),
               ),
               Category(
                 id: '456',
                 categoryName: 'Hydration',
                 categoryIcon: Icons.water.codePoint,
-                categoryColor: Colors.blue.shade300.value,
+                categoryColor: Colors.blue.shade300.toInt(),
               ),
             ]),
         Product(
@@ -48,7 +49,7 @@ class HomePage extends StatelessWidget {
               id: '789',
               categoryName: 'Sunscreen',
               categoryIcon: Icons.sunny.codePoint,
-              categoryColor: Colors.yellow.shade700.value,
+              categoryColor: Colors.yellow.shade700.toInt(),
             ),
           ],
         ),
@@ -64,25 +65,25 @@ class HomePage extends StatelessWidget {
               id: '101',
               categoryName: 'Serum',
               categoryIcon: Icons.healing.codePoint,
-              categoryColor: Colors.green.shade200.value,
+              categoryColor: Colors.green.shade200.toInt(),
             ),
             Category(
               id: '102',
               categoryName: 'Anti-aging',
               categoryIcon: Icons.timer.codePoint,
-              categoryColor: Colors.orange.shade300.value,
+              categoryColor: Colors.orange.shade300.toInt(),
             ),
             Category(
               id: '103',
               categoryName: 'Brightening',
               categoryIcon: Icons.light_mode.codePoint,
-              categoryColor: Colors.pink.shade200.value,
+              categoryColor: Colors.pink.shade200.toInt(),
             ),
             Category(
               id: '104',
               categoryName: 'Hydrating',
               categoryIcon: Icons.water_drop.codePoint,
-              categoryColor: Colors.blue.shade200.value,
+              categoryColor: Colors.blue.shade200.toInt(),
             ),
           ],
         ),
@@ -98,7 +99,7 @@ class HomePage extends StatelessWidget {
               id: '102',
               categoryName: 'Face Mask',
               categoryIcon: Icons.masks.codePoint,
-              categoryColor: Colors.purple.shade200.value,
+              categoryColor: Colors.purple.shade200.toInt(),
             ),
           ],
         ),
@@ -109,31 +110,31 @@ class HomePage extends StatelessWidget {
           id: 'All',
           categoryName: 'All',
           categoryIcon: Icons.stars.codePoint,
-          categoryColor: Color(0xFFFF9A9E).value,
+          categoryColor: Color(0xFFFF9A9E).toInt(),
         ),
         Category(
           id: '123',
           categoryName: 'Moisturizer',
           categoryIcon: Icons.spa.codePoint,
-          categoryColor: Colors.red.shade200.value,
+          categoryColor: Colors.red.shade200.toInt(),
         ),
         Category(
           id: '456',
           categoryName: 'Hydration',
           categoryIcon: Icons.water.codePoint,
-          categoryColor: Colors.blue.shade300.value,
+          categoryColor: Colors.blue.shade300.toInt(),
         ),
         Category(
           id: '789',
           categoryName: 'Sunscreen',
           categoryIcon: Icons.sunny.codePoint,
-          categoryColor: Colors.yellow.shade700.value,
+          categoryColor: Colors.yellow.shade700.toInt(),
         ),
         Category(
           id: '101',
           categoryName: 'Serum',
           categoryIcon: Icons.healing.codePoint,
-          categoryColor: Colors.green.shade200.value,
+          categoryColor: Colors.green.shade200.toInt(),
         ),
       ];
 
