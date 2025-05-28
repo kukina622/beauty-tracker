@@ -6,47 +6,47 @@ class SharedPreferencesLocalStorageServiceImpl implements LocalStorageService {
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 
   @override
-  Future<bool?> getBool(LocalStorageKeys key) {
-    return prefs.then((prefs) => prefs.getBool(key.key));
+  Future<bool?> getBool(LocalStorageKeys storageKey) {
+    return prefs.then((prefs) => prefs.getBool(storageKey.key));
   }
 
   @override
-  Future<double?> getDouble(LocalStorageKeys key) {
-    return prefs.then((prefs) => prefs.getDouble(key.key));
+  Future<double?> getDouble(LocalStorageKeys storageKey) {
+    return prefs.then((prefs) => prefs.getDouble(storageKey.key));
   }
 
   @override
-  Future<int?> getInt(LocalStorageKeys key) {
-    return prefs.then((prefs) => prefs.getInt(key.key));
+  Future<int?> getInt(LocalStorageKeys storageKey) {
+    return prefs.then((prefs) => prefs.getInt(storageKey.key));
   }
 
   @override
-  Future<String?> getString(LocalStorageKeys key) {
-    return prefs.then((prefs) => prefs.getString(key.key));
+  Future<String?> getString(LocalStorageKeys storageKey) {
+    return prefs.then((prefs) => prefs.getString(storageKey.key));
   }
 
   @override
-  Future<void> remove(LocalStorageKeys key) {
-    return prefs.then((prefs) => prefs.remove(key.key));
+  Future<void> remove(LocalStorageKeys storageKey) {
+    return prefs.then((prefs) => prefs.remove(storageKey.key));
   }
 
   @override
-  Future<void> setBool(LocalStorageKeys key, bool value) {
-    return prefs.then((prefs) => prefs.setBool(key.key, value));
+  Future<void> setBool(LocalStorageKeys storageKey, bool value) {
+    return prefs.then((prefs) => prefs.setBool(storageKey.key, value));
   }
 
   @override
-  Future<void> setDouble(LocalStorageKeys key, double value) {
-    return prefs.then((prefs) => prefs.setDouble(key.key, value));
+  Future<void> setDouble(LocalStorageKeys storageKey, double value) {
+    return prefs.then((prefs) => prefs.setDouble(storageKey.key, value));
   }
 
   @override
-  Future<void> setInt(LocalStorageKeys key, int value) {
-    return prefs.then((prefs) => prefs.setInt(key.key, value));
+  Future<void> setInt(LocalStorageKeys storageKey, int value) {
+    return prefs.then((prefs) => prefs.setInt(storageKey.key, value));
   }
 
   @override
-  Future<void> setString(LocalStorageKeys key, String value) {
-    return prefs.then((prefs) => prefs.setString(key.key, value));
+  Future<void> setString(LocalStorageKeys storageKey, String value) {
+    return prefs.then((prefs) => prefs.setString(storageKey.key, value));
   }
 }
