@@ -11,8 +11,8 @@ class NavigationIcon {
 }
 
 @RoutePage()
-class HomeNavigationPage extends StatelessWidget {
-  const HomeNavigationPage({super.key});
+class RootNavigationPage extends StatelessWidget {
+  const RootNavigationPage({super.key});
 
   List<NavigationIcon> get navigationIcons => const [
         NavigationIcon(icon: Icons.home_outlined, label: 'Home', activeIcon: Icons.home),

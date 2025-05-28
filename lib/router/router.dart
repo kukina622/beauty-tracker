@@ -12,7 +12,7 @@ class AppRouter extends RootStackRouter {
           path: '/',
           guards: [FirstVisitGuard(), AuthCheckGuard()],
           initial: true,
-          page: HomeNavigationRoute.page,
+          page: RootNavigationRoute.page,
           children: [
             AutoRoute(path: '', page: HomeRoute.page),
           ],

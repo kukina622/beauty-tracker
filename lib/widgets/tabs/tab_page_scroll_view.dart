@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+
+class TabPageScrollView extends StatelessWidget {
+  const TabPageScrollView({
+    super.key,
+    this.header = const [],
+    required this.slivers,
+    this.padding = const EdgeInsets.fromLTRB(24, 24, 24, 0),
+  });
+
+  final List<Widget> header;
+  final List<Widget> slivers;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final EdgeInsets headerPadding = header.isNotEmpty
+        ? EdgeInsets.only(top: 24, bottom: 0, left: padding.left, right: padding.right)
+        : EdgeInsets.zero;
+
+    return SafeArea(
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: headerPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: header,
+              ),
+            ),
+          ),
+          ...slivers.map(
+            (sliver) => SliverPadding(
+              padding: padding,
+              sliver: sliver,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
