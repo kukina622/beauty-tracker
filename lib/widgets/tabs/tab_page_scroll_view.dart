@@ -4,7 +4,7 @@ class TabPageScrollView extends StatelessWidget {
   const TabPageScrollView({
     super.key,
     this.header = const [],
-    required this.slivers,
+    this.slivers = const [],
     this.padding = const EdgeInsets.fromLTRB(24, 24, 24, 0),
   });
 
