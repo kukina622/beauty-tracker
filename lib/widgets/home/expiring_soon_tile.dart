@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpiringSoonTile extends StatelessWidget {
@@ -20,17 +21,11 @@ class ExpiringSoonTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF9A9E).withValues(alpha: .2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.access_time,
-              color: Color(0xFFFF9A9E),
-            ),
+          IconChip(
+            size: 48,
+            icon: Icons.access_time,
+            backgroundColor: const Color(0xFFFF9A9E).withValues(alpha: .2),
+            iconColor: Color(0xFFFF9A9E),
           ),
           const SizedBox(width: 16),
           Expanded(
