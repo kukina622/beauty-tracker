@@ -2,6 +2,7 @@ import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/util/icon.dart';
 import 'package:beauty_tracker/widgets/category/category_chip.dart';
+import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -12,21 +13,10 @@ class ProductCard extends StatelessWidget {
   Widget _buildProductImage({Category? category}) {
     final color = Color(category?.categoryColor ?? 0xFFB5EAEA);
     final icon = getIcon(category?.categoryIcon);
-
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: .2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          color: color,
-          size: 24,
-        ),
-      ),
+    return IconChip(
+      icon: icon,
+      backgroundColor: color.withValues(alpha: .2),
+      iconColor: color,
     );
   }
 
