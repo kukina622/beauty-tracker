@@ -10,19 +10,19 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i7;
-import 'package:beauty_tracker/pages/home/expiring_soon_page.dart' as _i1;
-import 'package:beauty_tracker/pages/home/home_page.dart' as _i2;
 import 'package:beauty_tracker/pages/login_page.dart' as _i3;
+import 'package:beauty_tracker/pages/main_navigation/root_navigation_page.dart' as _i6;
+import 'package:beauty_tracker/pages/main_navigation/tabs/expiring_soon_page.dart' as _i1;
+import 'package:beauty_tracker/pages/main_navigation/tabs/home_page.dart' as _i2;
 import 'package:beauty_tracker/pages/onboarding_page.dart' as _i4;
 import 'package:beauty_tracker/pages/register_page.dart' as _i5;
-import 'package:beauty_tracker/pages/root_navigation_page.dart' as _i6;
 import 'package:flutter/material.dart' as _i8;
 
 /// generated route for
 /// [_i1.ExpiringSoonPage]
 class ExpiringSoonRoute extends _i7.PageRouteInfo<void> {
   const ExpiringSoonRoute({List<_i7.PageRouteInfo>? children})
-    : super(ExpiringSoonRoute.name, initialChildren: children);
+      : super(ExpiringSoonRoute.name, initialChildren: children);
 
   static const String name = 'ExpiringSoonRoute';
 
@@ -38,7 +38,7 @@ class ExpiringSoonRoute extends _i7.PageRouteInfo<void> {
 /// [_i2.HomePage]
 class HomeRoute extends _i7.PageRouteInfo<void> {
   const HomeRoute({List<_i7.PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+      : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
@@ -54,11 +54,11 @@ class HomeRoute extends _i7.PageRouteInfo<void> {
 /// [_i3.LoginPage]
 class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
   LoginRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-    : super(
-        LoginRoute.name,
-        args: LoginRouteArgs(key: key),
-        initialChildren: children,
-      );
+      : super(
+          LoginRoute.name,
+          args: LoginRouteArgs(key: key),
+          initialChildren: children,
+        );
 
   static const String name = 'LoginRoute';
 
@@ -88,11 +88,11 @@ class LoginRouteArgs {
 /// [_i4.OnboardingPage]
 class OnboardingRoute extends _i7.PageRouteInfo<OnboardingRouteArgs> {
   OnboardingRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-    : super(
-        OnboardingRoute.name,
-        args: OnboardingRouteArgs(key: key),
-        initialChildren: children,
-      );
+      : super(
+          OnboardingRoute.name,
+          args: OnboardingRouteArgs(key: key),
+          initialChildren: children,
+        );
 
   static const String name = 'OnboardingRoute';
 
@@ -122,11 +122,11 @@ class OnboardingRouteArgs {
 /// [_i5.RegisterPage]
 class RegisterRoute extends _i7.PageRouteInfo<RegisterRouteArgs> {
   RegisterRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-    : super(
-        RegisterRoute.name,
-        args: RegisterRouteArgs(key: key),
-        initialChildren: children,
-      );
+      : super(
+          RegisterRoute.name,
+          args: RegisterRouteArgs(key: key),
+          initialChildren: children,
+        );
 
   static const String name = 'RegisterRoute';
 
@@ -156,7 +156,7 @@ class RegisterRouteArgs {
 /// [_i6.RootNavigationPage]
 class RootNavigationRoute extends _i7.PageRouteInfo<void> {
   const RootNavigationRoute({List<_i7.PageRouteInfo>? children})
-    : super(RootNavigationRoute.name, initialChildren: children);
+      : super(RootNavigationRoute.name, initialChildren: children);
 
   static const String name = 'RootNavigationRoute';
 
