@@ -165,7 +165,14 @@ class HomePage extends StatelessWidget {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             childCount: products.length,
-            (context, index) => ProductCard(product: products[index]),
+            (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: ProductCard(
+                  product: products[index],
+                ),
+              );
+            },
           ),
         ),
         SliverToBoxAdapter(
