@@ -1,6 +1,7 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/util/icon.dart';
+import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -107,37 +108,9 @@ class ProductCard extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: categories!.map((category) {
-            final categoryColor = Color(category.categoryColor);
             return Container(
               margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: categoryColor.withValues(alpha: .2),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: categoryColor.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    getIcon(category.categoryIcon),
-                    color: categoryColor,
-                    size: 14,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    category.categoryName,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: categoryColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+              child: CategoryChip(category: category),
             );
           }).toList(),
         ),
