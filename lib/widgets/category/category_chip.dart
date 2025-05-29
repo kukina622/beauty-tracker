@@ -1,5 +1,6 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/util/icon.dart';
+import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:flutter/material.dart';
 
 class CategoryChip extends StatelessWidget {
@@ -11,35 +12,16 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: categoryColor.withValues(alpha: .2),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: categoryColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            getIcon(category.categoryIcon),
-            color: categoryColor,
-            size: 14,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            category.categoryName,
-            style: TextStyle(
-              fontSize: 12,
-              color: categoryColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+    return TextIconChip(
+      text: category.categoryName,
+      icon: getIcon(category.categoryIcon),
+      iconColor: categoryColor,
+      textColor: categoryColor,
+      backgroundColor: categoryColor.withValues(alpha: .2),
+      borderColor: categoryColor.withValues(alpha: 0.3),
+      iconSize: 14,
+      fontSize: 12,
+      borderWidth: 1,
     );
   }
 }
