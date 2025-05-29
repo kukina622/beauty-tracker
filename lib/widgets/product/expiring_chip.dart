@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpiringChip extends StatelessWidget {
@@ -20,20 +21,10 @@ class ExpiringChip extends StatelessWidget {
       statusColor = const Color(0xFF5ECCC4);
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: .2),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        isExpired ? '過期 ${daysUntilExpiry.abs()} 天' : '有效期還有 $daysUntilExpiry 天',
-        style: TextStyle(
-          fontSize: 12,
-          color: statusColor,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+    return TextChip(
+      text: isExpired ? '過期 ${daysUntilExpiry.abs()} 天' : '有效期還有 $daysUntilExpiry 天',
+      backgroundColor: statusColor.withValues(alpha: .2),
+      textColor: statusColor,
     );
   }
 }
