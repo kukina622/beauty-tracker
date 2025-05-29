@@ -43,8 +43,9 @@ class ExpiringSoonTile extends StatelessWidget {
                         fontSize: 16,
                       ),
                 ),
+                SizedBox(height: 4),
                 Text(
-                  '1 products expiring soon',
+                  '有10件產品即將過期！',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey.shade600,
                       ),
