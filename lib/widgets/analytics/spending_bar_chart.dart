@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SpendingData {
-  SpendingData(this.month, this.amount);
+  SpendingData({required this.month, required this.amount});
   final DateTime month;
   final int amount;
 }
