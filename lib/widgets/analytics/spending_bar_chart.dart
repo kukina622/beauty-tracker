@@ -19,7 +19,7 @@ class SpendingBarChart extends StatelessWidget {
     if (spendingData.isEmpty) {
       return 0;
     }
-    return spendingData.map((data) => data.amount).reduce((a, b) => a > b ? a : b);
+    return spendingData.map((data) => data.amount).fold(0, (a, b) => a > b ? a : b);
   }
 
   @override
