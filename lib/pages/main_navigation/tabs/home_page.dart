@@ -154,11 +154,22 @@ class HomePage extends StatelessWidget {
             [
               ExpiringSoonTile(),
               const SizedBox(height: 24),
-              SubTitleBar(title: '所有分類'),
+              SubTitleBar(
+                title: '所有分類',
+                action: [
+                  GestureDetector(
+                    child: const Icon(
+                      size: 24,
+                      Icons.add_circle_outline,
+                      color: Color(0xFFFF9A9E),
+                    ),
+                  )
+                ],
+              ),
               SizedBox(height: 14),
               CategoryFilter(categories: categories),
               const SizedBox(height: 18),
-              SubTitleBar(title: '保養品', enableAddOption: false),
+              SubTitleBar(title: '保養品'),
             ],
           ),
         ),
