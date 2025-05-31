@@ -16,6 +16,7 @@ class AppRouter extends RootStackRouter {
           children: [
             AutoRoute(path: '', page: HomeRoute.page),
             AutoRoute(path: 'expiring-soon', page: ExpiringSoonRoute.page),
+            AutoRoute(path: 'analytics', page: AnalyticsRoute.page),
           ],
         ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),

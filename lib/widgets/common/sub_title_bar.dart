@@ -4,12 +4,10 @@ class SubTitleBar extends StatelessWidget {
   const SubTitleBar({
     super.key,
     required this.title,
-    this.enableAddOption = true,
-    this.onAddIconPressed,
+    this.action = const [],
   });
   final String title;
-  final bool enableAddOption;
-  final VoidCallback? onAddIconPressed;
+  final List<Widget> action;
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +20,10 @@ class SubTitleBar extends StatelessWidget {
           title,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        SizedBox(width: 8),
-        if (enableAddOption)
-          GestureDetector(
-            onTap: onAddIconPressed,
-            child: const Icon(
-              size: 24,
-              Icons.add_circle_outline,
-              color: Color(0xFFFF9A9E),
-            ),
-          )
+        if (action.isNotEmpty) ...[
+          const SizedBox(width: 8),
+          ...action,
+        ],
       ],
     );
   }

@@ -4,9 +4,9 @@ import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/category/category_filter.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
+import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
-import 'package:beauty_tracker/widgets/home/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
@@ -154,11 +154,22 @@ class HomePage extends StatelessWidget {
             [
               ExpiringSoonTile(),
               const SizedBox(height: 24),
-              SubTitleBar(title: '所有分類'),
+              SubTitleBar(
+                title: '所有分類',
+                action: [
+                  GestureDetector(
+                    child: const Icon(
+                      size: 24,
+                      Icons.add_circle_outline,
+                      color: Color(0xFFFF9A9E),
+                    ),
+                  )
+                ],
+              ),
               SizedBox(height: 14),
               CategoryFilter(categories: categories),
               const SizedBox(height: 18),
-              SubTitleBar(title: '保養品', enableAddOption: false),
+              SubTitleBar(title: '保養品'),
             ],
           ),
         ),
