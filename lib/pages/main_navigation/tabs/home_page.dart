@@ -2,12 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
-import 'package:beauty_tracker/widgets/category/category_filter.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
+import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
 
@@ -105,39 +105,6 @@ class HomePage extends StatelessWidget {
         ),
       ];
 
-  List<Category> get categories => [
-        Category(
-          id: 'All',
-          categoryName: 'All',
-          categoryIcon: Icons.stars.codePoint,
-          categoryColor: Color(0xFFFF9A9E).toInt(),
-        ),
-        Category(
-          id: '123',
-          categoryName: 'Moisturizer',
-          categoryIcon: Icons.spa.codePoint,
-          categoryColor: Colors.red.shade200.toInt(),
-        ),
-        Category(
-          id: '456',
-          categoryName: 'Hydration',
-          categoryIcon: Icons.water.codePoint,
-          categoryColor: Colors.blue.shade300.toInt(),
-        ),
-        Category(
-          id: '789',
-          categoryName: 'Sunscreen',
-          categoryIcon: Icons.sunny.codePoint,
-          categoryColor: Colors.yellow.shade700.toInt(),
-        ),
-        Category(
-          id: '101',
-          categoryName: 'Serum',
-          categoryIcon: Icons.healing.codePoint,
-          categoryColor: Colors.green.shade200.toInt(),
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
     return TabPageScrollView(
@@ -154,20 +121,9 @@ class HomePage extends StatelessWidget {
             [
               ExpiringSoonTile(),
               const SizedBox(height: 24),
-              SubTitleBar(
-                title: '所有分類',
-                action: [
-                  GestureDetector(
-                    child: const Icon(
-                      size: 24,
-                      Icons.add_circle_outline,
-                      color: Color(0xFFFF9A9E),
-                    ),
-                  )
-                ],
-              ),
+              SubTitleBar(title: '狀態篩選'),
               SizedBox(height: 14),
-              CategoryFilter(categories: categories),
+              ProductStatusFilter(),
               const SizedBox(height: 18),
               SubTitleBar(title: '保養品'),
             ],
