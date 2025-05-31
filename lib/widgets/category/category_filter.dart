@@ -9,7 +9,7 @@ class CategoryFilter extends HookWidget {
   const CategoryFilter({super.key, this.categories = const []});
   final List<Category> categories;
 
-  List<ChipData> get categoryChips {
+  List<ChipData<String>> get categoryChips {
     return categories
         .map((category) => ChipData(
               label: category.categoryName,

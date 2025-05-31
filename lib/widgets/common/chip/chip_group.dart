@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class ChipData {
+class ChipData<T> {
   ChipData({required this.label, required this.value, this.icon, required this.color});
   final String label;
-  final String value;
+  final T value;
   final IconData? icon;
   final Color color;
 }
 
-class ChipGroup extends HookWidget {
+class ChipGroup<T> extends HookWidget {
   const ChipGroup({super.key, this.chips = const [], this.onSelected, this.defaultValue});
-  final List<ChipData> chips;
-  final void Function(String)? onSelected;
-  final String? defaultValue;
+  final List<ChipData<T>> chips;
+  final void Function(T)? onSelected;
+  final T? defaultValue;
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<String?> selected = useState(defaultValue);
+    final ValueNotifier<T?> selected = useState(defaultValue);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(22),
