@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
@@ -23,6 +24,7 @@ class HomePage extends StatelessWidget {
             price: 29.99,
             purchaseDate: DateTime(2023, 1, 15),
             expiryDate: DateTime(2024, 1, 15),
+            status: ProductStatus.inUse,
             categories: [
               Category(
                 id: '123',
@@ -44,6 +46,7 @@ class HomePage extends StatelessWidget {
           price: 19.99,
           purchaseDate: DateTime(2023, 2, 20),
           expiryDate: DateTime(2025, 6, 20),
+          status: ProductStatus.finished,
           categories: [
             Category(
               id: '789',
@@ -60,6 +63,7 @@ class HomePage extends StatelessWidget {
           price: 49.99,
           purchaseDate: DateTime(2023, 3, 10),
           expiryDate: DateTime(2024, 3, 10),
+          status: ProductStatus.expired,
           categories: [
             Category(
               id: '101',
@@ -94,6 +98,7 @@ class HomePage extends StatelessWidget {
           price: 15.99,
           purchaseDate: DateTime(2023, 4, 5),
           expiryDate: DateTime(2024, 4, 5),
+          status: ProductStatus.inUse,
           categories: [
             Category(
               id: '102',

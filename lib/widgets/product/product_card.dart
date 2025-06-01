@@ -176,7 +176,7 @@ class ProductCard extends StatelessWidget {
             categories: product.categories,
           ),
           _buildProductStatusBar(
-            ProductStatus.inUse,
+            product.status,
           ),
         ],
       ),
