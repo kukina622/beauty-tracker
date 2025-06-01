@@ -4,7 +4,7 @@ enum ProductStatus {
   all('全部', 'all'),
   inUse('使用中', 'inUse'),
   finished('已用完', 'finished'),
-  expired('過期丟棄', 'expired');
+  deprecated('過期丟棄', 'deprecated');
 
   const ProductStatus(this.displayName, this.value);
   final String displayName;
@@ -18,14 +18,14 @@ class ProductStatusConfig {
     ProductStatus.all: Color(0xFFFF9999),
     ProductStatus.inUse: Color(0xFF5ECCC4),
     ProductStatus.finished: Color(0xFFFFB347),
-    ProductStatus.expired: Color(0xFF9E9E9E),
+    ProductStatus.deprecated: Color(0xFF9E9E9E),
   };
 
   static const Map<ProductStatus, IconData> _statusIcons = {
     ProductStatus.all: Icons.all_inclusive,
     ProductStatus.inUse: Icons.check_circle_outline_rounded,
     ProductStatus.finished: Icons.done_all_rounded,
-    ProductStatus.expired: Icons.delete_outline_rounded,
+    ProductStatus.deprecated: Icons.delete_outline_rounded,
   };
 
   static Color getColor(ProductStatus status) => _statusColors[status] ?? Colors.grey;

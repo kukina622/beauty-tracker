@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
           price: 49.99,
           purchaseDate: DateTime(2023, 3, 10),
           expiryDate: DateTime(2024, 3, 10),
-          status: ProductStatus.expired,
+          status: ProductStatus.deprecated,
           categories: [
             Category(
               id: '101',
