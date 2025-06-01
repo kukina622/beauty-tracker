@@ -4,6 +4,7 @@ import 'package:beauty_tracker/util/icon.dart';
 import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
+import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -55,22 +56,18 @@ class ProductCard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: onEdit,
-              child: Icon(
-                Icons.edit,
-                color: const Color(0xFF5ECCC4),
-                size: 20,
-              ),
+            AppStandardIconButton(
+              icon: Icons.edit,
+              onPressed: onEdit,
+              iconColor: const Color(0xFF5ECCC4),
+              size: 20,
             ),
             const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onDelete,
-              child: Icon(
-                Icons.delete_outline,
-                color: const Color(0xFFFF6B6B),
-                size: 20,
-              ),
+            AppStandardIconButton(
+              icon: Icons.delete_outline,
+              onPressed: onDelete,
+              iconColor: const Color(0xFFFF6B6B),
+              size: 20,
             ),
           ],
         ),
