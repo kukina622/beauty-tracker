@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TabPageScrollView extends StatelessWidget {
-  const TabPageScrollView({
+class PageScrollView extends StatelessWidget {
+  const PageScrollView({
     super.key,
     this.header = const [],
     this.slivers = const [],

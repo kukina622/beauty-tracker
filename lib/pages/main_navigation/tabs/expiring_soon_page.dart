@@ -3,8 +3,8 @@ import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
+import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
-import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -65,7 +65,7 @@ class ExpiringSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabPageScrollView(
+    return PageScrollView(
       header: [
         AppTitleBar(
           title: 'Expiring Soon',

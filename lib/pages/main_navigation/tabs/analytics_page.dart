@@ -6,7 +6,7 @@ import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
-import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -56,7 +56,7 @@ class AnalyticsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabPageScrollView(
+    return PageScrollView(
       header: [AppTitleBar(title: 'Analytics')],
       slivers: [
         SliverList(
