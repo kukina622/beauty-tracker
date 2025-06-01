@@ -1,9 +1,11 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/icon.dart';
 import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
+import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +108,44 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  Widget _buildProductStatusBar(ProductStatus status) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Text(
+              '狀態:',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextIconChip(
+                text: status.displayName,
+                icon: ProductStatusConfig.getIcon(status),
+                iconColor: ProductStatusConfig.getColor(status),
+                textColor: ProductStatusConfig.getColor(status),
+                backgroundColor: ProductStatusConfig.getColor(status).withValues(alpha: .2),
+                borderColor: Colors.transparent,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -134,6 +174,9 @@ class ProductCard extends StatelessWidget {
           ),
           _buildProductCategory(
             categories: product.categories,
+          ),
+          _buildProductStatusBar(
+            ProductStatus.inUse,
           ),
         ],
       ),
