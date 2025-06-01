@@ -5,6 +5,7 @@ import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
+import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
@@ -117,7 +118,14 @@ class HomePage extends StatelessWidget {
         AppTitleBar(
           title: 'Beauty Tracker',
           subtitle: 'Track your beauty products',
-          actionButton: NotificationButton(),
+          actionButton: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              EditModeToggleButton(),
+              SizedBox(width: 12),
+              NotificationButton(),
+            ],
+          ),
         ),
       ],
       slivers: [
