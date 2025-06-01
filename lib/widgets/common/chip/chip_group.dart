@@ -2,19 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ChipData<T> {
-  ChipData({required this.label, required this.value, this.icon, required this.color});
+  ChipData({
+    required this.label,
+    required this.value,
+    this.icon,
+    required this.color,
+    this.border,
+  });
   final String label;
   final T value;
   final IconData? icon;
   final Color color;
+  final BoxBorder? border;
 }
 
 class ChipGroup<T> extends HookWidget {
-  const ChipGroup({super.key, this.chips = const [], this.onSelected, this.defaultValue});
+  const ChipGroup({
+    super.key,
+    this.chips = const [],
+    this.onSelected,
+    this.defaultValue,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    this.margin = const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+    this.iconSize = 16,
+    this.fontSize = 14,
+  });
   final List<ChipData<T>> chips;
   final void Function(T)? onSelected;
   final T? defaultValue;
-
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double iconSize;
+  final double fontSize;
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<T?> selected = useState(defaultValue);
@@ -36,9 +55,10 @@ class ChipGroup<T> extends HookWidget {
                 }
               },
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: margin,
+                padding: padding,
                 decoration: BoxDecoration(
+                  border: chip.border,
                   gradient: isSelected
                       ? LinearGradient(
                           colors: [mainColor, mainColor.withValues(alpha: 0.8)],
@@ -54,14 +74,14 @@ class ChipGroup<T> extends HookWidget {
                       Icon(
                         chip.icon,
                         color: isSelected ? Colors.white : mainColor,
-                        size: 16,
+                        size: iconSize,
                       ),
                     if (chip.icon != null) const SizedBox(width: 6),
                     Text(
                       chip.label,
                       style: TextStyle(
                         color: isSelected ? Colors.white : mainColor,
-                        fontSize: 14,
+                        fontSize: fontSize,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

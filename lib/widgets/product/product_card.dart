@@ -8,11 +8,20 @@ import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
+import 'package:beauty_tracker/widgets/product/selectable_status_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product});
+class ProductCard extends HookWidget {
+  const ProductCard({super.key, required this.product, this.isEditStatusMode = false});
   final Product product;
+  final bool isEditStatusMode;
+
+  List<ProductStatus> get availableStatuses {
+    return ProductStatusConfig.getAllStatuses()
+        .where((status) => status != ProductStatus.all)
+        .toList();
+  }
 
   Widget _buildProductImage({Category? category}) {
     final color = Color(category?.categoryColor ?? 0xFFB5EAEA);
@@ -108,7 +117,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProductStatusBar(ProductStatus status) {
+  Widget _buildProductStatusBar({required ProductStatus status, bool isEditStatusMode = false}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
@@ -131,18 +140,24 @@ class ProductCard extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: TextIconChip(
-                text: status.displayName,
-                icon: ProductStatusConfig.getIcon(status),
-                iconColor: ProductStatusConfig.getColor(status),
-                textColor: ProductStatusConfig.getColor(status),
-                backgroundColor: ProductStatusConfig.getColor(status).withValues(alpha: .2),
-                borderColor: Colors.transparent,
-              ),
+              child: isEditStatusMode
+                  ? SelectableStatusBar(status: status)
+                  : _buildReadonlyStatusChip(status: status),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildReadonlyStatusChip({required ProductStatus status}) {
+    return TextIconChip(
+      text: status.displayName,
+      icon: ProductStatusConfig.getIcon(status),
+      iconColor: ProductStatusConfig.getColor(status),
+      textColor: ProductStatusConfig.getColor(status),
+      backgroundColor: ProductStatusConfig.getColor(status).withValues(alpha: .2),
+      borderColor: Colors.transparent,
     );
   }
 
@@ -176,7 +191,8 @@ class ProductCard extends StatelessWidget {
             categories: product.categories,
           ),
           _buildProductStatusBar(
-            product.status,
+            status: product.status,
+            isEditStatusMode: isEditStatusMode,
           ),
         ],
       ),

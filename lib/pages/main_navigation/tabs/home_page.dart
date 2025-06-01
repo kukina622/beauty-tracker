@@ -12,9 +12,10 @@ import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   List<Product> get products => [
@@ -113,6 +114,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEditStatusMode = useState(false);
+
     return TabPageScrollView(
       header: [
         AppTitleBar(
@@ -121,7 +124,11 @@ class HomePage extends StatelessWidget {
           actionButton: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              EditModeToggleButton(),
+              EditModeToggleButton(
+                onEditStateChanged: (mode) {
+                  isEditStatusMode.value = mode == EditState.edit;
+                },
+              ),
               SizedBox(width: 12),
               NotificationButton(),
             ],
@@ -150,6 +157,7 @@ class HomePage extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 20),
                 child: ProductCard(
                   product: products[index],
+                  isEditStatusMode: isEditStatusMode.value,
                 ),
               );
             },
