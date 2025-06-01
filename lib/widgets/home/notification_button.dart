@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class NotificationButton extends StatelessWidget {
@@ -5,25 +6,13 @@ class NotificationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: .05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: const Icon(Icons.notifications_outlined, color: Color(0xFF2D3142)),
-        highlightColor: Colors.transparent,
-        onPressed: () {},
-      ),
+    return AppFilledIconButton(
+      icon: Icons.notifications_outlined,
+      iconColor: const Color(0xFF2D3142),
+      backgroundColor: Colors.white,
+      size: 44.0,
+      borderRadius: BorderRadius.circular(12),
+      onPressed: () {},
     );
   }
 }
