@@ -53,7 +53,9 @@ class RootNavigationPage extends StatelessWidget {
         ),
         child: IconButton(
           icon: const Icon(Icons.add, color: Colors.white, size: 25),
-          onPressed: () {},
+          onPressed: () {
+            AutoRouter.of(context).pushPath('/product/add');
+          },
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
