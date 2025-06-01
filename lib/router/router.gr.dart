@@ -27,18 +27,36 @@ import 'package:flutter/material.dart' as _i11;
 
 /// generated route for
 /// [_i1.AddProductPage]
-class AddProductRoute extends _i10.PageRouteInfo<void> {
-  const AddProductRoute({List<_i10.PageRouteInfo>? children})
-    : super(AddProductRoute.name, initialChildren: children);
+class AddProductRoute extends _i10.PageRouteInfo<AddProductRouteArgs> {
+  AddProductRoute({_i11.Key? key, List<_i10.PageRouteInfo>? children})
+    : super(
+        AddProductRoute.name,
+        args: AddProductRouteArgs(key: key),
+        initialChildren: children,
+      );
 
   static const String name = 'AddProductRoute';
 
   static _i10.PageInfo page = _i10.PageInfo(
     name,
     builder: (data) {
-      return const _i1.AddProductPage();
+      final args = data.argsAs<AddProductRouteArgs>(
+        orElse: () => const AddProductRouteArgs(),
+      );
+      return _i1.AddProductPage(key: args.key);
     },
   );
+}
+
+class AddProductRouteArgs {
+  const AddProductRouteArgs({this.key});
+
+  final _i11.Key? key;
+
+  @override
+  String toString() {
+    return 'AddProductRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for
