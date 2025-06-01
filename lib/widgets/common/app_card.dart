@@ -7,13 +7,14 @@ class AppCard extends StatelessWidget {
     this.width,
     this.height,
     this.padding,
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
   });
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final double? width;
   final double? height;
-
+  final BorderRadiusGeometry borderRadius;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +23,7 @@ class AppCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: borderRadius,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: .05),

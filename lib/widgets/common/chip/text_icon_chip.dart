@@ -8,7 +8,7 @@ class TextIconChip extends StatelessWidget {
     required this.iconColor,
     required this.textColor,
     required this.backgroundColor,
-    required this.borderColor,
+    this.borderColor = const Color(0xFF000000),
     this.iconSize = 14,
     this.fontSize = 12,
     this.borderWidth = 1,

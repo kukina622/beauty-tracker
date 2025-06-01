@@ -1,18 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
-import 'package:beauty_tracker/widgets/category/category_filter.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
+import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
+import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   List<Product> get products => [
@@ -23,6 +26,7 @@ class HomePage extends StatelessWidget {
             price: 29.99,
             purchaseDate: DateTime(2023, 1, 15),
             expiryDate: DateTime(2024, 1, 15),
+            status: ProductStatus.inUse,
             categories: [
               Category(
                 id: '123',
@@ -44,6 +48,7 @@ class HomePage extends StatelessWidget {
           price: 19.99,
           purchaseDate: DateTime(2023, 2, 20),
           expiryDate: DateTime(2025, 6, 20),
+          status: ProductStatus.finished,
           categories: [
             Category(
               id: '789',
@@ -60,6 +65,7 @@ class HomePage extends StatelessWidget {
           price: 49.99,
           purchaseDate: DateTime(2023, 3, 10),
           expiryDate: DateTime(2024, 3, 10),
+          status: ProductStatus.deprecated,
           categories: [
             Category(
               id: '101',
@@ -94,6 +100,7 @@ class HomePage extends StatelessWidget {
           price: 15.99,
           purchaseDate: DateTime(2023, 4, 5),
           expiryDate: DateTime(2024, 4, 5),
+          status: ProductStatus.inUse,
           categories: [
             Category(
               id: '102',
@@ -105,47 +112,27 @@ class HomePage extends StatelessWidget {
         ),
       ];
 
-  List<Category> get categories => [
-        Category(
-          id: 'All',
-          categoryName: 'All',
-          categoryIcon: Icons.stars.codePoint,
-          categoryColor: Color(0xFFFF9A9E).toInt(),
-        ),
-        Category(
-          id: '123',
-          categoryName: 'Moisturizer',
-          categoryIcon: Icons.spa.codePoint,
-          categoryColor: Colors.red.shade200.toInt(),
-        ),
-        Category(
-          id: '456',
-          categoryName: 'Hydration',
-          categoryIcon: Icons.water.codePoint,
-          categoryColor: Colors.blue.shade300.toInt(),
-        ),
-        Category(
-          id: '789',
-          categoryName: 'Sunscreen',
-          categoryIcon: Icons.sunny.codePoint,
-          categoryColor: Colors.yellow.shade700.toInt(),
-        ),
-        Category(
-          id: '101',
-          categoryName: 'Serum',
-          categoryIcon: Icons.healing.codePoint,
-          categoryColor: Colors.green.shade200.toInt(),
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
+    final isEditStatusMode = useState(false);
+
     return TabPageScrollView(
       header: [
         AppTitleBar(
           title: 'Beauty Tracker',
           subtitle: 'Track your beauty products',
-          actionButton: NotificationButton(),
+          actionButton: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              EditModeToggleButton(
+                onEditStateChanged: (mode) {
+                  isEditStatusMode.value = mode == EditState.edit;
+                },
+              ),
+              SizedBox(width: 12),
+              NotificationButton(),
+            ],
+          ),
         ),
       ],
       slivers: [
@@ -154,20 +141,9 @@ class HomePage extends StatelessWidget {
             [
               ExpiringSoonTile(),
               const SizedBox(height: 24),
-              SubTitleBar(
-                title: '所有分類',
-                action: [
-                  GestureDetector(
-                    child: const Icon(
-                      size: 24,
-                      Icons.add_circle_outline,
-                      color: Color(0xFFFF9A9E),
-                    ),
-                  )
-                ],
-              ),
+              SubTitleBar(title: '狀態篩選'),
               SizedBox(height: 14),
-              CategoryFilter(categories: categories),
+              ProductStatusFilter(),
               const SizedBox(height: 18),
               SubTitleBar(title: '保養品'),
             ],
@@ -181,6 +157,7 @@ class HomePage extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 20),
                 child: ProductCard(
                   product: products[index],
+                  isEditStatusMode: isEditStatusMode.value,
                 ),
               );
             },
