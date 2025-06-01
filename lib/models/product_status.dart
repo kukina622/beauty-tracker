@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 enum ProductStatus {
-  all('全部'),
-  inUse('使用中'),
-  finished('已用完'),
-  expired('過期丟棄');
+  all('全部', 'all'),
+  inUse('使用中', 'inUse'),
+  finished('已用完', 'finished'),
+  expired('過期丟棄', 'expired');
 
-  const ProductStatus(this.displayName);
+  const ProductStatus(this.displayName, this.value);
   final String displayName;
+  final String value;
 }
 
 class ProductStatusConfig {
@@ -30,13 +31,20 @@ class ProductStatusConfig {
   static Color getColor(ProductStatus status) => _statusColors[status] ?? Colors.grey;
   static IconData getIcon(ProductStatus status) => _statusIcons[status] ?? Icons.help;
 
-  static ProductStatus? fromString(String statusString) {
+  static ProductStatus? fromStatusString(String statusString) {
     for (final ProductStatus status in ProductStatus.values) {
       if (status.displayName == statusString) {
         return status;
       }
     }
     return null;
+  }
+
+  static ProductStatus fromValue(String value) {
+    return ProductStatus.values.firstWhere(
+      (status) => status.value == value,
+      orElse: () => ProductStatus.all,
+    );
   }
 
   static List<ProductStatus> getAllStatuses() => ProductStatus.values;

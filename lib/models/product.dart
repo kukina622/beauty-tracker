@@ -1,4 +1,5 @@
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/models/product_status.dart';
 
 class Product {
   Product({
@@ -8,6 +9,7 @@ class Product {
     required this.price,
     required this.purchaseDate,
     required this.expiryDate,
+    this.status = ProductStatus.inUse,
     this.categories = const [],
   });
 
@@ -19,6 +21,7 @@ class Product {
       price: (json['price'] as num).toDouble(),
       purchaseDate: DateTime.parse(json['purchase_date'] as String),
       expiryDate: DateTime.parse(json['expiry_date'] as String),
+      status: ProductStatusConfig.fromValue(json['status'] as String? ?? 'inUse'),
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -31,6 +34,7 @@ class Product {
   final double price;
   final DateTime purchaseDate;
   final DateTime expiryDate;
+  final ProductStatus status;
   final List<Category>? categories;
 
   Map<String, dynamic> toJson() {
@@ -41,6 +45,7 @@ class Product {
       'price': price,
       'purchase_date': purchaseDate.toIso8601String(),
       'expiry_date': expiryDate.toIso8601String(),
+      'status': status.value,
       'categories': categories?.map((e) => e.toJson()).toList() ?? [],
     };
   }
