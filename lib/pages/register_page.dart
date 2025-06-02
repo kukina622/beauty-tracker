@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/messages/auth_error_messages.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
@@ -121,27 +122,20 @@ class RegisterPage extends WatchingWidget {
                           },
                         ),
                         const SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              final bool isFormValid = _formKey.currentState?.validate() ?? false;
+                        AppElevatedButton(
+                          isFilled: true,
+                          onPressed: () {
+                            final bool isFormValid = _formKey.currentState?.validate() ?? false;
 
-                              if (isFormValid) {
-                                signUpWithEmail(
-                                  context,
-                                  emailController.text,
-                                  passwordController.text,
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF9A9E),
-                              disabledBackgroundColor: Colors.grey.shade300,
-                            ),
-                            child: const Text('註冊'),
-                          ),
+                            if (isFormValid) {
+                              signUpWithEmail(
+                                context,
+                                emailController.text,
+                                passwordController.text,
+                              );
+                            }
+                          },
+                          text: '註冊',
                         ),
                       ],
                     ),

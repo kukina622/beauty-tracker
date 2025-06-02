@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
+import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:watch_it/watch_it.dart';
@@ -145,7 +146,7 @@ class OnboardingPage extends HookWidget {
                         onPressed: () => toLoginPage(context),
                         child: const Text('跳過'),
                       ),
-                      ElevatedButton(
+                      AppElevatedButton(
                         onPressed: () {
                           if (currentItem.value < items.length - 1) {
                             pageViewController.nextPage(
@@ -156,8 +157,8 @@ class OnboardingPage extends HookWidget {
                             toLoginPage(context);
                           }
                         },
-                        child: Text(currentItem.value < items.length - 1 ? '下一步' : '開始'),
-                      ),
+                        text: currentItem.value < items.length - 1 ? '下一步' : '開始',
+                      )
                     ],
                   ),
                 ],
