@@ -7,6 +7,10 @@ class AppElevatedButton extends StatelessWidget {
     this.width,
     this.height = 56,
     this.isFilled = false,
+    this.textStyle = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    ),
     required this.text,
   });
   final void Function()? onPressed;
@@ -14,6 +18,7 @@ class AppElevatedButton extends StatelessWidget {
   final double height;
   final String text;
   final bool isFilled;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +29,7 @@ class AppElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          style: textStyle,
         ),
       ),
     );
