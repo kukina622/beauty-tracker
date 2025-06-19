@@ -1,6 +1,7 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector_item.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
+import 'package:beauty_tracker/widgets/common/button/app_outlined_button.dart';
 import 'package:flutter/material.dart';
 
 class CategorySelectionSheet extends StatefulWidget {
@@ -104,6 +105,12 @@ class _CategorySelectionSheetState extends State<CategorySelectionSheet> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  AppOutlinedButton(
+                    isFilled: true,
+                    text: '加入新類別',
+                    icon: Icons.add_circle_outline,
+                    onPressed: () {},
+                  )
                 ],
               ),
             ),
