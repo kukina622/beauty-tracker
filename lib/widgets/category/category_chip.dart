@@ -14,7 +14,7 @@ class CategoryChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextIconChip(
       text: category.categoryName,
-      icon: getIcon(category.categoryIcon),
+      icon: getAppIcon(category.categoryIcon),
       iconColor: categoryColor,
       textColor: categoryColor,
       backgroundColor: categoryColor.withValues(alpha: .2),

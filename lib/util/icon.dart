@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final icons = [
+final appIcons = [
   Icons.face,
   Icons.face_retouching_natural,
   Icons.brush,
@@ -43,14 +43,14 @@ final icons = [
   Icons.circle,
 ];
 
-final iconMapping = Map<int, IconData>.fromIterables(
-  List.generate(icons.length, (index) => icons[index].codePoint),
-  icons,
+final appIconMapping = Map<int, IconData>.fromIterables(
+  List.generate(appIcons.length, (index) => appIcons[index].codePoint),
+  appIcons,
 );
 
-IconData getIcon(int? iconCode) {
+IconData getAppIcon(int? iconCode) {
   if (iconCode == null || iconCode < 0) {
     return Icons.spa;
   }
-  return iconMapping[iconCode] ?? Icons.spa;
+  return appIconMapping[iconCode] ?? Icons.spa;
 }

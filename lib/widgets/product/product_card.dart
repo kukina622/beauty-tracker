@@ -25,7 +25,7 @@ class ProductCard extends HookWidget {
 
   Widget _buildProductImage({Category? category}) {
     final color = Color(category?.categoryColor ?? 0xFFB5EAEA);
-    final icon = getIcon(category?.categoryIcon);
+    final icon = getAppIcon(category?.categoryIcon);
     return IconChip(
       icon: icon,
       backgroundColor: color.withValues(alpha: .2),

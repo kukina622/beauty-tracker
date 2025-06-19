@@ -21,7 +21,7 @@ class IconSelectorField extends HookWidget {
       onTap: () async {
         final newIcon = await IconPicker.show(
           context,
-          allIcons: icons,
+          allIcons: appIcons,
           initialIcon: selectedIcon.value,
         );
 

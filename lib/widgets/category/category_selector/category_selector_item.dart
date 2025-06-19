@@ -15,7 +15,7 @@ class CategorySelectorItem extends StatelessWidget {
   final VoidCallback? onSelected;
 
   Color get categoryColor => Color(category.categoryColor);
-  IconData get categoryIcon => getIcon(category.categoryIcon);
+  IconData get categoryIcon => getAppIcon(category.categoryIcon);
 
   @override
   Widget build(BuildContext context) {
