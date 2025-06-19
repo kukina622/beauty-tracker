@@ -61,7 +61,9 @@ class _CategoryFormDialogState extends State<CategoryFormDialog> {
               Row(children: [
                 Expanded(
                   child: AppOutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     text: '取消',
                     height: 48,
                     borderColor: Colors.grey.shade300,
