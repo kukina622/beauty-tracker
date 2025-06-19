@@ -26,6 +26,9 @@ class AppElevatedButton extends StatelessWidget {
       width: isFilled ? double.infinity : width,
       height: height,
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(0),
+        ),
         onPressed: onPressed,
         child: Text(
           text,

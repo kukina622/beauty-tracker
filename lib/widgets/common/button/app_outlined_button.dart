@@ -54,7 +54,6 @@ class AppOutlinedButton extends StatelessWidget {
           onTap: onPressed,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Container(
-            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border.all(
                 color: borderColor,
