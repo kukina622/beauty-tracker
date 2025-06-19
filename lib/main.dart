@@ -188,6 +188,12 @@ class BeautyTrackerApp extends StatelessWidget {
           headerForegroundColor: Colors.white,
           headerBackgroundColor: const Color(0xFFFF9A9E),
         ),
+        dialogTheme: DialogTheme(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
       ),
       builder: EasyLoading.init(),
     );
