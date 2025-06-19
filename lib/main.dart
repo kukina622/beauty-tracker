@@ -5,6 +5,7 @@ import 'package:beauty_tracker/services/local_storage_service/shared_preferences
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -60,6 +61,13 @@ class BeautyTrackerApp extends StatelessWidget {
       routerConfig: _appRouter.config(),
       title: 'Beauty Tracker',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('zh', 'TW')],
+      locale: const Locale('zh', 'TW'),
       theme: ThemeData(
         primaryColor: const Color(0xFFFF9A9E),
         scaffoldBackgroundColor: const Color(0xFFFFF5F5),
@@ -173,6 +181,12 @@ class BeautyTrackerApp extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),
+        ),
+        datePickerTheme: DatePickerThemeData(
+          backgroundColor: Colors.white,
+          dividerColor: Colors.grey.shade300,
+          headerForegroundColor: Colors.white,
+          headerBackgroundColor: const Color(0xFFFF9A9E),
         ),
       ),
       builder: EasyLoading.init(),

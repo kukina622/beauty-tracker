@@ -3,6 +3,7 @@ import 'package:beauty_tracker/widgets/category/category_selector/category_selec
 import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
+import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class AddProductPage extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: PageScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         slivers: [
           SliverToBoxAdapter(
             child: Form(
@@ -67,7 +69,21 @@ class AddProductPage extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        CategorySelector()
+                        CategorySelector(),
+                        const SizedBox(height: 16),
+                        Text(
+                          '購買日期',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        DatePickerField(),
+                        const SizedBox(height: 16),
+                        Text(
+                          '過期日',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        DatePickerField()
                       ],
                     ),
                   ),
