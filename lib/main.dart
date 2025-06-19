@@ -96,6 +96,12 @@ class BeautyTrackerApp extends StatelessWidget {
             fontWeight: FontWeight.w600,
             color: const Color(0xFF2D3142),
           ),
+          titleSmall: TextStyle(
+            fontFamily: 'NotoSansTC',
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF2D3142),
+          ),
           bodyLarge: TextStyle(
             fontFamily: 'NotoSansTC',
             fontSize: 16,
