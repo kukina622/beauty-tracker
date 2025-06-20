@@ -4,22 +4,16 @@ import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/common/button/app_outlined_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CategoryFormDialog extends StatefulWidget {
-  const CategoryFormDialog({super.key});
-
+class CategoryFormDialog extends HookWidget {
   static Future<void> show(BuildContext context) {
     return showDialog<void>(
       context: context,
-      builder: (_) => const CategoryFormDialog(),
+      builder: (_) => CategoryFormDialog(),
     );
   }
 
-  @override
-  State<CategoryFormDialog> createState() => _CategoryFormDialogState();
-}
-
-class _CategoryFormDialogState extends State<CategoryFormDialog> {
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
