@@ -12,6 +12,8 @@ class TextIconChip extends StatelessWidget {
     this.iconSize = 14,
     this.fontSize = 12,
     this.borderWidth = 1,
+    this.suffixIcon,
+    this.onSuffixIconPressed,
   });
 
   final String text;
@@ -23,7 +25,8 @@ class TextIconChip extends StatelessWidget {
   final double iconSize;
   final double fontSize;
   final double borderWidth;
-
+  final IconData? suffixIcon;
+  final void Function()? onSuffixIconPressed;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,6 +56,17 @@ class TextIconChip extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
+          if (suffixIcon != null) ...[
+            const SizedBox(width: 4),
+            GestureDetector(
+              onTap: onSuffixIconPressed,
+              child: Icon(
+                suffixIcon,
+                color: textColor,
+                size: iconSize,
+              ),
+            ),
+          ],
         ],
       ),
     );
