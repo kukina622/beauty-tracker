@@ -6,6 +6,7 @@ import 'package:beauty_tracker/services/local_storage_service/local_storage_keys
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/util/email.dart';
 import 'package:beauty_tracker/widgets/common/app_logo.dart';
+import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/checkbox_field.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
@@ -184,25 +185,20 @@ class LoginPage extends HookWidget {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final bool isFormValid = _formKey.currentState?.validate() ?? false;
-                            if (isFormValid) {
-                              signInWithEmail(context, emailController.text,
-                                  passwordController.text, isRemember.value);
-                            }
-                          },
-                          child: const Text(
-                            '登入',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+                      AppElevatedButton(
+                        text: '登入',
+                        onPressed: () {
+                          final bool isFormValid = _formKey.currentState?.validate() ?? false;
+                          if (isFormValid) {
+                            signInWithEmail(
+                              context,
+                              emailController.text,
+                              passwordController.text,
+                              isRemember.value,
+                            );
+                          }
+                        },
+                        isFilled: true,
                       ),
                     ],
                   ),

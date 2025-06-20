@@ -14,7 +14,7 @@ class CategoryFilter extends HookWidget {
         .map((category) => ChipData(
               label: category.categoryName,
               value: category.id,
-              icon: getIcon(category.categoryIcon),
+              icon: getAppIcon(category.categoryIcon),
               color: Color(category.categoryColor),
             ))
         .toList();

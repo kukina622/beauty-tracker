@@ -1,14 +1,11 @@
-import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/util/icon.dart';
+import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:flutter/material.dart';
 
-class CategoryChip extends StatelessWidget {
-  const CategoryChip({super.key, required this.category});
-
-  final Category category;
-
-  Color get categoryColor => Color(category.categoryColor);
+class DismissibleCategoryChip extends CategoryChip {
+  const DismissibleCategoryChip({super.key, required super.category, required this.onDismissed});
+  final void Function() onDismissed;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +19,8 @@ class CategoryChip extends StatelessWidget {
       iconSize: 14,
       fontSize: 12,
       borderWidth: 1,
+      suffixIcon: Icons.close,
+      onSuffixIconPressed: onDismissed,
     );
   }
 }

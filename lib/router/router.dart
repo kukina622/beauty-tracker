@@ -19,6 +19,10 @@ class AppRouter extends RootStackRouter {
             AutoRoute(path: 'analytics', page: AnalyticsRoute.page),
           ],
         ),
+        AutoRoute(
+          path: '/product/add',
+          page: AddProductRoute.page,
+        ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(
           path: '/login',

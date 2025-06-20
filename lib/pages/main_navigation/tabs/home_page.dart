@@ -8,9 +8,9 @@ import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
+import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
-import 'package:beauty_tracker/widgets/tabs/tab_page_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -116,7 +116,7 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final isEditStatusMode = useState(false);
 
-    return TabPageScrollView(
+    return PageScrollView(
       header: [
         AppTitleBar(
           title: 'Beauty Tracker',
