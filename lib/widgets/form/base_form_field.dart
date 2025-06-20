@@ -8,6 +8,7 @@ class BaseFormField extends HookWidget {
     this.hintText = '',
     this.controller,
     this.prefixIcon,
+    this.prefixText,
     this.suffixIcon,
     this.obscureText = false,
     this.keyboardType,
@@ -20,6 +21,7 @@ class BaseFormField extends HookWidget {
   final TextEditingController? controller;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final String? prefixText;
   final bool obscureText;
   final TextInputType? keyboardType;
 
@@ -36,6 +38,7 @@ class BaseFormField extends HookWidget {
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
+        prefixText: prefixText,
         prefixIcon: prefixIcon,
         prefixIconColor: WidgetStateColor.resolveWith(
           (states) =>
