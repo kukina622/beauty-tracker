@@ -134,6 +134,7 @@ class AddProductPage extends HookWidget {
                         BaseFormField(
                           labelText: '價格(可選)',
                           hintText: '輸入價格',
+                          prefixText: '\$ ',
                         ),
                         const SizedBox(height: 16),
                         Text(
