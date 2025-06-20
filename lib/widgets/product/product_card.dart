@@ -6,6 +6,7 @@ import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
+import 'package:beauty_tracker/widgets/common/dialog/delete_dialog.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:beauty_tracker/widgets/product/selectable_status_bar.dart';
@@ -182,7 +183,14 @@ class ProductCard extends HookWidget {
                 _buildProductActions(
                   price: product.price,
                   onEdit: () {},
-                  onDelete: () {},
+                  onDelete: () {
+                    DeleteDialog.show(
+                      context,
+                      title: '刪除保養品',
+                      description: '你確定要刪除"${product.name}"嗎？\n這個操作不能復原',
+                      onConfirm: () {},
+                    );
+                  },
                 ),
               ],
             ),

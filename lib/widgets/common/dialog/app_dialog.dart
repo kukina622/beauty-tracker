@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 class AppDialog extends StatelessWidget {
   const AppDialog({
     super.key,
-    required this.title,
     required this.content,
+    this.title,
     this.confirmText = '確認',
     this.cancelText = '取消',
     this.onConfirm,
@@ -14,7 +14,7 @@ class AppDialog extends StatelessWidget {
     this.showConfirm = true,
     this.showCancel = true,
   });
-  final String title;
+  final String? title;
   final Widget content;
   final String confirmText;
   final String cancelText;
@@ -67,16 +67,17 @@ class AppDialog extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
+            if (title != null) ...[
+              Center(
+                child: Text(
+                  title!,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
             content,
             const SizedBox(height: 20),
             _buildButtons(context),
