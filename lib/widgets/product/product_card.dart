@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
@@ -182,7 +183,9 @@ class ProductCard extends HookWidget {
                 ),
                 _buildProductActions(
                   price: product.price,
-                  onEdit: () {},
+                  onEdit: () {
+                    AutoRouter.of(context).pushPath('/product/edit/${product.id}');
+                  },
                   onDelete: () {
                     DeleteDialog.show(
                       context,
