@@ -60,7 +60,7 @@ class AddProductPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         BaseFormField(
-                          labelText: '價格',
+                          labelText: '價格(可選)',
                           hintText: '輸入價格',
                         ),
                         const SizedBox(height: 16),
