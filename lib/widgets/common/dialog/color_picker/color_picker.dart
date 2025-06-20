@@ -1,4 +1,4 @@
-import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
+import 'package:beauty_tracker/widgets/common/dialog/app_dialog.dart';
 import 'package:beauty_tracker/widgets/common/dialog/color_picker/color_picker_option.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,54 +25,39 @@ class ColorPicker extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentColor = useState(initialColor);
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '選擇顏色',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 300,
-              width: double.maxFinite,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                ),
-                itemCount: allColors.length,
-                itemBuilder: (context, index) {
-                  final color = allColors[index];
-                  final isSelected = color == currentColor.value;
-                  return ColorPickerOption(
-                    color: color,
-                    isSelected: isSelected,
-                    onSelect: () {
-                      currentColor.value = color;
-                    },
-                  );
-                },
+    return AppDialog(
+      title: '選擇顏色',
+      showCancel: false,
+      onConfirm: () {
+        Navigator.of(context).pop(currentColor.value);
+      },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 300,
+            width: double.maxFinite,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
               ),
-            ),
-            const SizedBox(height: 16),
-            AppElevatedButton(
-              isFilled: true,
-              onPressed: () {
-                Navigator.of(context).pop(currentColor.value);
+              itemCount: allColors.length,
+              itemBuilder: (context, index) {
+                final color = allColors[index];
+                final isSelected = color == currentColor.value;
+                return ColorPickerOption(
+                  color: color,
+                  isSelected: isSelected,
+                  onSelect: () {
+                    currentColor.value = color;
+                  },
+                );
               },
-              text: '確認',
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
