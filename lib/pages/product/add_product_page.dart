@@ -148,7 +148,7 @@ class AddProductPage extends HookWidget {
                             selectedCategoryIds.value = categoryIds;
                           },
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         _buildSelectCategoryItems(
                           context,
                           allCategories,
