@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
@@ -12,10 +14,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class AddProductPage extends HookWidget {
-  AddProductPage({super.key});
+class EditProductPage extends HookWidget {
+  EditProductPage({super.key, @PathParam('productId') this.productId});
 
+  final String? productId;
   final _formKey = GlobalKey<FormState>();
+
+  final Product? product = Product(
+    id: '1',
+    name: 'Moisturizer',
+    brand: 'Brand A',
+    price: 29.99,
+    purchaseDate: DateTime(2023, 1, 15),
+    expiryDate: DateTime(2024, 1, 15),
+    status: ProductStatus.inUse,
+    categories: [
+      Category(
+        id: '1',
+        categoryName: 'Skincare',
+        categoryIcon: Icons.face.codePoint,
+        categoryColor: Colors.blue.toInt(),
+      ),
+      Category(
+        id: '2',
+        categoryName: 'Makeup',
+        categoryIcon: Icons.brush.codePoint,
+        categoryColor: Colors.pink.toInt(),
+      ),
+    ],
+  );
+
   final allCategories = [
     Category(
       id: '1',
@@ -85,11 +113,20 @@ class AddProductPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedCategoryIds = useState<List<String>>([]);
+    final productNameController = useTextEditingController(text: product?.name ?? '');
+    final brandController = useTextEditingController(text: product?.brand ?? '');
+    final priceController = useTextEditingController(text: product?.price.toString() ?? '');
+
+    final selectedCategoryIds = useState<List<String>>(
+      product?.categories?.map((category) => category.id).toList() ?? [],
+    );
+
+    final purchaseDate = useState<DateTime?>(product?.purchaseDate);
+    final expiryDate = useState<DateTime?>(product?.expiryDate);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('新增保養品'),
+        title: const Text('編輯保養品'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, size: 20),
           onPressed: () => AutoRouter.of(context).pop(),
@@ -118,6 +155,7 @@ class AddProductPage extends HookWidget {
                         BaseFormField(
                           labelText: '產品名稱',
                           hintText: '輸入產品名稱',
+                          controller: productNameController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return '請輸入產品名稱';
@@ -129,11 +167,13 @@ class AddProductPage extends HookWidget {
                         BaseFormField(
                           labelText: '品牌(可選)',
                           hintText: '輸入品牌名稱',
+                          controller: brandController,
                         ),
                         const SizedBox(height: 16),
                         BaseFormField(
                           labelText: '價格(可選)',
                           hintText: '輸入價格',
+                          controller: priceController,
                           prefixText: '\$ ',
                         ),
                         const SizedBox(height: 16),
@@ -161,20 +201,31 @@ class AddProductPage extends HookWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        DatePickerField(),
+                        DatePickerField(
+                          initialDate: purchaseDate.value,
+                          onDateChanged: (date) {
+                            purchaseDate.value = date;
+                          },
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           '過期日',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        DatePickerField()
+                        DatePickerField(
+                          initialDate: expiryDate.value,
+                          onDateChanged: (date) {
+                            expiryDate.value = date;
+                          },
+                        )
                       ],
                     ),
                   ),
                   SizedBox(height: 16),
                   AppElevatedButton(
-                    text: '新增保養品',
+                    text: '更新',
+                    backgroundColor: const Color(0xFF5ECCC4),
                     onPressed: () {
                       final bool isFormValid = _formKey.currentState?.validate() ?? false;
                       if (isFormValid) {}

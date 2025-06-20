@@ -11,14 +11,17 @@ class AppElevatedButton extends StatelessWidget {
       fontSize: 16,
       fontWeight: FontWeight.w600,
     ),
+    this.backgroundColor = const Color(0xFFFF9A9E),
     required this.text,
   });
+
   final void Function()? onPressed;
   final double? width;
   final double height;
   final String text;
   final bool isFilled;
   final TextStyle? textStyle;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +31,7 @@ class AppElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0),
+          backgroundColor: backgroundColor,
         ),
         onPressed: onPressed,
         child: Text(

@@ -22,6 +22,12 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           path: '/product/add',
           page: AddProductRoute.page,
+          guards: [AuthCheckGuard()],
+        ),
+        AutoRoute(
+          path: '/product/edit/:productId',
+          page: EditProductRoute.page,
+          guards: [AuthCheckGuard()],
         ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(
