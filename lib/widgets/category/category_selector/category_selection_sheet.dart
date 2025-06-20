@@ -15,13 +15,13 @@ class CategorySelectionSheet extends StatefulWidget {
 
   final List<Category> allCategories;
   final List<String> initialSelectedIds;
-  final ValueChanged<List<String>> onConfirmed;
+  final void Function(List<String>) onConfirmed;
 
   static Future<void> show(
     BuildContext context, {
     required List<Category> allCategories,
     required List<String> initialSelectedIds,
-    required ValueChanged<List<String>> onConfirmed,
+    required void Function(List<String>) onConfirmed,
   }) {
     return showModalBottomSheet<void>(
       context: context,

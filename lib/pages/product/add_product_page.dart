@@ -1,20 +1,92 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
+import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class AddProductPage extends StatelessWidget {
+class AddProductPage extends HookWidget {
   AddProductPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  final allCategories = [
+    Category(
+      id: '1',
+      categoryName: 'Skincare',
+      categoryIcon: Icons.face.codePoint,
+      categoryColor: Colors.blue.toInt(),
+    ),
+    Category(
+      id: '2',
+      categoryName: 'Makeup',
+      categoryIcon: Icons.brush.codePoint,
+      categoryColor: Colors.pink.toInt(),
+    ),
+    Category(
+      id: '3',
+      categoryName: 'Haircare',
+      categoryIcon: Icons.abc.codePoint,
+      categoryColor: Colors.green.toInt(),
+    ),
+    Category(
+      id: '4',
+      categoryName: 'Nail Art',
+      categoryIcon: Icons.access_alarm_rounded.codePoint,
+      categoryColor: Colors.purple.toInt(),
+    ),
+    Category(
+      id: '5',
+      categoryName: 'Body Care',
+      categoryIcon: Icons.hail.codePoint,
+      categoryColor: Colors.orange.toInt(),
+    ),
+    Category(
+      id: '6',
+      categoryName: 'Fragrance',
+      categoryIcon: Icons.cabin.codePoint,
+      categoryColor: Colors.yellow.toInt(),
+    ),
+    Category(
+      id: '7',
+      categoryName: 'Tools',
+      categoryIcon: Icons.build.codePoint,
+      categoryColor: Colors.grey.toInt(),
+    ),
+  ];
+
+  Widget _buildSelectCategoryItems(
+    BuildContext context,
+    List<Category> categories,
+    ValueNotifier<List<String>> selectedIds,
+  ) {
+    final selectedCategories =
+        categories.where((category) => selectedIds.value.contains(category.id)).toList();
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: selectedCategories.map((category) {
+        return DismissibleCategoryChip(
+          category: category,
+          onDismissed: () {
+            selectedIds.value = selectedIds.value.where((id) => id != category.id).toList();
+          },
+        );
+      }).toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final selectedCategoryIds = useState<List<String>>([]);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('新增保養品'),
@@ -69,7 +141,19 @@ class AddProductPage extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        CategorySelector(),
+                        CategorySelector(
+                          allCategories: allCategories,
+                          selectedCategoryIds: selectedCategoryIds.value,
+                          onCategorySelected: (categoryIds) {
+                            selectedCategoryIds.value = categoryIds;
+                          },
+                        ),
+                        const SizedBox(height: 6),
+                        _buildSelectCategoryItems(
+                          context,
+                          allCategories,
+                          selectedCategoryIds,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           '購買日期',

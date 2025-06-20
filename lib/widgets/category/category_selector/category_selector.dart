@@ -1,78 +1,38 @@
 import 'package:beauty_tracker/models/category.dart';
-import 'package:beauty_tracker/util/extensions/color.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selection_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CategorySelector extends HookWidget {
-  CategorySelector({super.key});
+class CategorySelector extends StatelessWidget {
+  const CategorySelector({
+    super.key,
+    this.allCategories = const [],
+    this.selectedCategoryIds = const [],
+    this.onCategorySelected,
+  });
 
-  final allCategories = [
-    Category(
-      id: '1',
-      categoryName: 'Skincare',
-      categoryIcon: Icons.face.codePoint,
-      categoryColor: Colors.blue.toInt(),
-    ),
-    Category(
-      id: '2',
-      categoryName: 'Makeup',
-      categoryIcon: Icons.brush.codePoint,
-      categoryColor: Colors.pink.toInt(),
-    ),
-    Category(
-      id: '3',
-      categoryName: 'Haircare',
-      categoryIcon: Icons.abc.codePoint,
-      categoryColor: Colors.green.toInt(),
-    ),
-    Category(
-      id: '4',
-      categoryName: 'Nail Art',
-      categoryIcon: Icons.access_alarm_rounded.codePoint,
-      categoryColor: Colors.purple.toInt(),
-    ),
-    Category(
-      id: '5',
-      categoryName: 'Body Care',
-      categoryIcon: Icons.hail.codePoint,
-      categoryColor: Colors.orange.toInt(),
-    ),
-    Category(
-      id: '6',
-      categoryName: 'Fragrance',
-      categoryIcon: Icons.cabin.codePoint,
-      categoryColor: Colors.yellow.toInt(),
-    ),
-    Category(
-      id: '7',
-      categoryName: 'Tools',
-      categoryIcon: Icons.build.codePoint,
-      categoryColor: Colors.grey.toInt(),
-    ),
-  ];
+  final List<Category> allCategories;
+  final List<String> selectedCategoryIds;
+  final void Function(List<String>)? onCategorySelected;
 
   void _showCategorySelectionSheet(
     BuildContext context,
-    ValueNotifier<List<String>> seletedCategoryIds,
+    List<String> currentSelectedIds,
   ) {
     CategorySelectionSheet.show(
       context,
       allCategories: allCategories,
-      initialSelectedIds: seletedCategoryIds.value,
+      initialSelectedIds: currentSelectedIds,
       onConfirmed: (selectedIds) {
-        seletedCategoryIds.value = selectedIds;
+        onCategorySelected?.call(selectedIds);
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final seletedCategoryIds = useState<List<String>>([]);
-
     return GestureDetector(
       onTap: () {
-        _showCategorySelectionSheet(context, seletedCategoryIds);
+        _showCategorySelectionSheet(context, selectedCategoryIds);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -88,7 +48,9 @@ class CategorySelector extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '選擇類別',
+              selectedCategoryIds.isEmpty
+                  ? '選擇類別'
+                  : '已選擇 ${selectedCategoryIds.length} 個類別', // 顯示選中狀態
               style: TextStyle(
                 fontSize: 16,
                 color: const Color(0xFF2D3142),
