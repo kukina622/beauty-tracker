@@ -19,6 +19,7 @@ class PageScrollView extends StatelessWidget {
         : EdgeInsets.zero;
 
     return SafeArea(
+      maintainBottomViewPadding: true,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -35,6 +36,9 @@ class PageScrollView extends StatelessWidget {
               padding: padding,
               sliver: sliver,
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 90),
           ),
         ],
       ),
