@@ -33,7 +33,12 @@ class RootNavigationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       extendBody: true,
-      routes: [HomeRoute(), ExpiringSoonRoute(), AnalyticsRoute()],
+      routes: [
+        HomeRoute(),
+        ExpiringSoonRoute(),
+        AnalyticsRoute(),
+        ProfileRoute(),
+      ],
       floatingActionButton: Container(
         width: 50,
         height: 50,
