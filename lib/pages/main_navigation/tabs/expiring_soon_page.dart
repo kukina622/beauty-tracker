@@ -87,7 +87,7 @@ class ExpiringSoonPage extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: SizedBox(height: 10),
+          child: SizedBox(height: 50),
         ),
       ],
     );

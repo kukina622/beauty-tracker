@@ -37,9 +37,6 @@ class PageScrollView extends StatelessWidget {
               sliver: sliver,
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 90),
-          ),
         ],
       ),
     );

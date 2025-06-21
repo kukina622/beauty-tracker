@@ -99,6 +99,7 @@ class AnalyticsPage extends StatelessWidget {
                   topCount: 4,
                 ),
               ),
+              const SizedBox(height: 100),
             ],
           ),
         ),
