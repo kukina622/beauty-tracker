@@ -163,6 +163,9 @@ class HomePage extends HookWidget {
             },
           ),
         ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: 50),
+        ),
       ],
     );
   }
