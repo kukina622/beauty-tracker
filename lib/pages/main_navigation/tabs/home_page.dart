@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/models/product.dart';
-import 'package:beauty_tracker/models/product_status.dart';
-import 'package:beauty_tracker/util/extensions/color.dart';
+import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
@@ -12,109 +12,38 @@ import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
 class HomePage extends HookWidget {
   const HomePage({super.key});
 
-  List<Product> get products => [
-        Product(
-            id: '1',
-            name: 'Moisturizer',
-            brand: 'Brand A',
-            price: 29.99,
-            purchaseDate: DateTime(2023, 1, 15),
-            expiryDate: DateTime(2024, 1, 15),
-            status: ProductStatus.inUse,
-            categories: [
-              Category(
-                id: '123',
-                categoryName: 'Moisturizer',
-                categoryIcon: Icons.spa.codePoint,
-                categoryColor: Colors.red.shade200.toInt(),
-              ),
-              Category(
-                id: '456',
-                categoryName: 'Hydration',
-                categoryIcon: Icons.water.codePoint,
-                categoryColor: Colors.blue.shade300.toInt(),
-              ),
-            ]),
-        Product(
-          id: '2',
-          name: 'Sunscreen',
-          brand: 'Brand B',
-          price: 19.99,
-          purchaseDate: DateTime(2023, 2, 20),
-          expiryDate: DateTime(2025, 6, 20),
-          status: ProductStatus.finished,
-          categories: [
-            Category(
-              id: '789',
-              categoryName: 'Sunscreen',
-              categoryIcon: Icons.sunny.codePoint,
-              categoryColor: Colors.yellow.shade700.toInt(),
-            ),
-          ],
-        ),
-        Product(
-          id: '3',
-          name: 'Serum',
-          brand: 'Brand C',
-          price: 49.99,
-          purchaseDate: DateTime(2023, 3, 10),
-          expiryDate: DateTime(2024, 3, 10),
-          status: ProductStatus.deprecated,
-          categories: [
-            Category(
-              id: '101',
-              categoryName: 'Serum',
-              categoryIcon: Icons.healing.codePoint,
-              categoryColor: Colors.green.shade200.toInt(),
-            ),
-            Category(
-              id: '102',
-              categoryName: 'Anti-aging',
-              categoryIcon: Icons.timer.codePoint,
-              categoryColor: Colors.orange.shade300.toInt(),
-            ),
-            Category(
-              id: '103',
-              categoryName: 'Brightening',
-              categoryIcon: Icons.light_mode.codePoint,
-              categoryColor: Colors.pink.shade200.toInt(),
-            ),
-            Category(
-              id: '104',
-              categoryName: 'Hydrating',
-              categoryIcon: Icons.water_drop.codePoint,
-              categoryColor: Colors.blue.shade200.toInt(),
-            ),
-          ],
-        ),
-        Product(
-          id: '4',
-          name: 'Face Mask',
-          brand: 'Brand D',
-          price: 15.99,
-          purchaseDate: DateTime(2023, 4, 5),
-          expiryDate: DateTime(2024, 4, 5),
-          status: ProductStatus.inUse,
-          categories: [
-            Category(
-              id: '102',
-              categoryName: 'Face Mask',
-              categoryIcon: Icons.masks.codePoint,
-              categoryColor: Colors.purple.shade200.toInt(),
-            ),
-          ],
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
     final isEditStatusMode = useState(false);
+    final productService = useDi<ProductService>();
+
+    final allProductsFuture = useMemoized(() => productService.getAllProducts(), []);
+
+    final snapshot = useFuture(allProductsFuture);
+
+    final List<Product> products = useMemoized(() {
+      if (snapshot.connectionState != ConnectionState.done || snapshot.data == null) {
+        return [];
+      }
+      switch (snapshot.data!) {
+        case Ok(value: final List<Product> productList):
+          return productList;
+        case Err():
+          EasyLoading.showError('載入資料失敗', maskType: EasyLoadingMaskType.black);
+          return [];
+      }
+    }, [snapshot.connectionState, snapshot.data]);
+
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
 
     return PageScrollView(
       header: [
