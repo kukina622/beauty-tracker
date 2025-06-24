@@ -200,6 +200,9 @@ class BeautyTrackerApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
+        dividerTheme: const DividerThemeData(
+          color: Color(0xFFf9f9f9),
+        ),
       ),
       builder: EasyLoading.init(),
     );

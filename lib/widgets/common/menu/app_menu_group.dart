@@ -19,22 +19,32 @@ class AppMenuGroup extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          children: items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
 
-          if (index < items.length - 1) {
-            return Column(
-              children: [
-                item,
-                const Divider(height: 1, indent: 56),
-              ],
+            if (index < items.length - 1) {
+              return Column(
+                children: [
+                  Material(
+                    color: Colors.transparent,
+                    clipBehavior: Clip.hardEdge,
+                    child: item,
+                  ),
+                  const Divider(height: 1),
+                ],
+              );
+            }
+
+            return Material(
+              color: Colors.transparent,
+              child: item,
             );
-          }
-
-          return item;
-        }).toList(),
+          }).toList(),
+        ),
       ),
     );
   }
