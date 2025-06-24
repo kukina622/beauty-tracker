@@ -23,6 +23,10 @@ Future<Result<T>> resultGuard<T>(
       return Err(NetworkError(e.message));
     }
 
+    if (e is AppError) {
+      return Err(e);
+    }
+
     return Err(UnknownError(e.toString()));
   }
 }
