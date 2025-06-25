@@ -11,7 +11,7 @@ class SupabaseProductServiceImpl implements ProductService {
   @override
   Future<Result<List<Product>>> getAllProducts() async {
     return resultGuard(() async {
-      final fetchedProductData = await supabase.from('products').select();
+      final fetchedProductData = await supabase.from('products').select('*, categories(*)');
       return fetchedProductData.map((item) => Product.fromJson(item)).toList();
     });
   }
@@ -30,7 +30,7 @@ class SupabaseProductServiceImpl implements ProductService {
 
     return resultGuard(() async {
       final fetchedProductData =
-          await supabase.from('products').select().eq('status', status.value);
+          await supabase.from('products').select('*, categories(*)').eq('status', status.value);
       return fetchedProductData.map((item) => Product.fromJson(item)).toList();
     });
   }
