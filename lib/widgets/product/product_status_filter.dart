@@ -5,7 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ProductStatusFilter extends HookWidget {
-  const ProductStatusFilter({super.key});
+  const ProductStatusFilter({
+    super.key,
+    this.initialStatus = ProductStatus.inUse,
+    this.onStatusChanged,
+  });
+
+  final ProductStatus initialStatus;
+  final void Function(ProductStatus)? onStatusChanged;
 
   List<ChipData<ProductStatus>> get statusChips {
     return ProductStatusConfig.getAllStatuses()
@@ -20,7 +27,7 @@ class ProductStatusFilter extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<ProductStatus> selectedStatus = useState(ProductStatus.all);
+    final selectedStatus = useState(initialStatus);
 
     return AppCard(
       height: 44,
@@ -30,6 +37,9 @@ class ProductStatusFilter extends HookWidget {
         chips: statusChips,
         onSelected: (value) {
           selectedStatus.value = value;
+          if (onStatusChanged != null) {
+            onStatusChanged!(value);
+          }
         },
         defaultValue: ProductStatus.inUse,
       ),
