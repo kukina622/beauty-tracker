@@ -8,9 +8,10 @@ enum EditState {
 }
 
 class EditModeToggleButton extends HookWidget {
-  const EditModeToggleButton({super.key, this.onEditStateChanged});
+  const EditModeToggleButton({super.key, this.onEditStateChanged, this.onConfirm});
 
   final void Function(EditState mode)? onEditStateChanged;
+  final dynamic Function()? onConfirm;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,13 @@ class EditModeToggleButton extends HookWidget {
       backgroundColor: backgroundColor,
       size: 44.0,
       borderRadius: BorderRadius.circular(12),
-      onPressed: () {
+      onPressed: () async {
+        if (editState.value == EditState.edit) {
+          await onConfirm!();
+        }
+
         editState.value = editState.value == EditState.view ? EditState.edit : EditState.view;
+
         if (onEditStateChanged != null) {
           onEditStateChanged!(editState.value);
         }
