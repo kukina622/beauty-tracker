@@ -3,6 +3,7 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
@@ -24,11 +25,14 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final isEditStatusMode = useState(false);
     final productStatus = useState<ProductStatus>(ProductStatus.inUse);
+    final updateProductStatusData = useState<Map<String, ProductStatus>>({});
+    final refreshKey = useState(0);
+
     final productService = useDi<ProductService>();
 
     final allProductsFuture = useMemoized(
       () => productService.getProductByStatus(productStatus.value),
-      [productStatus.value],
+      [productStatus.value, refreshKey.value],
     );
 
     final snapshot = useFuture(allProductsFuture);
@@ -58,6 +62,32 @@ class HomePage extends HookWidget {
       return null;
     }, [snapshot.connectionState]);
 
+    final onConfirmUpdateProductStatus = useCallback(() async {
+      if (updateProductStatusData.value.isEmpty) {
+        return;
+      }
+
+      final payloads = updateProductStatusData.value.entries.map((entry) {
+        return UpdateProductStatusRequests(
+          productId: entry.key,
+          status: entry.value,
+        );
+      }).toList();
+
+      final result = await productService.bulkUpdateProductsStatus(payloads);
+
+      switch (result) {
+        case Ok():
+          EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
+          updateProductStatusData.value = {};
+          refreshKey.value += 1;
+          break;
+        case Err():
+          EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
+          break;
+      }
+    }, [productService, updateProductStatusData, refreshKey]);
+
     return PageScrollView(
       header: [
         AppTitleBar(
@@ -70,6 +100,7 @@ class HomePage extends HookWidget {
                 onEditStateChanged: (mode) {
                   isEditStatusMode.value = mode == EditState.edit;
                 },
+                onConfirm: onConfirmUpdateProductStatus,
               ),
               SizedBox(width: 12),
               NotificationButton(),
@@ -103,6 +134,9 @@ class HomePage extends HookWidget {
                 child: ProductCard(
                   product: products[index],
                   isEditStatusMode: isEditStatusMode.value,
+                  onStatusChanged: (status) {
+                    updateProductStatusData.value[products[index].id] = status;
+                  },
                 ),
               );
             },
