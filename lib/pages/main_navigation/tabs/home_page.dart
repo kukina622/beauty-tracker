@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
@@ -13,6 +14,7 @@ import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,51 +25,53 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isInitialLoad = useState(true);
+
     final isEditStatusMode = useState(false);
     final productStatus = useState<ProductStatus>(ProductStatus.inUse);
-    final updateProductStatusData = useState<Map<String, ProductStatus>>({});
-    final refreshKey = useState(0);
+    final pendingUpdates = useState<Map<String, ProductStatus>>({});
 
     final productService = useDi<ProductService>();
 
-    final allProductsFuture = useMemoized(
+    final productsResult = useServiceData(
       () => productService.getProductByStatus(productStatus.value),
-      [productStatus.value, refreshKey.value],
     );
 
-    final snapshot = useFuture(allProductsFuture);
+    final products = useMemoized(() {
+      if (productsResult.hasError || !productsResult.hasData) {
+        return <Product>[];
+      }
 
-    final List<Product> products = useMemoized(() {
-      if (snapshot.connectionState != ConnectionState.done || snapshot.data == null) {
-        return [];
-      }
-      switch (snapshot.data!) {
-        case Ok(value: final List<Product> productList):
-          return productList;
-        case Err():
-          EasyLoading.showError('載入資料失敗', maskType: EasyLoadingMaskType.black);
-          return [];
-      }
-    }, [snapshot.connectionState, snapshot.data]);
+      final DateTime now = DateTime.now();
+
+      return productsResult.data!.sorted(
+        (a, b) {
+          final aExpiry = a.expiryDate.difference(now).inDays;
+          final bExpiry = b.expiryDate.difference(now).inDays;
+          return aExpiry.compareTo(bExpiry);
+        },
+      );
+    }, [productsResult.data]);
 
     useEffect(() {
-      if (snapshot.connectionState == ConnectionState.waiting) {
+      if (productsResult.loading && isInitialLoad.value) {
         EasyLoading.show(
           status: '載入中...',
           maskType: EasyLoadingMaskType.black,
         );
       } else {
         EasyLoading.dismiss();
+        isInitialLoad.value = false;
       }
       return null;
-    }, [snapshot.connectionState]);
+    }, [productsResult.loading]);
 
     final onConfirmUpdateProductStatus = useCallback(() async {
-      if (updateProductStatusData.value.isEmpty) {
+      if (pendingUpdates.value.isEmpty) {
         return;
       }
 
-      final payloads = updateProductStatusData.value.entries.map((entry) {
+      final payloads = pendingUpdates.value.entries.map((entry) {
         return UpdateProductStatusRequests(
           productId: entry.key,
           status: entry.value,
@@ -79,14 +83,14 @@ class HomePage extends HookWidget {
       switch (result) {
         case Ok():
           EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
-          updateProductStatusData.value = {};
-          refreshKey.value += 1;
+          pendingUpdates.value = {};
+          await productsResult.refresh();
           break;
         case Err():
           EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
           break;
       }
-    }, [productService, updateProductStatusData, refreshKey]);
+    }, [productService, pendingUpdates]);
 
     return PageScrollView(
       header: [
@@ -118,7 +122,10 @@ class HomePage extends HookWidget {
               SizedBox(height: 14),
               ProductStatusFilter(
                 initialStatus: ProductStatus.inUse,
-                onStatusChanged: (status) => productStatus.value = status,
+                onStatusChanged: (status) {
+                  productStatus.value = status;
+                  productsResult.refresh();
+                },
               ),
               const SizedBox(height: 18),
               SubTitleBar(title: '保養品'),
@@ -135,7 +142,7 @@ class HomePage extends HookWidget {
                   product: products[index],
                   isEditStatusMode: isEditStatusMode.value,
                   onStatusChanged: (status) {
-                    updateProductStatusData.value[products[index].id] = status;
+                    pendingUpdates.value[products[index].id] = status;
                   },
                 ),
               );
