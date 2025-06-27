@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
@@ -12,6 +13,7 @@ import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:collection/collection.dart';
@@ -20,18 +22,23 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class HomePage extends HookWidget {
+class HomePage extends StatefulHookWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
     final isInitialLoad = useState(true);
-
     final isEditStatusMode = useState(false);
     final productStatus = useState<ProductStatus>(ProductStatus.inUse);
     final pendingUpdates = useState<Map<String, ProductStatus>>({});
 
     final productService = useDi<ProductService>();
+    final animatedListController = useAnimatedProductList();
 
     final productsResult = useServiceData(
       () => productService.getProductByStatus(productStatus.value),
@@ -65,6 +72,11 @@ class HomePage extends HookWidget {
       }
       return null;
     }, [productsResult.loading]);
+
+    useEffect(() {
+      animatedListController.updateProducts(products);
+      return null;
+    }, [products]);
 
     final onConfirmUpdateProductStatus = useCallback(() async {
       if (pendingUpdates.value.isEmpty) {
@@ -132,22 +144,25 @@ class HomePage extends HookWidget {
             ],
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: products.length,
-            (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: ProductCard(
-                  product: products[index],
-                  isEditStatusMode: isEditStatusMode.value,
-                  onStatusChanged: (status) {
-                    pendingUpdates.value[products[index].id] = status;
-                  },
-                ),
-              );
-            },
-          ),
+        SliverAnimatedList(
+          key: animatedListController.listKey,
+          initialItemCount: animatedListController.products.length,
+          itemBuilder: (context, index, animation) {
+            if (index >= animatedListController.products.length) {
+              return const SizedBox.shrink();
+            }
+
+            return AnimatedProductCardWrapper(
+              animation: animation,
+              child: ProductCard(
+                product: animatedListController.products[index],
+                isEditStatusMode: isEditStatusMode.value,
+                onStatusChanged: (status) {
+                  pendingUpdates.value[animatedListController.products[index].id] = status;
+                },
+              ),
+            );
+          },
         ),
         SliverToBoxAdapter(
           child: SizedBox(height: 50),
