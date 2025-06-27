@@ -43,7 +43,6 @@ ServiceDataResult<T> useServiceData<T>(
 
     loading.value = true;
     error.value = null;
-    data.value = null;
 
     try {
       final result = await fetcherRef.value();
