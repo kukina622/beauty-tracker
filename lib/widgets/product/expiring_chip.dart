@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/constants.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class ExpiringChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final daysUntilExpiry = expiryDate.difference(DateTime.now()).inDays;
     final isExpired = daysUntilExpiry < 0;
-    final isExpiringSoon = daysUntilExpiry >= 0 && daysUntilExpiry <= 30;
+    final isExpiringSoon = daysUntilExpiry >= 0 && daysUntilExpiry <= AppConstants.expiringSoonDays;
 
     Color statusColor;
 
