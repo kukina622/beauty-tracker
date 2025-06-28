@@ -1,5 +1,6 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product_status.dart';
+import 'package:collection/collection.dart';
 
 class Product {
   Product({
@@ -48,5 +49,14 @@ class Product {
       'status': status.value,
       'categories': categories?.map((e) => e.toJson()).toList() ?? [],
     };
+  }
+
+  static List<Product> sortByExpiryDate(List<Product> products) {
+    final DateTime now = DateTime.now();
+    return products.sorted((a, b) {
+      final aExpiry = a.expiryDate.difference(now).inDays;
+      final bExpiry = b.expiryDate.difference(now).inDays;
+      return aExpiry.compareTo(bExpiry);
+    });
   }
 }

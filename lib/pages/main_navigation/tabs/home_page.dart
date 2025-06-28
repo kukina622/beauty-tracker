@@ -16,7 +16,6 @@ import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -53,15 +52,7 @@ class _HomePageState extends State<HomePage> {
         return <Product>[];
       }
 
-      final DateTime now = DateTime.now();
-
-      return productsResult.data!.sorted(
-        (a, b) {
-          final aExpiry = a.expiryDate.difference(now).inDays;
-          final bExpiry = b.expiryDate.difference(now).inDays;
-          return aExpiry.compareTo(bExpiry);
-        },
-      );
+      return Product.sortByExpiryDate(productsResult.data!);
     }, [productsResult.data]);
 
     useEffect(() {
