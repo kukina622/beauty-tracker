@@ -16,6 +16,7 @@ class ColorSelectorField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedColor = useState<Color>(initialColor);
+    final hasSelectedColor = useState<bool>(false);
 
     return GestureDetector(
       onTap: () async {
@@ -28,6 +29,7 @@ class ColorSelectorField extends HookWidget {
         if (newColor != null) {
           selectedColor.value = newColor;
           onSelect?.call(newColor);
+          hasSelectedColor.value = true;
         }
       },
       child: Container(
@@ -54,7 +56,7 @@ class ColorSelectorField extends HookWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    '選擇顏色',
+                    hasSelectedColor.value ? '已選擇顏色' : '選擇顏色',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade700,

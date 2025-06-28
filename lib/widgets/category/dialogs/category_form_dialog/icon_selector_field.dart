@@ -16,6 +16,7 @@ class IconSelectorField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedIcon = useState<IconData>(initialIcon);
+    final hasSelectedIcon = useState<bool>(false);
 
     return GestureDetector(
       onTap: () async {
@@ -28,6 +29,7 @@ class IconSelectorField extends HookWidget {
         if (newIcon != null) {
           selectedIcon.value = newIcon;
           onSelect?.call(newIcon);
+          hasSelectedIcon.value = true;
         }
       },
       child: Container(
@@ -59,7 +61,7 @@ class IconSelectorField extends HookWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    '選擇圖示',
+                    hasSelectedIcon.value ? '已選擇圖示' : '選擇圖示',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade700,
