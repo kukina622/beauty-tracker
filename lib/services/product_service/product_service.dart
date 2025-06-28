@@ -7,5 +7,6 @@ abstract class ProductService {
   Future<Result<List<Product>>> getAllProducts();
   Future<Result<Product>> getProductById(String productId);
   Future<Result<List<Product>>> getProductByStatus(ProductStatus status);
+  Future<Result<List<Product>>> getExpiringSoonProducts();
   Future<Result<void>> bulkUpdateProductsStatus(List<UpdateProductStatusRequests> payloads);
 }

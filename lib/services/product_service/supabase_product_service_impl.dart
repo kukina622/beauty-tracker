@@ -38,6 +38,15 @@ class SupabaseProductServiceImpl implements ProductService {
   }
 
   @override
+  Future<Result<List<Product>>> getExpiringSoonProducts() {
+    return resultGuard(() async {
+      final fetchedProductData =
+          await supabase.from('products_in_use_expiring_in_30d').select('*, categories(*)');
+      return fetchedProductData.map((item) => Product.fromJson(item)).toList();
+    });
+  }
+
+  @override
   Future<Result<void>> bulkUpdateProductsStatus(List<UpdateProductStatusRequests> payloads) async {
     return resultGuard(() async {
       final List<String> productIds = payloads.map((e) => e.productId).toList();

@@ -2,7 +2,13 @@ import 'package:beauty_tracker/widgets/common/chip/icon_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpiringSoonTile extends StatelessWidget {
-  const ExpiringSoonTile({super.key});
+  const ExpiringSoonTile({
+    super.key,
+    required this.expiringCount,
+    this.onTap,
+  });
+  final int expiringCount;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class ExpiringSoonTile extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '有10件產品即將過期！',
+                  '有$expiringCount件產品即將過期！',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey.shade600,
                       ),
@@ -48,19 +54,22 @@ class ExpiringSoonTile extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF9A9E).withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(8),
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFF9A9E).withValues(alpha: .1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Color(0xFFFF9A9E),
+              ),
             ),
-            child: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Color(0xFFFF9A9E),
-            ),
-          ),
+          )
         ],
       ),
     );

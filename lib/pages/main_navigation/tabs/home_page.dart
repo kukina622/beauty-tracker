@@ -44,6 +44,10 @@ class _HomePageState extends State<HomePage> {
       () => productService.getProductByStatus(productStatus.value),
     );
 
+    final productsExpiringResult = useServiceData(
+      () => productService.getExpiringSoonProducts(),
+    );
+
     final products = useMemoized(() {
       if (productsResult.hasError || !productsResult.hasData) {
         return <Product>[];
@@ -128,7 +132,9 @@ class _HomePageState extends State<HomePage> {
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              ExpiringSoonTile(),
+              ExpiringSoonTile(
+                expiringCount: productsExpiringResult.data?.length ?? 0,
+              ),
               const SizedBox(height: 24),
               SubTitleBar(title: '狀態篩選'),
               SizedBox(height: 14),
