@@ -8,11 +8,13 @@ class CategorySelector extends StatelessWidget {
     this.allCategories = const [],
     this.selectedCategoryIds = const [],
     this.onCategorySelected,
+    this.onCategoryCreated,
   });
 
   final List<Category> allCategories;
   final List<String> selectedCategoryIds;
   final void Function(List<String>)? onCategorySelected;
+  final void Function(Category)? onCategoryCreated;
 
   void _showCategorySelectionSheet(
     BuildContext context,
@@ -25,6 +27,7 @@ class CategorySelector extends StatelessWidget {
       onConfirmed: (selectedIds) {
         onCategorySelected?.call(selectedIds);
       },
+      onCategoryCreated: onCategoryCreated,
     );
   }
 
