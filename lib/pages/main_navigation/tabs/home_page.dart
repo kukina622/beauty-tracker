@@ -1,120 +1,112 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
-import 'package:beauty_tracker/util/extensions/color.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
+import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class HomePage extends HookWidget {
+class HomePage extends StatefulHookWidget {
   const HomePage({super.key});
 
-  List<Product> get products => [
-        Product(
-            id: '1',
-            name: 'Moisturizer',
-            brand: 'Brand A',
-            price: 29.99,
-            purchaseDate: DateTime(2023, 1, 15),
-            expiryDate: DateTime(2024, 1, 15),
-            status: ProductStatus.inUse,
-            categories: [
-              Category(
-                id: '123',
-                categoryName: 'Moisturizer',
-                categoryIcon: Icons.spa.codePoint,
-                categoryColor: Colors.red.shade200.toInt(),
-              ),
-              Category(
-                id: '456',
-                categoryName: 'Hydration',
-                categoryIcon: Icons.water.codePoint,
-                categoryColor: Colors.blue.shade300.toInt(),
-              ),
-            ]),
-        Product(
-          id: '2',
-          name: 'Sunscreen',
-          brand: 'Brand B',
-          price: 19.99,
-          purchaseDate: DateTime(2023, 2, 20),
-          expiryDate: DateTime(2025, 6, 20),
-          status: ProductStatus.finished,
-          categories: [
-            Category(
-              id: '789',
-              categoryName: 'Sunscreen',
-              categoryIcon: Icons.sunny.codePoint,
-              categoryColor: Colors.yellow.shade700.toInt(),
-            ),
-          ],
-        ),
-        Product(
-          id: '3',
-          name: 'Serum',
-          brand: 'Brand C',
-          price: 49.99,
-          purchaseDate: DateTime(2023, 3, 10),
-          expiryDate: DateTime(2024, 3, 10),
-          status: ProductStatus.deprecated,
-          categories: [
-            Category(
-              id: '101',
-              categoryName: 'Serum',
-              categoryIcon: Icons.healing.codePoint,
-              categoryColor: Colors.green.shade200.toInt(),
-            ),
-            Category(
-              id: '102',
-              categoryName: 'Anti-aging',
-              categoryIcon: Icons.timer.codePoint,
-              categoryColor: Colors.orange.shade300.toInt(),
-            ),
-            Category(
-              id: '103',
-              categoryName: 'Brightening',
-              categoryIcon: Icons.light_mode.codePoint,
-              categoryColor: Colors.pink.shade200.toInt(),
-            ),
-            Category(
-              id: '104',
-              categoryName: 'Hydrating',
-              categoryIcon: Icons.water_drop.codePoint,
-              categoryColor: Colors.blue.shade200.toInt(),
-            ),
-          ],
-        ),
-        Product(
-          id: '4',
-          name: 'Face Mask',
-          brand: 'Brand D',
-          price: 15.99,
-          purchaseDate: DateTime(2023, 4, 5),
-          expiryDate: DateTime(2024, 4, 5),
-          status: ProductStatus.inUse,
-          categories: [
-            Category(
-              id: '102',
-              categoryName: 'Face Mask',
-              categoryIcon: Icons.masks.codePoint,
-              categoryColor: Colors.purple.shade200.toInt(),
-            ),
-          ],
-        ),
-      ];
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final isInitialLoad = useState(true);
     final isEditStatusMode = useState(false);
+    final productStatus = useState<ProductStatus>(ProductStatus.inUse);
+    final pendingUpdates = useState<Map<String, ProductStatus>>({});
+
+    final productService = useDi<ProductService>();
+    final animatedListController = useAnimatedProductList();
+
+    final productsResult = useServiceData(
+      () => productService.getProductByStatus(productStatus.value),
+    );
+
+    final productsExpiringResult = useServiceData(
+      () => productService.getExpiringSoonProducts(),
+    );
+
+    final products = useMemoized(() {
+      if (productsResult.hasError || !productsResult.hasData) {
+        return <Product>[];
+      }
+
+      final DateTime now = DateTime.now();
+
+      return productsResult.data!.sorted(
+        (a, b) {
+          final aExpiry = a.expiryDate.difference(now).inDays;
+          final bExpiry = b.expiryDate.difference(now).inDays;
+          return aExpiry.compareTo(bExpiry);
+        },
+      );
+    }, [productsResult.data]);
+
+    useEffect(() {
+      if (productsResult.loading && isInitialLoad.value) {
+        EasyLoading.show(
+          status: '載入中...',
+          maskType: EasyLoadingMaskType.black,
+        );
+      } else {
+        EasyLoading.dismiss();
+        isInitialLoad.value = false;
+      }
+      return null;
+    }, [productsResult.loading]);
+
+    useEffect(() {
+      animatedListController.updateProducts(products);
+      return null;
+    }, [products]);
+
+    final onConfirmUpdateProductStatus = useCallback(() async {
+      if (pendingUpdates.value.isEmpty) {
+        return;
+      }
+
+      final payloads = pendingUpdates.value.entries.map((entry) {
+        return UpdateProductStatusRequests(
+          productId: entry.key,
+          status: entry.value,
+        );
+      }).toList();
+
+      final result = await productService.bulkUpdateProductsStatus(payloads);
+
+      switch (result) {
+        case Ok():
+          EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
+          pendingUpdates.value = {};
+          await productsResult.refresh();
+          break;
+        case Err():
+          EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
+          break;
+      }
+    }, [productService, pendingUpdates]);
 
     return PageScrollView(
       header: [
@@ -128,6 +120,7 @@ class HomePage extends HookWidget {
                 onEditStateChanged: (mode) {
                   isEditStatusMode.value = mode == EditState.edit;
                 },
+                onConfirm: onConfirmUpdateProductStatus,
               ),
               SizedBox(width: 12),
               NotificationButton(),
@@ -139,29 +132,47 @@ class HomePage extends HookWidget {
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              ExpiringSoonTile(),
+              ExpiringSoonTile(
+                expiringCount: productsExpiringResult.data?.length ?? 0,
+                onTap: () {
+                  // Navigate to Expiring Soon tab
+                  AutoTabsRouter.of(context).setActiveIndex(1);
+                },
+              ),
               const SizedBox(height: 24),
               SubTitleBar(title: '狀態篩選'),
               SizedBox(height: 14),
-              ProductStatusFilter(),
+              ProductStatusFilter(
+                initialStatus: ProductStatus.inUse,
+                onStatusChanged: (status) {
+                  productStatus.value = status;
+                  productsResult.refresh();
+                },
+              ),
               const SizedBox(height: 18),
               SubTitleBar(title: '保養品'),
             ],
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: products.length,
-            (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: ProductCard(
-                  product: products[index],
-                  isEditStatusMode: isEditStatusMode.value,
-                ),
-              );
-            },
-          ),
+        SliverAnimatedList(
+          key: animatedListController.listKey,
+          initialItemCount: animatedListController.products.length,
+          itemBuilder: (context, index, animation) {
+            if (index >= animatedListController.products.length) {
+              return const SizedBox.shrink();
+            }
+
+            return AnimatedProductCardWrapper(
+              animation: animation,
+              child: ProductCard(
+                product: animatedListController.products[index],
+                isEditStatusMode: isEditStatusMode.value,
+                onStatusChanged: (status) {
+                  pendingUpdates.value[animatedListController.products[index].id] = status;
+                },
+              ),
+            );
+          },
         ),
         SliverToBoxAdapter(
           child: SizedBox(height: 50),

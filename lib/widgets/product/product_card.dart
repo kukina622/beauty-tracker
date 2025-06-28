@@ -15,9 +15,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ProductCard extends HookWidget {
-  const ProductCard({super.key, required this.product, this.isEditStatusMode = false});
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.isEditStatusMode = false,
+    this.onStatusChanged,
+  });
   final Product product;
   final bool isEditStatusMode;
+  final void Function(ProductStatus status)? onStatusChanged;
 
   List<ProductStatus> get availableStatuses {
     return ProductStatusConfig.getAllStatuses()
@@ -119,7 +125,11 @@ class ProductCard extends HookWidget {
     );
   }
 
-  Widget _buildProductStatusBar({required ProductStatus status, bool isEditStatusMode = false}) {
+  Widget _buildProductStatusBar({
+    required ProductStatus status,
+    bool isEditStatusMode = false,
+    void Function(ProductStatus status)? onStatusChanged,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
@@ -143,7 +153,10 @@ class ProductCard extends HookWidget {
             const SizedBox(width: 12),
             Expanded(
               child: isEditStatusMode
-                  ? SelectableStatusBar(status: status)
+                  ? SelectableStatusBar(
+                      status: status,
+                      onStatusChanged: onStatusChanged,
+                    )
                   : _buildReadonlyStatusChip(status: status),
             ),
           ],
@@ -204,6 +217,7 @@ class ProductCard extends HookWidget {
           _buildProductStatusBar(
             status: product.status,
             isEditStatusMode: isEditStatusMode,
+            onStatusChanged: onStatusChanged,
           ),
         ],
       ),
