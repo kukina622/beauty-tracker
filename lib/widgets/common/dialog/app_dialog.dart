@@ -78,7 +78,7 @@ class AppDialog extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            content,
+            SingleChildScrollView(child: content),
             const SizedBox(height: 20),
             _buildButtons(context),
           ],
