@@ -134,6 +134,10 @@ class _HomePageState extends State<HomePage> {
             [
               ExpiringSoonTile(
                 expiringCount: productsExpiringResult.data?.length ?? 0,
+                onTap: () {
+                  // Navigate to Expiring Soon tab
+                  AutoTabsRouter.of(context).setActiveIndex(1);
+                },
               ),
               const SizedBox(height: 24),
               SubTitleBar(title: '狀態篩選'),
