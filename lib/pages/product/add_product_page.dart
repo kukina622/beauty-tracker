@@ -115,7 +115,7 @@ class AddProductPage extends HookWidget {
                             selectedCategoryIds.value = categoryIds;
                           },
                           onCategoryCreated: (category) {
-                            categoryResule.refresh();
+                            categoryResule.mutate([...allCategories, category]);
                           },
                         ),
                         const SizedBox(height: 8),
