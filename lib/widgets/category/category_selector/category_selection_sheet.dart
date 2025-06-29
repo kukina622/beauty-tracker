@@ -17,7 +17,7 @@ class CategorySelectionSheet extends StatefulWidget {
   final List<Category> allCategories;
   final List<String> initialSelectedIds;
   final void Function(List<String>) onConfirmed;
-  final dynamic Function(Category)? onCategoryCreated;
+  final void Function(Category)? onCategoryCreated;
 
   static Future<void> show(
     BuildContext context, {
