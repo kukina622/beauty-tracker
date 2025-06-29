@@ -11,17 +11,20 @@ class CategorySelectionSheet extends StatefulWidget {
     required this.allCategories,
     required this.initialSelectedIds,
     required this.onConfirmed,
+    this.onCategoryCreated,
   });
 
   final List<Category> allCategories;
   final List<String> initialSelectedIds;
   final void Function(List<String>) onConfirmed;
+  final void Function(Category)? onCategoryCreated;
 
   static Future<void> show(
     BuildContext context, {
     required List<Category> allCategories,
     required List<String> initialSelectedIds,
     required void Function(List<String>) onConfirmed,
+    void Function(Category)? onCategoryCreated,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -31,6 +34,7 @@ class CategorySelectionSheet extends StatefulWidget {
         allCategories: allCategories,
         initialSelectedIds: initialSelectedIds,
         onConfirmed: onConfirmed,
+        onCategoryCreated: onCategoryCreated,
       ),
     );
   }
@@ -111,7 +115,13 @@ class _CategorySelectionSheetState extends State<CategorySelectionSheet> {
                     text: '加入新類別',
                     icon: Icons.add_circle_outline,
                     onPressed: () {
-                      CategoryFormDialog.show(context);
+                      CategoryFormDialog.show(
+                        context,
+                        onCategoryCreated: (category) {
+                          widget.onCategoryCreated?.call(category);
+                          Navigator.pop(context);
+                        },
+                      );
                     },
                   )
                 ],
