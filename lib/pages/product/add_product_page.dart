@@ -47,11 +47,11 @@ class AddProductPage extends HookWidget {
 
     final selectedCategoryIds = useState<List<String>>([]);
 
-    final categoryResule = useServiceData(
+    final categoryResult = useServiceData(
       () => categoryService.getAllCategories(),
     );
 
-    final allCategories = categoryResule.data ?? [];
+    final allCategories = categoryResult.data ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -115,7 +115,7 @@ class AddProductPage extends HookWidget {
                             selectedCategoryIds.value = categoryIds;
                           },
                           onCategoryCreated: (category) {
-                            categoryResule.mutate([...allCategories, category]);
+                            categoryResult.mutate([...allCategories, category]);
                           },
                         ),
                         const SizedBox(height: 8),
