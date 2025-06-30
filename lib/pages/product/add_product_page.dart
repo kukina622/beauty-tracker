@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
+import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
@@ -11,6 +14,7 @@ import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -44,14 +48,63 @@ class AddProductPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final categoryService = useDi<CategoryService>();
-
+    final productService = useDi<ProductService>();
+    final productNameController = useTextEditingController();
+    final brandController = useTextEditingController();
+    final priceController = useTextEditingController();
     final selectedCategoryIds = useState<List<String>>([]);
+    final purchaseDate = useState<DateTime?>(null);
+    final expirationDate = useState<DateTime?>(null);
 
     final categoryResult = useServiceData(
       () => categoryService.getAllCategories(),
     );
 
     final allCategories = categoryResult.data ?? [];
+
+    final onCreateNewProduct = useCallback(() async {
+      final bool isFormValid = _formKey.currentState?.validate() ?? false;
+      if (isFormValid) {
+        final productName = productNameController.text.trim();
+        final brand = brandController.text.trim();
+        final price = double.tryParse(priceController.text.trim());
+        final purchaseDateValue = purchaseDate.value;
+        final expirationDateValue = expirationDate.value;
+        final categories = selectedCategoryIds.value;
+
+        final product = CreateProductRequest(
+          name: productName,
+          brand: brand,
+          price: price,
+          purchaseDate: purchaseDateValue,
+          expiryDate: expirationDateValue,
+          categories: categories,
+        );
+
+        final result = await productService.createNewProduct(product);
+
+        switch (result) {
+          case Ok():
+            EasyLoading.showSuccess('新增成功', maskType: EasyLoadingMaskType.black);
+            if (context.mounted) {
+              AutoRouter.of(context).pop();
+            }
+            break;
+          case Err():
+            EasyLoading.showError('新增失敗', maskType: EasyLoadingMaskType.black);
+            break;
+        }
+      }
+    }, [
+      _formKey,
+      productNameController,
+      brandController,
+      priceController,
+      purchaseDate,
+      expirationDate,
+      selectedCategoryIds,
+      productService
+    ]);
 
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +137,7 @@ class AddProductPage extends HookWidget {
                         BaseFormField(
                           labelText: '產品名稱',
                           hintText: '輸入產品名稱',
+                          controller: productNameController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return '請輸入產品名稱';
@@ -95,12 +149,14 @@ class AddProductPage extends HookWidget {
                         BaseFormField(
                           labelText: '品牌(可選)',
                           hintText: '輸入品牌名稱',
+                          controller: brandController,
                         ),
                         const SizedBox(height: 16),
                         BaseFormField(
                           labelText: '價格(可選)',
                           hintText: '輸入價格',
                           prefixText: '\$ ',
+                          controller: priceController,
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -131,24 +187,31 @@ class AddProductPage extends HookWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        DatePickerField(),
+                        DatePickerField(
+                          onDateChanged: (p0) => purchaseDate.value = p0,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           '過期日',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        DatePickerField()
+                        DatePickerField(
+                          onDateChanged: (p0) => expirationDate.value = p0,
+                          validator: (p0) {
+                            if (p0 == null) {
+                              return '請選擇過期日';
+                            }
+                            return null;
+                          },
+                        )
                       ],
                     ),
                   ),
                   SizedBox(height: 16),
                   AppElevatedButton(
                     text: '新增保養品',
-                    onPressed: () {
-                      final bool isFormValid = _formKey.currentState?.validate() ?? false;
-                      if (isFormValid) {}
-                    },
+                    onPressed: onCreateNewProduct,
                     isFilled: true,
                   )
                 ],
