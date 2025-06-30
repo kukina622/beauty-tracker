@@ -157,6 +157,15 @@ class AddProductPage extends HookWidget {
                           hintText: '輸入價格',
                           prefixText: '\$ ',
                           controller: priceController,
+                          validator: (value) {
+                            if (value != null && value.isNotEmpty) {
+                              final price = double.tryParse(value);
+                              if (price == null) {
+                                return '請輸入有效的價格';
+                              }
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 16),
                         Text(
