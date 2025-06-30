@@ -9,63 +9,123 @@ class DatePickerField extends HookWidget {
     this.onDateChanged,
     this.firstDate,
     this.lastDate,
+    this.labelText,
+    this.validator,
+    this.autovalidateMode,
   });
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
   final void Function(DateTime)? onDateChanged;
+  final String? labelText;
+  final String? Function(DateTime?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
     final pickedDate = useState(initialDate);
+    final errorText = useState<String?>(null);
 
     final firstDateValue = firstDate ?? DateTime(2000);
     final lastDateValue = lastDate ?? DateTime.now().add(const Duration(days: 365 * 10));
 
-    return GestureDetector(
-      onTap: () async {
-        final DateTime? picked = await showDatePicker(
-          context: context,
-          helpText: '選擇日期',
-          cancelText: '取消',
-          confirmText: '確定',
-          fieldLabelText: '選擇日期',
-          fieldHintText: '請選擇日期',
-          initialDate: pickedDate.value ?? DateTime.now(),
-          initialEntryMode: DatePickerEntryMode.calendarOnly,
-          firstDate: firstDateValue,
-          lastDate: lastDateValue,
-        );
+    useEffect(() {
+      if (validator != null) {
+        errorText.value = validator!(pickedDate.value);
+      }
+      return null;
+    }, [pickedDate.value]);
 
-        if (picked == null) {
-          return;
-        }
-
-        pickedDate.value = picked;
-
-        if (onDateChanged != null) {
-          onDateChanged!(pickedDate.value!);
+    return FormField<DateTime>(
+      initialValue: initialDate,
+      validator: validator != null ? (value) => validator!(value) : null,
+      autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
+      onSaved: (newValue) {
+        if (newValue != null && onDateChanged != null) {
+          onDateChanged!(newValue);
         }
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (field) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              pickedDate.value == null
-                  ? '請選擇日期'
-                  : DateFormat('yyyy/MM/d').format(pickedDate.value!),
-              style: const TextStyle(fontSize: 16),
+            if (labelText != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  labelText!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            GestureDetector(
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  helpText: '選擇日期',
+                  cancelText: '取消',
+                  confirmText: '確定',
+                  fieldLabelText: '選擇日期',
+                  fieldHintText: '請選擇日期',
+                  initialDate: pickedDate.value ?? DateTime.now(),
+                  initialEntryMode: DatePickerEntryMode.calendarOnly,
+                  firstDate: firstDateValue,
+                  lastDate: lastDateValue,
+                );
+
+                if (picked == null) {
+                  return;
+                }
+
+                pickedDate.value = picked;
+                field.didChange(picked);
+
+                if (onDateChanged != null) {
+                  onDateChanged!(pickedDate.value!);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.circular(12),
+                  border: field.hasError
+                      ? Border.all(color: Theme.of(context).colorScheme.error, width: 1.5)
+                      : null,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      pickedDate.value == null
+                          ? '請選擇日期'
+                          : DateFormat('yyyy/MM/d').format(pickedDate.value!),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: pickedDate.value == null ? Colors.grey : Colors.black,
+                      ),
+                    ),
+                    const Icon(Icons.calendar_today, color: Color(0xFF2D3142)),
+                  ],
+                ),
+              ),
             ),
-            const Icon(Icons.calendar_today, color: Color(0xFF2D3142)),
+            if (field.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 12),
+                child: Text(
+                  field.errorText ?? '',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
