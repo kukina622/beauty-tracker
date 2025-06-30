@@ -120,9 +120,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
       slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
               ExpiringSoonTile(
                 expiringCount: productsExpiringResult.data?.length ?? 0,
                 onTap: () {
