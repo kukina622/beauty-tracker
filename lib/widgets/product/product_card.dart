@@ -65,7 +65,7 @@ class ProductCard extends HookWidget {
   }
 
   Widget _buildProductActions({
-    required double price,
+    required double? price,
     required VoidCallback onEdit,
     required VoidCallback onDelete,
   }) {
@@ -91,14 +91,16 @@ class ProductCard extends HookWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          '\$${price.toStringAsFixed(2)}',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey.shade700,
+        if (price != null) ...[
+          Text(
+            '\$${price.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade700,
+            ),
           ),
-        ),
+        ]
       ],
     );
   }

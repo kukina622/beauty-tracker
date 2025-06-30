@@ -2,6 +2,7 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/errors/result_guard.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
+import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:collection/collection.dart';
@@ -20,8 +21,12 @@ class SupabaseProductServiceImpl implements ProductService {
 
   @override
   Future<Result<Product>> getProductById(String productId) {
-    // TODO: implement getProductById
-    throw UnimplementedError();
+    return resultGuard(() async {
+      final fetchedProductData =
+          await supabase.from('products').select('*, categories(*)').eq('id', productId).single();
+
+      return Product.fromJson(fetchedProductData);
+    });
   }
 
   @override
@@ -43,6 +48,35 @@ class SupabaseProductServiceImpl implements ProductService {
       final fetchedProductData =
           await supabase.from('products_in_use_expiring_in_30d').select('*, categories(*)');
       return fetchedProductData.map((item) => Product.fromJson(item)).toList();
+    });
+  }
+
+  @override
+  Future<Result<Product>> createNewProduct(CreateProductRequest product) {
+    return resultGuard(() async {
+      final productMap = product.toJsonWithoutCategories();
+
+      final newProduct = await supabase.from('products').upsert(productMap).select();
+
+      if (newProduct.isEmpty) {
+        throw Exception('Failed to create new product');
+      }
+
+      final productId = newProduct.first['id'] as String;
+      if (product.categories.isNotEmpty) {
+        final categoryIds = product.categories;
+
+        await supabase.from('product_category').insert(
+              categoryIds
+                  .map((categoryId) => {'product_id': productId, 'category_id': categoryId})
+                  .toList(),
+            );
+      }
+
+      final fetchedProductData =
+          await supabase.from('products').select('*, categories(*)').eq('id', productId).single();
+
+      return Product.fromJson(fetchedProductData);
     });
   }
 
