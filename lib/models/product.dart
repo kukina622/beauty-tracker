@@ -1,6 +1,7 @@
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/date.dart';
+import 'package:beauty_tracker/util/extensions/map.dart';
 import 'package:collection/collection.dart';
 
 class Product {
@@ -19,9 +20,9 @@ class Product {
     return Product(
       id: json['id'] as String,
       name: json['name'] as String,
-      brand: json['brand'] as String,
-      price: (json['price'] as num).toDouble(),
-      purchaseDate: DateTime.parse(json['purchase_date'] as String),
+      brand: json.getOptionalString('brand'),
+      price: json.getOptionalDouble('price'),
+      purchaseDate: json.getOptionalDateTime('purchase_date'),
       expiryDate: DateTime.parse(json['expiry_date'] as String),
       status: ProductStatusConfig.fromValue(json['status'] as String? ?? 'inUse'),
       categories: (json['categories'] as List<dynamic>?)
