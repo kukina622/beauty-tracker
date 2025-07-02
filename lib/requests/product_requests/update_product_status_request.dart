@@ -1,7 +1,7 @@
 import 'package:beauty_tracker/models/product_status.dart';
 
-class UpdateProductStatusRequests {
-  UpdateProductStatusRequests({
+class UpdateProductStatusRequest {
+  UpdateProductStatusRequest({
     required this.productId,
     required this.status,
   });

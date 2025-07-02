@@ -5,7 +5,7 @@ import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
-import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_status_request.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
@@ -74,7 +74,7 @@ class HomePage extends HookWidget {
       }
 
       final payloads = pendingUpdates.value.entries.map((entry) {
-        return UpdateProductStatusRequests(
+        return UpdateProductStatusRequest(
           productId: entry.key,
           status: entry.value,
         );

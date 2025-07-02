@@ -3,7 +3,7 @@ import 'package:beauty_tracker/errors/result_guard.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
-import 'package:beauty_tracker/requests/product_requests/update_product_status_requests.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_status_request.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:collection/collection.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -81,7 +81,7 @@ class SupabaseProductServiceImpl implements ProductService {
   }
 
   @override
-  Future<Result<void>> bulkUpdateProductsStatus(List<UpdateProductStatusRequests> payloads) async {
+  Future<Result<void>> bulkUpdateProductsStatus(List<UpdateProductStatusRequest> payloads) async {
     return resultGuard(() async {
       final List<String> productIds = payloads.map((e) => e.productId).toList();
       final fetchedProductMap =
