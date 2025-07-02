@@ -21,14 +21,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class HomePage extends StatefulHookWidget {
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final isInitialLoad = useState(true);
@@ -153,13 +148,15 @@ class _HomePageState extends State<HomePage> {
               return const SizedBox.shrink();
             }
 
+            final product = animatedListController.products[index];
+
             return AnimatedProductCardWrapper(
               animation: animation,
               child: ProductCard(
-                product: animatedListController.products[index],
+                product: product,
                 isEditStatusMode: isEditStatusMode.value,
                 onStatusChanged: (status) {
-                  pendingUpdates.value[animatedListController.products[index].id] = status;
+                  pendingUpdates.value[product.id] = status;
                 },
               ),
             );
