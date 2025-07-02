@@ -41,7 +41,7 @@ class ProductStatusFilter extends HookWidget {
             onStatusChanged!(value);
           }
         },
-        defaultValue: ProductStatus.inUse,
+        defaultValue: initialStatus,
       ),
     );
   }

@@ -32,7 +32,7 @@ AnimatedProductListController useAnimatedProductList() {
     } else {
       _updateAnimatedList(listKey, products.value, newProducts, products);
     }
-  }, []);
+  }, [products.value]);
 
   return AnimatedProductListController(
     listKey: listKey,
@@ -54,29 +54,12 @@ Future<void> _updateAnimatedList(
 
   const animationDuration = Duration(milliseconds: 350);
 
-  final removeCompleter = Completer<void>();
-  int removedCount = 0;
-  final totalToRemove = oldProducts.length;
-
-  if (totalToRemove == 0) {
-    removeCompleter.complete();
-  }
-
   for (int i = oldProducts.length - 1; i >= 0; i--) {
     final removedProduct = oldProducts[i];
 
     listState.removeItem(
       i,
       (context, animation) {
-        animation.addStatusListener((status) {
-          if (status == AnimationStatus.dismissed) {
-            removedCount++;
-            if (removedCount == totalToRemove) {
-              removeCompleter.complete();
-            }
-          }
-        });
-
         return AnimatedProductCardWrapper(
           animation: animation,
           isRemoving: true,
@@ -90,9 +73,7 @@ Future<void> _updateAnimatedList(
     );
   }
 
-  productsNotifier.value = [];
-
-  await removeCompleter.future;
+  await Future<void>.delayed(animationDuration + const Duration(milliseconds: 50));
 
   for (int i = 0; i < newProducts.length; i++) {
     listState.insertItem(i, duration: animationDuration);
