@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/router/router.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'services/local_storage_service/local_storage_service.dart';
@@ -61,7 +63,14 @@ Future<void> main() async {
   setUpDi();
   configLoading();
 
-  runApp(BeautyTrackerApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
+      child: BeautyTrackerApp(),
+    ),
+  );
 }
 
 class BeautyTrackerApp extends StatelessWidget {
