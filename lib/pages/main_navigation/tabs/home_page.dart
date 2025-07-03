@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
+import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
@@ -67,6 +68,12 @@ class HomePage extends HookWidget {
       animatedListController.updateProducts(products);
       return null;
     }, [products]);
+
+    // Listen for product provider changes to refresh data
+    useProductRefreshListener(() {
+      productsResult.refresh();
+      productsExpiringResult.refresh();
+    });
 
     final onConfirmUpdateProductStatus = useCallback(() async {
       if (pendingUpdates.value.isEmpty) {

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
@@ -28,6 +29,11 @@ class ExpiringSoonPage extends HookWidget {
 
       return Product.sortByExpiryDate(productsResult.data!);
     }, [productsResult.data]);
+
+    useProductRefreshListener(() {
+      productsResult.refresh();
+      productsResult.refresh();
+    });
 
     return PageScrollView(
       header: [
