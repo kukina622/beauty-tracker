@@ -127,4 +127,16 @@ class SupabaseProductServiceImpl implements ProductService {
       }
     });
   }
+
+  @override
+  Future<Result<void>> deleteProduct(String productId) async {
+    return resultGuard(() async {
+      final products = await supabase.from('products').select().eq('id', productId);
+      if (products.isEmpty) {
+        throw Exception('Product not found');
+      }
+      await supabase.from('product_category').delete().eq('product_id', productId);
+      await supabase.from('products').delete().eq('id', productId);
+    });
+  }
 }

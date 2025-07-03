@@ -3,9 +3,11 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
 import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
+import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_status_request.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
@@ -34,6 +36,8 @@ class HomePage extends HookWidget {
 
     final productService = useDi<ProductService>();
     final animatedListController = useAnimatedProductList();
+
+    final productProvider = useProvider<ProductProvider>();
 
     final productsResult = useServiceData(
       () => productService.getProductByStatus(productStatus.value),
@@ -93,7 +97,7 @@ class HomePage extends HookWidget {
         case Ok():
           EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
           pendingUpdates.value = {};
-          await productsResult.refresh();
+          productProvider.triggerRefresh();
           break;
         case Err():
           EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
@@ -164,6 +168,9 @@ class HomePage extends HookWidget {
                 isEditStatusMode: isEditStatusMode.value,
                 onStatusChanged: (status) {
                   pendingUpdates.value[product.id] = status;
+                },
+                onDelete: () {
+                  productProvider.triggerRefresh();
                 },
               ),
             );

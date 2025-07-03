@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
+import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/util/icon.dart';
 import 'package:beauty_tracker/widgets/category/category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
@@ -12,6 +15,7 @@ import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_butt
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:beauty_tracker/widgets/product/selectable_status_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ProductCard extends HookWidget {
@@ -20,10 +24,12 @@ class ProductCard extends HookWidget {
     required this.product,
     this.isEditStatusMode = false,
     this.onStatusChanged,
+    this.onDelete,
   });
   final Product product;
   final bool isEditStatusMode;
   final void Function(ProductStatus status)? onStatusChanged;
+  final void Function()? onDelete;
 
   List<ProductStatus> get availableStatuses {
     return ProductStatusConfig.getAllStatuses()
@@ -180,6 +186,24 @@ class ProductCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productService = useDi<ProductService>();
+
+    final onDeleteProduct = useCallback(() async {
+      final result = await productService.deleteProduct(product.id);
+      switch (result) {
+        case Ok():
+          EasyLoading.showSuccess('刪除成功', maskType: EasyLoadingMaskType.black);
+          if (context.mounted) {
+            AutoRouter.of(context).pop();
+          }
+          onDelete?.call();
+          break;
+        case Err():
+          EasyLoading.showError('刪除失敗', maskType: EasyLoadingMaskType.black);
+          break;
+      }
+    }, [productService, product.id]);
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +230,7 @@ class ProductCard extends HookWidget {
                       context,
                       title: '刪除保養品',
                       description: '你確定要刪除"${product.name}"嗎？\n這個操作不能復原',
-                      onConfirm: () {},
+                      onConfirm: onDeleteProduct,
                     );
                   },
                 ),
