@@ -9,10 +9,12 @@ import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:watch_it/watch_it.dart';
+import 'package:get_it/get_it.dart';
+
+final di = GetIt.instance;
 
 @RoutePage()
-class RegisterPage extends WatchingWidget {
+class RegisterPage extends HookWidget {
   RegisterPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
@@ -55,147 +57,145 @@ class RegisterPage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HookBuilder(builder: (context) {
-      final emailController = useTextEditingController();
-      final passwordController = useTextEditingController();
-      final confirmPasswordController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
 
-      return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    '創建帳戶',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '請填寫以下資料完成註冊',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade600,
-                        ),
-                  ),
-                  const SizedBox(height: 32),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        EmailFormField(
-                          labelText: '電子郵件',
-                          hintText: '請輸入您的電子郵件',
-                          controller: emailController,
-                        ),
-                        const SizedBox(height: 16),
-                        PasswordFormField(
-                          labelText: '密碼',
-                          hintText: '請輸入密碼',
-                          controller: passwordController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return '請輸入密碼';
-                            }
-                            if (value.length < 6) {
-                              return '密碼必須至少包含6個字';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        PasswordFormField(
-                          labelText: '確認密碼',
-                          hintText: '請再次輸入密碼',
-                          controller: confirmPasswordController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return '請再次輸入密碼';
-                            }
-                            if (value != passwordController.text) {
-                              return '兩次輸入的密碼不一致';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                        AppElevatedButton(
-                          isFilled: true,
-                          onPressed: () {
-                            final bool isFormValid = _formKey.currentState?.validate() ?? false;
-
-                            if (isFormValid) {
-                              signUpWithEmail(
-                                context,
-                                emailController.text,
-                                passwordController.text,
-                              );
-                            }
-                          },
-                          text: '註冊',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: Colors.grey.shade300)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          '或使用以下方式註冊',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                          ),
-                        ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Text(
+                  '創建帳戶',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '請填寫以下資料完成註冊',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey.shade600,
                       ),
-                      Expanded(child: Divider(color: Colors.grey.shade300)),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
+                ),
+                const SizedBox(height: 32),
+                Form(
+                  key: _formKey,
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
+                      EmailFormField(
+                        labelText: '電子郵件',
+                        hintText: '請輸入您的電子郵件',
+                        controller: emailController,
+                      ),
+                      const SizedBox(height: 16),
+                      PasswordFormField(
+                        labelText: '密碼',
+                        hintText: '請輸入密碼',
+                        controller: passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '請輸入密碼';
+                          }
+                          if (value.length < 6) {
+                            return '密碼必須至少包含6個字';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      PasswordFormField(
+                        labelText: '確認密碼',
+                        hintText: '請再次輸入密碼',
+                        controller: confirmPasswordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '請再次輸入密碼';
+                          }
+                          if (value != passwordController.text) {
+                            return '兩次輸入的密碼不一致';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      AppElevatedButton(
+                        isFilled: true,
+                        onPressed: () {
+                          final bool isFormValid = _formKey.currentState?.validate() ?? false;
+
+                          if (isFormValid) {
+                            signUpWithEmail(
+                              context,
+                              emailController.text,
+                              passwordController.text,
+                            );
+                          }
+                        },
+                        text: '註冊',
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '已有帳戶？',
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey.shade300)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        '或使用以下方式註冊',
                         style: TextStyle(
                           color: Colors.grey.shade600,
+                          fontSize: 12,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          AutoRouter.of(context).maybePop();
-                        },
-                        child: const Text(
-                          '立即登入',
-                          style: TextStyle(
-                            color: Color(0xFFFF9A9E),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
+                    ),
+                    Expanded(child: Divider(color: Colors.grey.shade300)),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '已有帳戶？',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        AutoRouter.of(context).maybePop();
+                      },
+                      child: const Text(
+                        '立即登入',
+                        style: TextStyle(
+                          color: Color(0xFFFF9A9E),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

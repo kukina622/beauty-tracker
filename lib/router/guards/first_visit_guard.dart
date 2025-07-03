@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
-import 'package:watch_it/watch_it.dart';
+import 'package:get_it/get_it.dart';
+
+final di = GetIt.instance;
 
 class FirstVisitGuard extends AutoRouteGuard {
   @override

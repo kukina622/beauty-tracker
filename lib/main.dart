@@ -10,12 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:watch_it/watch_it.dart';
 
 import 'services/local_storage_service/local_storage_service.dart';
 
 void setUpDi() {
+  final di = GetIt.instance;
+
   di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
   di.registerSingleton<LocalStorageService>(
     SharedPreferencesLocalStorageServiceImpl(),
