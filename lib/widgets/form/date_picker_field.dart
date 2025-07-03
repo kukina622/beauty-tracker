@@ -110,7 +110,7 @@ class DatePickerField extends HookWidget {
                     Text(
                       pickedDate.value == null
                           ? '請選擇日期'
-                          : DateFormat('yyyy/MM/d').format(pickedDate.value!),
+                          : DateFormat('yyyy/MM/dd').format(pickedDate.value!),
                       style: TextStyle(
                         fontSize: 16,
                         color: pickedDate.value == null ? Colors.grey : Colors.black,
