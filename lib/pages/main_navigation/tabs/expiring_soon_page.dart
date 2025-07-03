@@ -32,7 +32,6 @@ class ExpiringSoonPage extends HookWidget {
 
     useProductRefreshListener(() {
       productsResult.refresh();
-      productsResult.refresh();
     });
 
     return PageScrollView(
@@ -51,6 +50,7 @@ class ExpiringSoonPage extends HookWidget {
                 margin: const EdgeInsets.only(bottom: 20),
                 child: ProductCard(
                   product: products[index],
+                  onDelete: () => productsResult.refresh(),
                 ),
               );
             },

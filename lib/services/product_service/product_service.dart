@@ -13,4 +13,5 @@ abstract class ProductService {
   Future<Result<Product>> createNewProduct(CreateProductRequest product);
   Future<Result<Product>> updateProduct(String productId, UpdateProductRequest product);
   Future<Result<void>> bulkUpdateProductsStatus(List<UpdateProductStatusRequest> payloads);
+  Future<Result<void>> deleteProduct(String productId);
 }
