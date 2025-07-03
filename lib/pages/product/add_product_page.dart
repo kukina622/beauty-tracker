@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -55,6 +57,7 @@ class AddProductPage extends HookWidget {
     final selectedCategoryIds = useState<List<String>>([]);
     final purchaseDate = useState<DateTime?>(null);
     final expirationDate = useState<DateTime?>(null);
+    final productProvider = useProvider<ProductProvider>();
 
     final categoryResult = useServiceData(
       () => categoryService.getAllCategories(),
@@ -86,6 +89,7 @@ class AddProductPage extends HookWidget {
         switch (result) {
           case Ok():
             EasyLoading.showSuccess('新增成功', maskType: EasyLoadingMaskType.black);
+            productProvider.triggerRefresh();
             if (context.mounted) {
               AutoRouter.of(context).pop();
             }

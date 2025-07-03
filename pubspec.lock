@@ -333,14 +333,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  functional_listener:
-    dependency: transitive
-    description:
-      name: functional_listener
-      sha256: c096db771b4ce7ba0f886cc4a761044b11e8276a7bc24cfc812dc4b2bc6f5b16
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   functions_client:
     dependency: transitive
     description:
@@ -350,7 +342,7 @@ packages:
     source: hosted
     version: "2.4.1"
   get_it:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: get_it
       sha256: f126a3e286b7f5b578bf436d5592968706c4c1de28a228b870ce375d9f743103
@@ -573,6 +565,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   package_config:
     dependency: transitive
     description:
@@ -677,6 +677,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  provider:
+    dependency: "direct main"
+    description:
+      name: provider
+      sha256: "4abbd070a04e9ddc287673bf5a030c7ca8b685ff70218720abab8b092f53dd84"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.5"
   pub_semver:
     dependency: transitive
     description:
@@ -978,14 +986,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.3.0"
-  watch_it:
-    dependency: "direct main"
-    description:
-      name: watch_it
-      sha256: "44ad14c66c9a4240ac39243c8e09849a85ab6511b7b9217cacde024ed45796e1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.5"
   watcher:
     dependency: transitive
     description:

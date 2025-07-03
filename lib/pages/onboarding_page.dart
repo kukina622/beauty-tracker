@@ -4,7 +4,9 @@ import 'package:beauty_tracker/services/local_storage_service/local_storage_serv
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:watch_it/watch_it.dart';
+import 'package:get_it/get_it.dart';
+
+final di = GetIt.instance;
 
 class OnboardingData {
   OnboardingData({
