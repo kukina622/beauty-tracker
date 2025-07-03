@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
-import 'package:beauty_tracker/models/product.dart';
-import 'package:beauty_tracker/models/product_status.dart';
-import 'package:beauty_tracker/util/extensions/color.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_request.dart';
+import 'package:beauty_tracker/services/category_service/category_service.dart';
+import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
@@ -11,6 +14,7 @@ import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -19,75 +23,6 @@ class EditProductPage extends HookWidget {
 
   final String? productId;
   final _formKey = GlobalKey<FormState>();
-
-  final Product? product = Product(
-    id: '1',
-    name: 'Moisturizer',
-    brand: 'Brand A',
-    price: 29.99,
-    purchaseDate: DateTime(2023, 1, 15),
-    expiryDate: DateTime(2024, 1, 15),
-    status: ProductStatus.inUse,
-    categories: [
-      Category(
-        id: '1',
-        categoryName: 'Skincare',
-        categoryIcon: Icons.face.codePoint,
-        categoryColor: Colors.blue.toInt(),
-      ),
-      Category(
-        id: '2',
-        categoryName: 'Makeup',
-        categoryIcon: Icons.brush.codePoint,
-        categoryColor: Colors.pink.toInt(),
-      ),
-    ],
-  );
-
-  final allCategories = [
-    Category(
-      id: '1',
-      categoryName: 'Skincare',
-      categoryIcon: Icons.face.codePoint,
-      categoryColor: Colors.blue.toInt(),
-    ),
-    Category(
-      id: '2',
-      categoryName: 'Makeup',
-      categoryIcon: Icons.brush.codePoint,
-      categoryColor: Colors.pink.toInt(),
-    ),
-    Category(
-      id: '3',
-      categoryName: 'Haircare',
-      categoryIcon: Icons.abc.codePoint,
-      categoryColor: Colors.green.toInt(),
-    ),
-    Category(
-      id: '4',
-      categoryName: 'Nail Art',
-      categoryIcon: Icons.access_alarm_rounded.codePoint,
-      categoryColor: Colors.purple.toInt(),
-    ),
-    Category(
-      id: '5',
-      categoryName: 'Body Care',
-      categoryIcon: Icons.hail.codePoint,
-      categoryColor: Colors.orange.toInt(),
-    ),
-    Category(
-      id: '6',
-      categoryName: 'Fragrance',
-      categoryIcon: Icons.cabin.codePoint,
-      categoryColor: Colors.yellow.toInt(),
-    ),
-    Category(
-      id: '7',
-      categoryName: 'Tools',
-      categoryIcon: Icons.build.codePoint,
-      categoryColor: Colors.grey.toInt(),
-    ),
-  ];
 
   Widget _buildSelectCategoryItems(
     BuildContext context,
@@ -113,16 +48,97 @@ class EditProductPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productNameController = useTextEditingController(text: product?.name ?? '');
-    final brandController = useTextEditingController(text: product?.brand ?? '');
-    final priceController = useTextEditingController(text: product?.price.toString() ?? '');
+    // service
+    final categoryService = useDi<CategoryService>();
+    final productService = useDi<ProductService>();
 
-    final selectedCategoryIds = useState<List<String>>(
-      product?.categories?.map((category) => category.id).toList() ?? [],
+    // field controllers
+    final productNameController = useTextEditingController();
+    final brandController = useTextEditingController();
+    final priceController = useTextEditingController();
+
+    final selectedCategoryIds = useState<List<String>>([]);
+
+    final purchaseDate = useState<DateTime?>(null);
+    final expiryDate = useState<DateTime?>(null);
+
+    final currentProductResult = useServiceData(
+      () => productService.getProductById(productId!),
     );
 
-    final purchaseDate = useState<DateTime?>(product?.purchaseDate);
-    final expiryDate = useState<DateTime?>(product?.expiryDate);
+    final currentProduct = currentProductResult.data;
+
+    final allCategoriesResult = useServiceData(
+      () => categoryService.getAllCategories(),
+    );
+
+    final allCategories = allCategoriesResult.data ?? [];
+
+    useEffect(() {
+      if (currentProduct != null) {
+        productNameController.text = currentProduct.name;
+        brandController.text = currentProduct.brand ?? '';
+        priceController.text = currentProduct.price?.toString() ?? '';
+        selectedCategoryIds.value = currentProduct.categories?.map((c) => c.id).toList() ?? [];
+        purchaseDate.value = currentProduct.purchaseDate;
+        expiryDate.value = currentProduct.expiryDate;
+      }
+      return null;
+    }, [currentProduct]);
+
+    useEffect(() {
+      if (currentProductResult.loading || allCategoriesResult.loading) {
+        EasyLoading.show(
+          status: '載入中...',
+          maskType: EasyLoadingMaskType.black,
+        );
+      } else {
+        EasyLoading.dismiss();
+      }
+      return null;
+    }, [currentProductResult.loading, allCategoriesResult.loading]);
+
+    final onUpdateProduct = useCallback(() async {
+      final bool isFormValid = _formKey.currentState?.validate() ?? false;
+
+      if (!isFormValid) {
+        EasyLoading.showError('請填寫所有必填欄位');
+        return;
+      }
+
+      final payload = UpdateProductRequest(
+        name: productNameController.text.trim(),
+        brand: brandController.text.isNotEmpty ? brandController.text.trim() : null,
+        price: double.tryParse(priceController.text.trim()),
+        purchaseDate: purchaseDate.value,
+        expiryDate: expiryDate.value,
+        categories: selectedCategoryIds.value,
+      );
+
+      EasyLoading.show(status: '更新中...', maskType: EasyLoadingMaskType.black);
+      final updatedProductResult = await productService.updateProduct(productId!, payload);
+
+      switch (updatedProductResult) {
+        case Ok():
+          EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
+          if (context.mounted) {
+            AutoRouter.of(context).pop();
+          }
+          break;
+        case Err():
+          EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
+          break;
+      }
+    }, [
+      _formKey,
+      productNameController,
+      brandController,
+      priceController,
+      purchaseDate,
+      expiryDate,
+      selectedCategoryIds,
+      productService,
+    ]);
 
     return Scaffold(
       appBar: AppBar(
@@ -202,7 +218,7 @@ class EditProductPage extends HookWidget {
                         ),
                         const SizedBox(height: 8),
                         DatePickerField(
-                          initialDate: purchaseDate.value,
+                          selectedDate: purchaseDate.value,
                           onDateChanged: (date) {
                             purchaseDate.value = date;
                           },
@@ -214,7 +230,7 @@ class EditProductPage extends HookWidget {
                         ),
                         const SizedBox(height: 8),
                         DatePickerField(
-                          initialDate: expiryDate.value,
+                          selectedDate: expiryDate.value,
                           onDateChanged: (date) {
                             expiryDate.value = date;
                           },
@@ -226,10 +242,7 @@ class EditProductPage extends HookWidget {
                   AppElevatedButton(
                     text: '更新',
                     backgroundColor: const Color(0xFF5ECCC4),
-                    onPressed: () {
-                      final bool isFormValid = _formKey.currentState?.validate() ?? false;
-                      if (isFormValid) {}
-                    },
+                    onPressed: onUpdateProduct,
                     isFilled: true,
                   )
                 ],
