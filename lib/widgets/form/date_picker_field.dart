@@ -6,6 +6,7 @@ class DatePickerField extends HookWidget {
   const DatePickerField({
     super.key,
     this.initialDate,
+    this.selectedDate,
     this.onDateChanged,
     this.firstDate,
     this.lastDate,
@@ -14,6 +15,7 @@ class DatePickerField extends HookWidget {
     this.autovalidateMode,
   });
   final DateTime? initialDate;
+  final DateTime? selectedDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
   final void Function(DateTime)? onDateChanged;
@@ -23,11 +25,18 @@ class DatePickerField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pickedDate = useState(initialDate);
+    final pickedDate = useState(selectedDate ?? initialDate);
     final errorText = useState<String?>(null);
 
     final firstDateValue = firstDate ?? DateTime(2000);
     final lastDateValue = lastDate ?? DateTime.now().add(const Duration(days: 365 * 10));
+
+    useEffect(() {
+      if (selectedDate != null) {
+        pickedDate.value = selectedDate;
+      }
+      return null;
+    }, [selectedDate]);
 
     useEffect(() {
       if (validator != null) {

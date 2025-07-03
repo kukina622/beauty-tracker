@@ -3,6 +3,7 @@ import 'package:beauty_tracker/errors/result_guard.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
+import 'package:beauty_tracker/requests/product_requests/update_product_request.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_status_request.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:collection/collection.dart';
@@ -68,6 +69,30 @@ class SupabaseProductServiceImpl implements ProductService {
 
         await supabase.from('product_category').insert(
               categoryIds
+                  .map((categoryId) => {'product_id': productId, 'category_id': categoryId})
+                  .toList(),
+            );
+      }
+
+      final fetchedProductData =
+          await supabase.from('products').select('*, categories(*)').eq('id', productId).single();
+
+      return Product.fromJson(fetchedProductData);
+    });
+  }
+
+  @override
+  Future<Result<Product>> updateProduct(String productId, UpdateProductRequest payload) {
+    return resultGuard(() async {
+      final productMap = payload.toJsonWithoutCategories();
+
+      await supabase.from('products').update(productMap).eq('id', productId);
+
+      await supabase.from('product_category').delete().eq('product_id', productId);
+
+      if (payload.categories.isNotEmpty) {
+        await supabase.from('product_category').insert(
+              payload.categories
                   .map((categoryId) => {'product_id': productId, 'category_id': categoryId})
                   .toList(),
             );
