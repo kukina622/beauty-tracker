@@ -210,6 +210,10 @@ class EditProductPage extends HookWidget {
                           onCategorySelected: (categoryIds) {
                             selectedCategoryIds.value = categoryIds;
                           },
+                          onCategoryCreated: (category) {
+                            final currentCategories = allCategoriesResult.data ?? [];
+                            allCategoriesResult.mutate([...currentCategories, category]);
+                          },
                         ),
                         const SizedBox(height: 8),
                         _buildSelectCategoryItems(
