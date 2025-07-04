@@ -147,7 +147,7 @@ class HomePage extends HookWidget {
                 },
               ),
               const SizedBox(height: 18),
-              SubTitleBar(title: '保養品'),
+              SubTitleBar(title: '美妝品'),
             ],
           ),
         ),

@@ -229,7 +229,7 @@ class ProductCard extends HookWidget {
                   onDelete: () {
                     DeleteDialog.show(
                       context,
-                      title: '刪除保養品',
+                      title: '刪除美妝品',
                       description: '你確定要刪除"${product.name}"嗎？\n這個操作不能復原',
                       onConfirm: onDeleteProduct,
                     );

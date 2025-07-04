@@ -112,7 +112,7 @@ class AddProductPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('新增保養品'),
+        title: const Text('新增美妝品'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, size: 20),
           onPressed: () => AutoRouter.of(context).pop(),
@@ -134,7 +134,7 @@ class AddProductPage extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '保養品細項',
+                          '美妝品細項',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 24),
@@ -223,7 +223,7 @@ class AddProductPage extends HookWidget {
                   ),
                   SizedBox(height: 16),
                   AppElevatedButton(
-                    text: '新增保養品',
+                    text: '新增美妝品',
                     onPressed: onCreateNewProduct,
                     isFilled: true,
                   )

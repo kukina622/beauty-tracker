@@ -25,9 +25,9 @@ class OnboardingPage extends HookWidget {
 
   final List<OnboardingData> items = [
     OnboardingData(
-      title: '不再忘記保養品的有效期限',
+      title: '不再忘記美妝品的有效期限',
       subtitle: '所有美妝品，一站式管理',
-      description: '這款 App 幫你輕鬆記錄所有化妝品與保養品的到期日，避免過期使用，守護肌膚健康。',
+      description: '這款 App 幫你輕鬆記錄所有化妝品與美妝品的到期日，避免過期使用，守護肌膚健康。',
     ),
     OnboardingData(
       title: '到期提醒，不錯過每一次使用',

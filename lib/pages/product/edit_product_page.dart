@@ -148,7 +148,7 @@ class EditProductPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('編輯保養品'),
+        title: const Text('編輯美妝品'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, size: 20),
           onPressed: () => AutoRouter.of(context).pop(),
@@ -170,7 +170,7 @@ class EditProductPage extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '保養品細項',
+                          '美妝品細項',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 24),
