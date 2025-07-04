@@ -12,6 +12,8 @@ class ExpiringSoonTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final description = expiringCount > 0 ? '有$expiringCount件產品即將過期！' : '未有產品即將過期。';
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -46,7 +48,7 @@ class ExpiringSoonTile extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '有$expiringCount件產品即將過期！',
+                  description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey.shade600,
                       ),
