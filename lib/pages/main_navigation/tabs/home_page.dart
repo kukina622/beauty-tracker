@@ -109,7 +109,6 @@ class HomePage extends HookWidget {
       header: [
         AppTitleBar(
           title: 'Beauty Tracker',
-          subtitle: 'Track your beauty products',
           actionButton: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
