@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
@@ -62,16 +63,12 @@ class ProductCard extends HookWidget {
               color: Color(0xFF2D3142),
             ),
           ),
-          const SizedBox(height: 8),
-          // Expiry status
-          ExpiringChip(expiryDate: product.expiryDate),
         ],
       ),
     );
   }
 
   Widget _buildProductActions({
-    required double? price,
     required VoidCallback onEdit,
     required VoidCallback onDelete,
   }) {
@@ -97,19 +94,34 @@ class ProductCard extends HookWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        if (price != null) ...[
-          Text(
-            '\$${price.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey.shade700,
-            ),
-          ),
-        ]
       ],
     );
+  }
+
+  Widget _buildProductBrand(BuildContext context, {Brand? brand}) {
+    if (brand == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(children: [
+      Icon(
+        Icons.workspace_premium_outlined,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      SizedBox(width: 8),
+      Text(
+        brand.brandName,
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade700,
+          fontWeight: FontWeight.w600,
+        ),
+      )
+    ]);
+  }
+
+  Widget _buildProductReminder() {
+    return ExpiringChip(expiryDate: product.expiryDate);
   }
 
   Widget _buildProductCategory({List<Category>? categories = const []}) {
@@ -210,9 +222,9 @@ class ProductCard extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildProductImage(
                   category: product.categories?.firstOrNull,
@@ -222,7 +234,6 @@ class ProductCard extends HookWidget {
                   name: product.name,
                 ),
                 _buildProductActions(
-                  price: product.price,
                   onEdit: () {
                     AutoRouter.of(context).pushPath('/product/edit/${product.id}');
                   },
@@ -235,6 +246,16 @@ class ProductCard extends HookWidget {
                     );
                   },
                 ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildProductBrand(context, brand: product.brand),
+                _buildProductReminder(),
               ],
             ),
           ),
