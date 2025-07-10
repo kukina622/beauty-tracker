@@ -6,8 +6,10 @@ import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_request.dart';
+import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
+import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selector.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
@@ -53,12 +55,13 @@ class EditProductPage extends HookWidget {
     // service
     final categoryService = useDi<CategoryService>();
     final productService = useDi<ProductService>();
+    final brandService = useDi<BrandService>();
 
     // field controllers
     final productNameController = useTextEditingController();
-    final brandController = useTextEditingController();
     final priceController = useTextEditingController();
 
+    final selectedBrandId = useState<String?>(null);
     final selectedCategoryIds = useState<List<String>>([]);
 
     final purchaseDate = useState<DateTime?>(null);
@@ -79,11 +82,17 @@ class EditProductPage extends HookWidget {
 
     final allCategories = allCategoriesResult.data ?? [];
 
+    final brandResult = useServiceData(
+      () => brandService.getAllBrands(),
+    );
+
+    final allBrands = brandResult.data ?? [];
+
     useEffect(() {
       if (currentProduct != null) {
         productNameController.text = currentProduct.name;
-        brandController.text = currentProduct.brand ?? '';
         priceController.text = currentProduct.price?.toString() ?? '';
+        selectedBrandId.value = currentProduct.brand?.id;
         selectedCategoryIds.value = currentProduct.categories?.map((c) => c.id).toList() ?? [];
         purchaseDate.value = currentProduct.purchaseDate;
         expiryDate.value = currentProduct.expiryDate;
@@ -113,7 +122,7 @@ class EditProductPage extends HookWidget {
 
       final payload = UpdateProductRequest(
         name: productNameController.text.trim(),
-        brand: brandController.text.isNotEmpty ? brandController.text.trim() : null,
+        brand: selectedBrandId.value,
         price: double.tryParse(priceController.text.trim()),
         purchaseDate: purchaseDate.value,
         expiryDate: expiryDate.value,
@@ -138,11 +147,11 @@ class EditProductPage extends HookWidget {
     }, [
       _formKey,
       productNameController,
-      brandController,
       priceController,
       purchaseDate,
       expiryDate,
       selectedCategoryIds,
+      selectedBrandId,
       productService,
     ]);
 
@@ -187,16 +196,25 @@ class EditProductPage extends HookWidget {
                         ),
                         const SizedBox(height: 16),
                         BaseFormField(
-                          labelText: '品牌(可選)',
-                          hintText: '輸入品牌名稱',
-                          controller: brandController,
-                        ),
-                        const SizedBox(height: 16),
-                        BaseFormField(
                           labelText: '價格(可選)',
                           hintText: '輸入價格',
                           controller: priceController,
                           prefixText: '\$ ',
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          '品牌',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 16),
+                        BrandSelector(
+                          allBrands: allBrands,
+                          selectedBrandId: selectedBrandId.value,
+                          onBrandSelected: (brand) => selectedBrandId.value = brand,
+                          onBrandCreated: (brand) {
+                            final currentBrands = brandResult.data ?? [];
+                            brandResult.mutate([...currentBrands, brand]);
+                          },
                         ),
                         const SizedBox(height: 16),
                         Text(
