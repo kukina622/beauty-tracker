@@ -36,10 +36,7 @@ class ExpiringSoonPage extends HookWidget {
 
     return PageScrollView(
       header: [
-        AppTitleBar(
-          title: 'Expiring Soon',
-          subtitle: 'Products that need your attention',
-        ),
+        AppTitleBar(title: '即將過期'),
       ],
       slivers: [
         SliverList(

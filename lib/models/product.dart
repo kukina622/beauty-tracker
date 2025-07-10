@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/util/date.dart';
@@ -20,11 +21,11 @@ class Product {
     return Product(
       id: json['id'] as String,
       name: json['name'] as String,
-      brand: json.getOptionalString('brand'),
       price: json.getOptionalDouble('price'),
       purchaseDate: json.getOptionalDateTime('purchase_date'),
       expiryDate: DateTime.parse(json['expiry_date'] as String),
       status: ProductStatusConfig.fromValue(json['status'] as String? ?? 'inUse'),
+      brand: json['brands'] != null ? Brand.fromJson(json['brands'] as Map<String, dynamic>) : null,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -33,7 +34,7 @@ class Product {
   }
   final String id;
   final String name;
-  final String? brand;
+  final Brand? brand;
   final double? price;
   final DateTime? purchaseDate;
   final DateTime expiryDate;
@@ -44,7 +45,7 @@ class Product {
     return {
       'id': id,
       'name': name,
-      'brand': brand,
+      'brand': brand, // TODO: Handle brand serialization
       'price': price,
       'purchase_date': tryFormatDate(purchaseDate),
       'expiry_date': tryFormatDate(expiryDate),

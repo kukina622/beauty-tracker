@@ -57,7 +57,7 @@ class AnalyticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageScrollView(
-      header: [AppTitleBar(title: 'Analytics')],
+      header: [AppTitleBar(title: '使用分析')],
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate(

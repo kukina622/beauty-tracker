@@ -6,8 +6,10 @@ import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
+import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
+import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selector.dart';
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
@@ -51,9 +53,11 @@ class AddProductPage extends HookWidget {
   Widget build(BuildContext context) {
     final categoryService = useDi<CategoryService>();
     final productService = useDi<ProductService>();
+    final brandService = useDi<BrandService>();
+
     final productNameController = useTextEditingController();
-    final brandController = useTextEditingController();
     final priceController = useTextEditingController();
+    final selectedBrandId = useState<String?>(null);
     final selectedCategoryIds = useState<List<String>>([]);
     final purchaseDate = useState<DateTime?>(null);
     final expirationDate = useState<DateTime?>(null);
@@ -65,11 +69,17 @@ class AddProductPage extends HookWidget {
 
     final allCategories = categoryResult.data ?? [];
 
+    final brandResult = useServiceData(
+      () => brandService.getAllBrands(),
+    );
+
+    final allBrands = brandResult.data ?? [];
+
     final onCreateNewProduct = useCallback(() async {
       final bool isFormValid = _formKey.currentState?.validate() ?? false;
       if (isFormValid) {
         final productName = productNameController.text.trim();
-        final brand = brandController.text.trim();
+        final brand = selectedBrandId.value;
         final price = double.tryParse(priceController.text.trim());
         final purchaseDateValue = purchaseDate.value;
         final expirationDateValue = expirationDate.value;
@@ -102,11 +112,11 @@ class AddProductPage extends HookWidget {
     }, [
       _formKey,
       productNameController,
-      brandController,
       priceController,
       purchaseDate,
       expirationDate,
       selectedCategoryIds,
+      selectedBrandId,
       productService
     ]);
 
@@ -151,12 +161,6 @@ class AddProductPage extends HookWidget {
                         ),
                         const SizedBox(height: 16),
                         BaseFormField(
-                          labelText: '品牌(可選)',
-                          hintText: '輸入品牌名稱',
-                          controller: brandController,
-                        ),
-                        const SizedBox(height: 16),
-                        BaseFormField(
                           labelText: '價格(可選)',
                           hintText: '輸入價格',
                           prefixText: '\$ ',
@@ -169,6 +173,21 @@ class AddProductPage extends HookWidget {
                               }
                             }
                             return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          '品牌',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 16),
+                        BrandSelector(
+                          allBrands: allBrands,
+                          selectedBrandId: selectedBrandId.value,
+                          onBrandSelected: (brand) => selectedBrandId.value = brand,
+                          onBrandCreated: (brand) {
+                            final currentBrands = brandResult.data ?? [];
+                            brandResult.mutate([...currentBrands, brand]);
                           },
                         ),
                         const SizedBox(height: 16),
