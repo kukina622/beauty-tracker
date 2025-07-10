@@ -130,7 +130,7 @@ class ProductCard extends HookWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
       child: SizedBox(
         height: 28,
         child: ListView(
@@ -250,7 +250,7 @@ class ProductCard extends HookWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+            padding: EdgeInsets.only(left: 16, right: 16, bottom: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
