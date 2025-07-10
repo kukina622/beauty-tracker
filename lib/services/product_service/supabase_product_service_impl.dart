@@ -24,8 +24,11 @@ class SupabaseProductServiceImpl implements ProductService {
   @override
   Future<Result<Product>> getProductById(String productId) {
     return resultGuard(() async {
-      final fetchedProductData =
-          await supabase.from('products').select('*, categories(*), brands(*)').eq('id', productId).single();
+      final fetchedProductData = await supabase
+          .from('products')
+          .select('*, categories(*), brands(*)')
+          .eq('id', productId)
+          .single();
 
       return Product.fromJson(fetchedProductData);
     });
@@ -49,8 +52,9 @@ class SupabaseProductServiceImpl implements ProductService {
   @override
   Future<Result<List<Product>>> getExpiringSoonProducts() {
     return resultGuard(() async {
-      final fetchedProductData =
-          await supabase.from('products_in_use_expiring_in_30d').select('*, categories(*)');
+      final fetchedProductData = await supabase
+          .from('products_in_use_expiring_in_30d')
+          .select('*, categories(*), brands(*)');
       return fetchedProductData.map((item) => Product.fromJson(item)).toList();
     });
   }
