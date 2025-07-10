@@ -82,7 +82,7 @@ class SupabaseProductServiceImpl implements ProductService {
       }
 
       final fetchedProductData =
-          await supabase.from('products').select('*, categories(*)').eq('id', productId).single();
+          await supabase.from('products').select('*, categories(*), brands(*)').eq('id', productId).single();
 
       return Product.fromJson(fetchedProductData);
     });
