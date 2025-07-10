@@ -25,7 +25,7 @@ class Product {
       purchaseDate: json.getOptionalDateTime('purchase_date'),
       expiryDate: DateTime.parse(json['expiry_date'] as String),
       status: ProductStatusConfig.fromValue(json['status'] as String? ?? 'inUse'),
-      brand: json['brand'] != null ? Brand.fromJson(json['brand'] as Map<String, dynamic>) : null,
+      brand: json['brands'] != null ? Brand.fromJson(json['brands'] as Map<String, dynamic>) : null,
       categories: (json['categories'] as List<dynamic>?)
               ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
               .toList() ??
