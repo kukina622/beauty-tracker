@@ -1,8 +1,10 @@
 import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selection_sheet.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class BrandSelector extends StatelessWidget {
+class BrandSelector extends HookWidget {
   const BrandSelector({
     super.key,
     this.allBrands = const [],
@@ -12,11 +14,17 @@ class BrandSelector extends StatelessWidget {
   });
   final List<Brand> allBrands;
   final String? selectedBrandId;
-  final void Function(List<String>)? onBrandSelected;
+  final void Function(String?)? onBrandSelected;
   final void Function(Brand)? onBrandCreated;
 
   @override
   Widget build(BuildContext context) {
+    final selectedBrand = useState<Brand?>(null);
+
+    selectedBrand.value = allBrands.firstWhereOrNull(
+      (brand) => brand.id == selectedBrandId,
+    );
+
     return GestureDetector(
       onTap: () {
         BrandSelectionSheet.show(
@@ -24,7 +32,7 @@ class BrandSelector extends StatelessWidget {
           allBrands: allBrands,
           initialSelectedId: selectedBrandId,
           onConfirmed: (selectedIds) {
-            onBrandSelected?.call(selectedIds);
+            onBrandSelected?.call(selectedIds.firstOrNull);
           },
           onBrandCreated: onBrandCreated,
         );
@@ -43,7 +51,7 @@ class BrandSelector extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '選擇品牌',
+              selectedBrand.value?.brandName ?? '選擇品牌',
               style: TextStyle(
                 fontSize: 16,
                 color: const Color(0xFF2D3142),
