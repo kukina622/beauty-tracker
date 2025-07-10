@@ -56,7 +56,6 @@ class AddProductPage extends HookWidget {
     final brandService = useDi<BrandService>();
 
     final productNameController = useTextEditingController();
-    final brandController = useTextEditingController();
     final priceController = useTextEditingController();
     final selectedBrandIds = useState<String?>(null);
     final selectedCategoryIds = useState<List<String>>([]);
@@ -80,7 +79,7 @@ class AddProductPage extends HookWidget {
       final bool isFormValid = _formKey.currentState?.validate() ?? false;
       if (isFormValid) {
         final productName = productNameController.text.trim();
-        final brand = brandController.text.trim();
+        final brand = selectedBrandIds.value;
         final price = double.tryParse(priceController.text.trim());
         final purchaseDateValue = purchaseDate.value;
         final expirationDateValue = expirationDate.value;
@@ -113,11 +112,11 @@ class AddProductPage extends HookWidget {
     }, [
       _formKey,
       productNameController,
-      brandController,
       priceController,
       purchaseDate,
       expirationDate,
       selectedCategoryIds,
+      selectedBrandIds,
       productService
     ]);
 
