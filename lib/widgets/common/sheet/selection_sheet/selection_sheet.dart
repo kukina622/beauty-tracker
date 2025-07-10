@@ -103,13 +103,12 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                   Text(widget.title, style: Theme.of(context).textTheme.titleLarge),
                   Row(
                     children: [
-                      if (widget.allowMultipleSelection)
-                        TextButton(
-                          onPressed: () => setModalState(() {
-                            _selectedItems.clear();
-                          }),
-                          child: Text(widget.clearAllText),
-                        ),
+                      TextButton(
+                        onPressed: () => setModalState(() {
+                          _selectedItems.clear();
+                        }),
+                        child: Text(widget.clearAllText),
+                      ),
                       IconButton(
                         icon: const Icon(Icons.close),
                         onPressed: () => Navigator.pop(context),
