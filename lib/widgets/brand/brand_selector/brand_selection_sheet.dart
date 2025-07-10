@@ -1,5 +1,6 @@
 import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selector_item.dart';
+import 'package:beauty_tracker/widgets/brand/dialogs/brand_form_dialog.dart';
 import 'package:beauty_tracker/widgets/common/button/app_outlined_button.dart';
 import 'package:beauty_tracker/widgets/common/sheet/selection_sheet/selection_sheet.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,15 @@ class BrandSelectionSheet {
         isFilled: true,
         text: '加入新品牌',
         icon: Icons.add_circle_outline,
-        onPressed: () {},
+        onPressed: () {
+          BrandFormDialog.show(
+            context,
+            onBrandCreated: (brand) {
+              onBrandCreated?.call(brand);
+              Navigator.pop(context);
+            },
+          );
+        },
       ),
     );
   }
