@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SpendingData {
   SpendingData({required this.month, required this.amount});
   final DateTime month;
-  final int amount;
+  final double amount;
 }
 
 class SpendingBarChart extends StatelessWidget {
@@ -15,7 +15,7 @@ class SpendingBarChart extends StatelessWidget {
   final List<SpendingData> spendingData;
   final double height;
 
-  int get maxAmount {
+  double get maxAmount {
     if (spendingData.isEmpty) {
       return 0;
     }
