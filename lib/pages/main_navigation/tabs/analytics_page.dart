@@ -1,4 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_service_data.dart';
+import 'package:beauty_tracker/services/analytics_service/analytics_service.dart';
+import 'package:beauty_tracker/util/analytics.dart';
 import 'package:beauty_tracker/widgets/analytics/brand_rank.dart';
 import 'package:beauty_tracker/widgets/analytics/spending_bar_chart.dart';
 import 'package:beauty_tracker/widgets/analytics/status_progress_chart.dart';
@@ -8,33 +12,11 @@ import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
-class AnalyticsPage extends StatelessWidget {
+class AnalyticsPage extends HookWidget {
   const AnalyticsPage({super.key});
-
-  List<StatusProgressData> get statusList => [
-        StatusProgressData(
-          status: '正常使用',
-          count: 18,
-          color: const Color(0xFF5ECCC4),
-        ),
-        StatusProgressData(
-          status: '即將過期',
-          count: 3,
-          color: const Color(0xFFFF9F1C),
-        ),
-        StatusProgressData(
-          status: '已過期',
-          count: 1,
-          color: const Color(0xFFFF6B6B),
-        ),
-        StatusProgressData(
-          status: '已用完',
-          count: 2,
-          color: const Color(0xFFBDBDBD),
-        ),
-      ];
 
   List<SpendingData> get spendingList => [
         SpendingData(month: DateTime(2023, 1), amount: 120),
@@ -56,6 +38,18 @@ class AnalyticsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final analyticsService = useDi<AnalyticsService>();
+
+    final statusResult = useServiceData(() => analyticsService.getProductStatusData());
+
+    final statusList = useMemoized(() {
+      if (statusResult.hasError || !statusResult.hasData) {
+        return <StatusProgressData>[];
+      }
+
+      return AnalyticsUtils.convertToStatusList(statusResult.data!);
+    }, [statusResult.data]);
+
     return PageScrollView(
       header: [AppTitleBar(title: '使用分析')],
       slivers: [
