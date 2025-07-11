@@ -3,6 +3,7 @@ import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/services/analytics_service/analytics_service.dart';
 import 'package:beauty_tracker/util/analytics.dart';
+import 'package:beauty_tracker/util/date.dart';
 import 'package:beauty_tracker/widgets/analytics/brand_rank.dart';
 import 'package:beauty_tracker/widgets/analytics/spending_bar_chart.dart';
 import 'package:beauty_tracker/widgets/analytics/status_progress_chart.dart';
@@ -18,15 +19,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class AnalyticsPage extends HookWidget {
   const AnalyticsPage({super.key});
 
-  List<SpendingData> get spendingList => [
-        SpendingData(month: DateTime(2023, 1), amount: 120),
-        SpendingData(month: DateTime(2023, 2), amount: 150),
-        SpendingData(month: DateTime(2023, 3), amount: 90),
-        SpendingData(month: DateTime(2023, 4), amount: 200),
-        SpendingData(month: DateTime(2023, 5), amount: 180),
-        SpendingData(month: DateTime(2023, 6), amount: 220),
-      ];
-
   List<BrandRankData> get brandRankList => [
         BrandRankData(name: 'Brand A', count: 10, spending: 500),
         BrandRankData(name: 'Brand B', count: 8, spending: 300),
@@ -41,6 +33,10 @@ class AnalyticsPage extends HookWidget {
     final analyticsService = useDi<AnalyticsService>();
 
     final statusResult = useServiceData(() => analyticsService.getProductStatusData());
+    final monthlyExpensesResult = useServiceData(() => analyticsService.getMonthlyExpenses(
+          startMonth: getMonthsAgoFirstDay(5),
+          endMonth: DateTime.now(),
+        ));
 
     final statusList = useMemoized(() {
       if (statusResult.hasError || !statusResult.hasData) {
@@ -49,6 +45,14 @@ class AnalyticsPage extends HookWidget {
 
       return AnalyticsUtils.convertToStatusList(statusResult.data!);
     }, [statusResult.data]);
+
+    final monthlyExpensesList = useMemoized(() {
+      if (monthlyExpensesResult.hasError || !monthlyExpensesResult.hasData) {
+        return <SpendingData>[];
+      }
+
+      return AnalyticsUtils.convertToSpendingList(monthlyExpensesResult.data!);
+    }, [monthlyExpensesResult.data]);
 
     return PageScrollView(
       header: [AppTitleBar(title: '使用分析')],
@@ -78,7 +82,7 @@ class AnalyticsPage extends HookWidget {
                       textColor: Color(0xFF5ECCC4),
                     ),
                     SpendingBarChart(
-                      spendingData: spendingList,
+                      spendingData: monthlyExpensesList,
                     )
                   ],
                 ),

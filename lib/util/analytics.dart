@@ -1,5 +1,8 @@
+import 'package:beauty_tracker/requests/analytics_requests/monthly_expenses_analytics_request.dart';
 import 'package:beauty_tracker/requests/analytics_requests/product_status_analytics_request.dart';
+import 'package:beauty_tracker/widgets/analytics/spending_bar_chart.dart';
 import 'package:beauty_tracker/widgets/analytics/status_progress_chart.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -36,5 +39,19 @@ class AnalyticsUtils {
         color: statusColors[type]!,
       );
     }).toList();
+  }
+
+  static List<SpendingData> convertToSpendingList(
+    List<MonthlyExpensesAnalyticsRequest> monthlyExpensesData,
+  ) {
+    return monthlyExpensesData
+        .map((e) {
+          final month = DateTime(e.year, e.month);
+          final amount = e.amount;
+
+          return SpendingData(month: month, amount: amount);
+        })
+        .sorted((a, b) => a.month.compareTo(b.month))
+        .toList();
   }
 }
