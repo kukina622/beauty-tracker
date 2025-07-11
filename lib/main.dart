@@ -1,5 +1,7 @@
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/router/router.dart';
+import 'package:beauty_tracker/services/analytics_service/analytics_service.dart';
+import 'package:beauty_tracker/services/analytics_service/supabase_analytics_service_impl.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
 import 'package:beauty_tracker/services/brand_service/brand_service.dart';
@@ -34,6 +36,9 @@ void setUpDi() {
   );
   di.registerSingleton<BrandService>(
     SupabaseBrandServiceImpl(),
+  );
+  di.registerSingleton<AnalyticsService>(
+    SupabaseAnalyticsServiceImpl(),
   );
 }
 

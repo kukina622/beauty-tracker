@@ -13,3 +13,16 @@ String? tryFormatDate(DateTime? date) {
     return null;
   }
 }
+
+DateTime getMonthsAgoFirstDay(int monthsAgo) {
+  final DateTime now = DateTime.now();
+  int targetMonth = now.month - monthsAgo;
+  int targetYear = now.year;
+
+  while (targetMonth <= 0) {
+    targetMonth += 12;
+    targetYear -= 1;
+  }
+
+  return DateTime(targetYear, targetMonth, 1);
+}
