@@ -8,7 +8,7 @@ class BrandRankData {
   });
   final String name;
   final int count;
-  final int spending;
+  final double spending;
 }
 
 class BrandRank extends StatelessWidget {
@@ -41,7 +41,7 @@ class BrandRank extends StatelessWidget {
     if (sortedBrandRankData.length > topCount) {
       final otherBrandRankData = sortedBrandRankData.skip(topCount).toList();
       final otherCount = otherBrandRankData.fold(0, (sum, item) => sum + item.count);
-      final otherSpending = otherBrandRankData.fold(0, (sum, item) => sum + item.spending);
+      final otherSpending = otherBrandRankData.fold(0.0, (sum, item) => sum + item.spending);
       displayData.add(BrandRankData(name: '其他', count: otherCount, spending: otherSpending));
     }
 

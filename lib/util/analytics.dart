@@ -1,5 +1,7 @@
+import 'package:beauty_tracker/requests/analytics_requests/brand_rank_analytics_request.dart';
 import 'package:beauty_tracker/requests/analytics_requests/monthly_expenses_analytics_request.dart';
 import 'package:beauty_tracker/requests/analytics_requests/product_status_analytics_request.dart';
+import 'package:beauty_tracker/widgets/analytics/brand_rank.dart';
 import 'package:beauty_tracker/widgets/analytics/spending_bar_chart.dart';
 import 'package:beauty_tracker/widgets/analytics/status_progress_chart.dart';
 import 'package:collection/collection.dart';
@@ -52,6 +54,19 @@ class AnalyticsUtils {
           return SpendingData(month: month, amount: amount);
         })
         .sorted((a, b) => a.month.compareTo(b.month))
+        .toList();
+  }
+
+  static List<BrandRankData> convertToBrandRankList(
+    List<BrandRankAnalyticsRequest> brandRankData,
+  ) {
+    return brandRankData
+        .map((e) => BrandRankData(
+              name: e.brandName,
+              count: e.productCount,
+              spending: e.totalAmount,
+            ))
+        .sorted((a, b) => b.spending.compareTo(a.spending))
         .toList();
   }
 }
