@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/menu/app_menu_group.dart';
 import 'package:beauty_tracker/widgets/common/menu/app_menu_item.dart';
@@ -13,6 +15,10 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = useDi<AuthService>();
+
+    final user = authService.currentUser!;
+
     return PageScrollView(
       header: [
         AppTitleBar(title: '個人資料'),
@@ -24,12 +30,12 @@ class ProfilePage extends StatelessWidget {
               UserAvatar(),
               const SizedBox(height: 12),
               Text(
-                'Beauty Lover',
+                user.name ?? '未命名',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 5),
               Text(
-                'beauty@example.com',
+                user.email,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey.shade600,
                     ),
