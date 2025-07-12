@@ -77,7 +77,9 @@ class ProfilePage extends HookWidget {
                       AppMenuItem(
                         title: '通知設定',
                         icon: Icons.email,
-                        onTap: () {},
+                        onTap: () {
+                          AutoRouter.of(context).pushPath('/settings/notification-settings');
+                        },
                       ),
                     ],
                   )
