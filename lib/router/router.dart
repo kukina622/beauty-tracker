@@ -30,6 +30,10 @@ class AppRouter extends RootStackRouter {
           page: EditProductRoute.page,
           guards: [AuthCheckGuard()],
         ),
+        AutoRoute(
+          path: '/settings/brand-settings',
+          page: BrandSettingsRoute.page,
+        ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(
           path: '/login',

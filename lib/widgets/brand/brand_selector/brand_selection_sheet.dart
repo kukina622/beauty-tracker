@@ -38,7 +38,7 @@ class BrandSelectionSheet {
         text: '加入新品牌',
         icon: Icons.add_circle_outline,
         onPressed: () {
-          BrandFormDialog.show(
+          BrandFormDialog.showCreate(
             context,
             onBrandCreated: (brand) {
               onBrandCreated?.call(brand);

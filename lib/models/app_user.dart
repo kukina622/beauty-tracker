@@ -1,14 +1,19 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class AppUser {
-  AppUser({required this.id, required this.email});
+  AppUser({required this.id, required this.email, required this.name});
 
   factory AppUser.fromSupabaseUser(supabase.User? user) {
-    return AppUser(id: user?.id ?? '', email: user?.email ?? '');
+    return AppUser(
+      id: user?.id ?? '',
+      email: user?.email ?? '',
+      name: user?.userMetadata?['name'] as String?,
+    );
   }
 
   bool get isLoggedIn => id.isNotEmpty;
 
   final String id;
   final String email;
+  final String? name;
 }

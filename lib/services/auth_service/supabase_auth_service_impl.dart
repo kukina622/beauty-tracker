@@ -85,7 +85,10 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
 
   @override
   Future<Result<void>> signOut() {
-    throw UnimplementedError();
+    return resultGuard(() async {
+      await supabase.auth.signOut();
+      _updateUser(null);
+    });
   }
 
   void _updateUser(AppUser? user) {
