@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
+import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
+import 'package:beauty_tracker/widgets/category/dialogs/category_form_dialog/category_form_dialog.dart';
 import 'package:beauty_tracker/widgets/common/app_search_bar.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button.dart';
@@ -16,6 +19,8 @@ class CategorySettingsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = useProvider<ProductProvider>();
+
     final categoryService = useDi<CategoryService>();
 
     final categoryResult = useServiceData(
@@ -48,7 +53,15 @@ class CategorySettingsPage extends HookWidget {
                 backgroundColor: Colors.white,
                 size: 44.0,
                 borderRadius: BorderRadius.circular(12),
-                onPressed: () {},
+                onPressed: () {
+                  CategoryFormDialog.showCreate(
+                    context,
+                    onCategoryCreated: (newCategory) {
+                      categoryResult.refresh();
+                      productProvider.triggerRefresh();
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -74,7 +87,16 @@ class CategorySettingsPage extends HookWidget {
             (context, index) {
               return CategoryManagementCard(
                 category: filteredCategories[index],
-                onEdit: () {},
+                onEdit: () {
+                  CategoryFormDialog.showEdit(
+                    context,
+                    category: filteredCategories[index],
+                    onCategoryUpdated: (updatedCategory) {
+                      categoryResult.refresh();
+                      productProvider.triggerRefresh();
+                    },
+                  );
+                },
               );
             },
           ),
