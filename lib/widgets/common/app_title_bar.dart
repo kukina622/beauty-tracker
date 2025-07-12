@@ -24,13 +24,14 @@ class AppTitleBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 if (backButtonEnabled) ...[
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, size: 20),
-                    onPressed: () => AutoRouter.of(context).pop(),
-                  )
+                  GestureDetector(
+                    onTap: () => AutoRouter.of(context).pop(),
+                    child: const Icon(Icons.arrow_back_ios, size: 20),
+                  ),
+                  SizedBox(width: 15),
                 ],
                 Text(
                   title,
