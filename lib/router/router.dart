@@ -34,6 +34,10 @@ class AppRouter extends RootStackRouter {
           path: '/settings/brand-settings',
           page: BrandSettingsRoute.page,
         ),
+        AutoRoute(
+          path: '/settings/category-settings',
+          page: CategorySettingsRoute.page,
+        ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(
           path: '/login',
