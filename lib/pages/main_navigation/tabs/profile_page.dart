@@ -61,7 +61,7 @@ class ProfilePage extends HookWidget {
                       color: Colors.grey.shade600,
                     ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               SettingSection(
                 title: '帳號設定',
                 children: [
@@ -75,6 +75,26 @@ class ProfilePage extends HookWidget {
                       AppMenuItem(
                         title: '通知設定',
                         icon: Icons.email,
+                        onTap: () {},
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              SizedBox(height: 12),
+              SettingSection(
+                title: '應用設定',
+                children: [
+                  AppMenuGroup(
+                    items: [
+                      AppMenuItem(
+                        title: '品牌設定',
+                        icon: Icons.workspace_premium_outlined,
+                        onTap: () {},
+                      ),
+                      AppMenuItem(
+                        title: '類別設定',
+                        icon: Icons.category,
                         onTap: () {},
                       ),
                     ],
@@ -102,10 +122,13 @@ class ProfilePage extends HookWidget {
                     ],
                   )
                 ],
-              )
+              ),
             ],
           ),
-        )
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: 80),
+        ),
       ],
     );
   }
