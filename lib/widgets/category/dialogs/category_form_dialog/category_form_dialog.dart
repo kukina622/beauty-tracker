@@ -128,7 +128,7 @@ class CategoryFormDialog extends HookWidget {
 
     return StatefulBuilder(
       builder: (context, setModalState) => AppDialog(
-        title: '新增類別',
+        title: isEditing ? '編輯類別' : '新增類別',
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
