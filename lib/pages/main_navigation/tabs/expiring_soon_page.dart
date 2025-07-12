@@ -41,7 +41,7 @@ class ExpiringSoonPage extends HookWidget {
         AppTitleBar(title: '即將過期'),
       ],
       slivers: [
-        if (products.isEmpty) ...[
+        if (products.isEmpty && !productsResult.loading) ...[
           SliverFillRemaining(
             hasScrollBody: false,
             child: Center(
