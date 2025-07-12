@@ -6,6 +6,7 @@ import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/menu/app_menu_group.dart';
 import 'package:beauty_tracker/widgets/common/menu/app_menu_item.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/profile/logout_dialog.dart';
 import 'package:beauty_tracker/widgets/profile/settings/setting_section.dart';
 import 'package:beauty_tracker/widgets/profile/user_avatar.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,14 @@ class ProfilePage extends HookWidget {
                         title: '登出',
                         icon: Icons.logout,
                         textColor: const Color(0xFFFF6B6B),
-                        onTap: onLogout,
+                        onTap: () {
+                          LogoutDialog.show(
+                            context,
+                            title: '登出確認',
+                            description: '您確定要登出嗎？',
+                            onConfirm: onLogout,
+                          );
+                        },
                       ),
                     ],
                   )
