@@ -62,57 +62,56 @@ class AnalyticsPage extends HookWidget {
       await brandRankResult.refresh();
     }, [statusResult, monthlyExpensesResult]);
 
-    return RefreshIndicator(
+    return PageScrollView(
+      enableRefresh: true,
       onRefresh: onRefresh,
-      child: PageScrollView(
-        header: [AppTitleBar(title: '使用分析')],
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                SubTitleBar(title: '產品狀態'),
-                const SizedBox(height: 16),
-                AppCard(
-                  padding: const EdgeInsets.all(20),
-                  child: StatusProgressChart(
-                    statusData: statusList,
-                  ),
+      header: [AppTitleBar(title: '使用分析')],
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              SubTitleBar(title: '產品狀態'),
+              const SizedBox(height: 16),
+              AppCard(
+                padding: const EdgeInsets.all(20),
+                child: StatusProgressChart(
+                  statusData: statusList,
                 ),
-                const SizedBox(height: 32),
-                SubTitleBar(title: '每月支出趨勢'),
-                const SizedBox(height: 16),
-                AppCard(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextChip(
-                        text: '過去6個月',
-                        backgroundColor: Color(0xFF5ECCC4).withValues(alpha: .2),
-                        textColor: Color(0xFF5ECCC4),
-                      ),
-                      SpendingBarChart(
-                        spendingData: monthlyExpensesList,
-                      )
-                    ],
-                  ),
+              ),
+              const SizedBox(height: 32),
+              SubTitleBar(title: '每月支出趨勢'),
+              const SizedBox(height: 16),
+              AppCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextChip(
+                      text: '過去6個月',
+                      backgroundColor: Color(0xFF5ECCC4).withValues(alpha: .2),
+                      textColor: Color(0xFF5ECCC4),
+                    ),
+                    SpendingBarChart(
+                      spendingData: monthlyExpensesList,
+                    )
+                  ],
                 ),
-                const SizedBox(height: 32),
-                SubTitleBar(title: '品牌偏好'),
-                const SizedBox(height: 16),
-                AppCard(
-                  padding: const EdgeInsets.all(20),
-                  child: BrandRank(
-                    brandRankData: brandRankList,
-                    topCount: 4,
-                  ),
+              ),
+              const SizedBox(height: 32),
+              SubTitleBar(title: '品牌偏好'),
+              const SizedBox(height: 16),
+              AppCard(
+                padding: const EdgeInsets.all(20),
+                child: BrandRank(
+                  brandRankData: brandRankList,
+                  topCount: 4,
                 ),
-                const SizedBox(height: 100),
-              ],
-            ),
+              ),
+              const SizedBox(height: 100),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
