@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +10,14 @@ class BrandManagementCard extends StatelessWidget {
     this.onDelete,
   });
 
-  final String brand;
+  final Brand brand;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
     final Color color = Theme.of(context).primaryColor;
+    final String brandName = brand.brandName;
 
     return Container(
       decoration: BoxDecoration(
@@ -40,7 +42,7 @@ class BrandManagementCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              brand.isNotEmpty ? brand[0].toUpperCase() : '?',
+              brandName.isNotEmpty ? brandName[0].toUpperCase() : '?',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -50,7 +52,7 @@ class BrandManagementCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          brand,
+          brandName,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,

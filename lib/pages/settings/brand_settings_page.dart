@@ -96,7 +96,7 @@ class BrandSettingsPage extends HookWidget {
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 child: BrandManagementCard(
-                  brand: filteredBrands[index].brandName,
+                  brand: filteredBrands[index],
                   onEdit: () {
                     BrandFormDialog.showEdit(
                       context,
