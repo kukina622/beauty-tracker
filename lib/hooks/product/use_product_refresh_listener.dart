@@ -6,12 +6,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 void useProductRefreshListener(VoidCallback onRefresh) {
   final provider = useProviderListener<ProductProvider>();
   final shouldRefresh = provider.shouldRefresh;
+  final refreshId = provider.refreshId;
+  final lastRefreshId = useRef<int>(0);
 
   useEffect(() {
-    if (shouldRefresh) {
+    if (shouldRefresh && refreshId != lastRefreshId.value) {
       onRefresh();
-      provider.resetRefresh();
+      lastRefreshId.value = refreshId;
     }
     return null;
-  }, [shouldRefresh]);
+  }, [shouldRefresh, refreshId]);
 }
