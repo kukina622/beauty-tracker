@@ -7,4 +7,5 @@ abstract class BrandService {
   Future<Result<List<Brand>>> getAllBrands();
   Future<Result<Brand>> createNewBrand(CreateBrandRequest brand);
   Future<Result<Brand>> updateBrand(String brandId, UpdateBrandRequest brand);
+  Future<Result<void>> deleteBrand(String brandId);
 }

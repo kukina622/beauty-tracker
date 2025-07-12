@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
@@ -7,10 +8,12 @@ import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/widgets/brand/dialogs/brand_form_dialog.dart';
 import 'package:beauty_tracker/widgets/common/app_search_bar.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
+import 'package:beauty_tracker/widgets/common/dialog/delete_dialog.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/profile/settings/brand_management_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -36,9 +39,23 @@ class BrandSettingsPage extends HookWidget {
       }).toList();
     }, [brands, searchQuery.value]);
 
-    // final onBrandUpdate = useCallback((String brandId, String newBrandName) {
-    //   brandService.updateBrand(brandId, UpdateBrandRequest(brandName: newBrandName));
-    // }, [brandService]);
+    final onDeleteBrand = useCallback((String brandId) async {
+      final result = await brandService.deleteBrand(brandId);
+      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
+      switch (result) {
+        case Ok():
+          EasyLoading.showSuccess('品牌刪除成功', maskType: EasyLoadingMaskType.black);
+          brandsResult.refresh();
+          productProvider.triggerRefresh();
+          if (context.mounted && AutoRouter.of(context).canPop()) {
+            AutoRouter.of(context).pop();
+          }
+          break;
+        case Err():
+          EasyLoading.showError('品牌刪除失敗', maskType: EasyLoadingMaskType.black);
+          break;
+      }
+    }, [brandsResult]);
 
     return PageScrollView(
       header: [
@@ -88,6 +105,14 @@ class BrandSettingsPage extends HookWidget {
                         brandsResult.refresh();
                         productProvider.triggerRefresh();
                       },
+                    );
+                  },
+                  onDelete: () {
+                    DeleteDialog.show(
+                      context,
+                      title: '確認刪除品牌嗎',
+                      description: '這個操作無法復原。',
+                      onConfirm: () => onDeleteBrand(filteredBrands[index].id),
                     );
                   },
                 ),

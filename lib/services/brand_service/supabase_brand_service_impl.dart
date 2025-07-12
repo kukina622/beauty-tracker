@@ -37,4 +37,11 @@ class SupabaseBrandServiceImpl implements BrandService {
       return Brand.fromJson(updatedBrand);
     });
   }
+
+  @override
+  Future<Result<void>> deleteBrand(String brandId) {
+    return resultGuard(() async {
+      await supabase.from('brands').delete().eq('id', brandId);
+    });
+  }
 }
