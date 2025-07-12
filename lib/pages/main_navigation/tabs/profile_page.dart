@@ -90,7 +90,9 @@ class ProfilePage extends HookWidget {
                       AppMenuItem(
                         title: '品牌設定',
                         icon: Icons.workspace_premium_outlined,
-                        onTap: () {},
+                        onTap: () {
+                          AutoRouter.of(context).pushPath('/settings/brand-settings');
+                        },
                       ),
                       AppMenuItem(
                         title: '類別設定',
