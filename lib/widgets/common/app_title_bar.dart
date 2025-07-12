@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class AppTitleBar extends StatelessWidget {
@@ -6,11 +7,13 @@ class AppTitleBar extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.actionButton,
+    this.backButtonEnabled = false,
   });
 
   final String title;
   final String? subtitle;
   final Widget? actionButton;
+  final bool backButtonEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +23,22 @@ class AppTitleBar extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (backButtonEnabled) ...[
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    onPressed: () => AutoRouter.of(context).pop(),
+                  )
+                ],
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                )
+              ],
             ),
             SizedBox(height: 4),
             if (subtitle != null)
