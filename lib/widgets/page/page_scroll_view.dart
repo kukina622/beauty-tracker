@@ -19,7 +19,7 @@ class PageScrollView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets headerPadding = header.isNotEmpty
-        ? EdgeInsets.only(top: 24, bottom: 0, left: padding.left, right: padding.right)
+        ? EdgeInsets.only(top: 16, bottom: 0, left: padding.left, right: padding.right)
         : EdgeInsets.zero;
 
     final customScrollView = CustomScrollView(
