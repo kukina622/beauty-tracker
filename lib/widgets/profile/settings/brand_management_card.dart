@@ -1,4 +1,5 @@
 import 'package:beauty_tracker/models/brand.dart';
+import 'package:beauty_tracker/widgets/common/app_card.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_button.dart';
 import 'package:flutter/material.dart';
 
@@ -19,18 +20,7 @@ class BrandManagementCard extends StatelessWidget {
     final Color color = Theme.of(context).primaryColor;
     final String brandName = brand.brandName;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return AppCard(
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         leading: Container(
