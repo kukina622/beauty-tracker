@@ -10,4 +10,5 @@ abstract class AuthService {
   Future<Result<void>> signUpWithEmail(String email, String password);
   Future<Result<void>> signInWithEmail(String email, String password);
   Future<Result<void>> signOut();
+  Future<Result<void>> changePassword(String oldPassword, String newPassword);
 }

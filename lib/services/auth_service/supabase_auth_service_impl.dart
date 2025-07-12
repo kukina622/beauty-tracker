@@ -91,6 +91,25 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
     });
   }
 
+  @override
+  Future<Result<void>> changePassword(String oldPassword, String newPassword) {
+    return resultGuard(() async {
+      if (_currentUser == null) {
+        throw 'No user is currently logged in.';
+      }
+
+      final result = await supabase.rpc<String>('change_password', params: {
+        'current_plain_password': oldPassword,
+        'new_plain_password': newPassword,
+        'current_id': supabase.auth.currentUser?.id,
+      });
+
+      if (result != 'success') {
+        throw 'Failed to change password';
+      }
+    });
+  }
+
   void _updateUser(AppUser? user) {
     _currentUser = user;
     notifyListeners();

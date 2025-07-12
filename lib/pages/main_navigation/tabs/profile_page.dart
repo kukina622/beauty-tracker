@@ -70,7 +70,9 @@ class ProfilePage extends HookWidget {
                       AppMenuItem(
                         title: '修改密碼',
                         icon: Icons.lock,
-                        onTap: () {},
+                        onTap: () {
+                          AutoRouter.of(context).pushPath('/settings/change-password');
+                        },
                       ),
                       AppMenuItem(
                         title: '通知設定',
