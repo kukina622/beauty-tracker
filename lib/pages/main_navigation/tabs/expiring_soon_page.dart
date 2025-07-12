@@ -41,23 +41,46 @@ class ExpiringSoonPage extends HookWidget {
         AppTitleBar(title: '即將過期'),
       ],
       slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: products.length,
-            (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: ProductCard(
-                  product: products[index],
-                  onDelete: () => productsResult.refresh(),
-                ),
-              );
-            },
+        if (products.isEmpty) ...[
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    width: 200,
+                    'assets/images/no_expiring_items_illustration.png',
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '沒有即將過期的產品',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ] else ...[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: products.length,
+              (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: ProductCard(
+                    product: products[index],
+                    onDelete: () => productsResult.refresh(),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: SizedBox(height: 50),
-        ),
+          SliverToBoxAdapter(
+            child: SizedBox(height: 50),
+          ),
+        ],
       ],
     );
   }
