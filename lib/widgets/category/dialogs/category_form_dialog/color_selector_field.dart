@@ -8,15 +8,17 @@ class ColorSelectorField extends HookWidget {
     super.key,
     this.initialColor = const Color(0xFFFF9A9E),
     this.onSelect,
+    this.isEditing = false,
   });
 
-  final Color initialColor;
+  final Color? initialColor;
   final void Function(Color?)? onSelect;
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
-    final selectedColor = useState<Color>(initialColor);
-    final hasSelectedColor = useState<bool>(false);
+    final selectedColor = useState<Color?>(initialColor ?? const Color(0xFFFF9A9E));
+    final hasSelectedColor = useState<bool>(isEditing);
 
     return GestureDetector(
       onTap: () async {

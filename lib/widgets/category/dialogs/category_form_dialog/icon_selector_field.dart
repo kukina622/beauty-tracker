@@ -8,15 +8,17 @@ class IconSelectorField extends HookWidget {
     super.key,
     this.initialIcon = Icons.face,
     this.onSelect,
+    this.isEditing = false,
   });
 
-  final IconData initialIcon;
+  final IconData? initialIcon;
   final void Function(IconData?)? onSelect;
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
-    final selectedIcon = useState<IconData>(initialIcon);
-    final hasSelectedIcon = useState<bool>(false);
+    final selectedIcon = useState<IconData?>(initialIcon ?? Icons.face);
+    final hasSelectedIcon = useState<bool>(isEditing);
 
     return GestureDetector(
       onTap: () async {

@@ -3,8 +3,10 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/requests/category_requests/create_category_request.dart';
+import 'package:beauty_tracker/requests/category_requests/update_category_request.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/util/extensions/color.dart';
+import 'package:beauty_tracker/util/icon.dart';
 import 'package:beauty_tracker/widgets/category/dialogs/category_form_dialog/color_selector_field.dart';
 import 'package:beauty_tracker/widgets/category/dialogs/category_form_dialog/icon_selector_field.dart';
 import 'package:beauty_tracker/widgets/common/dialog/app_dialog.dart';
@@ -14,10 +16,20 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class CategoryFormDialog extends HookWidget {
-  const CategoryFormDialog({super.key, this.onCategoryCreated});
+  const CategoryFormDialog({
+    super.key,
+    this.onCategoryCreated,
+    this.onCategoryUpdated,
+    this.categoryToEdit,
+  });
   final void Function(Category)? onCategoryCreated;
+  final void Function(Category)? onCategoryUpdated;
+  final Category? categoryToEdit;
 
-  static Future<void> show(BuildContext context, {void Function(Category)? onCategoryCreated}) {
+  static Future<void> showCreate(
+    BuildContext context, {
+    void Function(Category)? onCategoryCreated,
+  }) {
     return showDialog<void>(
       context: context,
       builder: (_) => CategoryFormDialog(
@@ -26,13 +38,37 @@ class CategoryFormDialog extends HookWidget {
     );
   }
 
+  static Future<void> showEdit(
+    BuildContext context, {
+    required Category category,
+    void Function(Category)? onCategoryUpdated,
+  }) {
+    return showDialog<void>(
+      context: context,
+      builder: (_) => CategoryFormDialog(
+        categoryToEdit: category,
+        onCategoryUpdated: onCategoryUpdated,
+      ),
+    );
+  }
+
+  bool get isEditing => categoryToEdit != null;
+
   @override
   Widget build(BuildContext context) {
     final categoryService = useDi<CategoryService>();
 
-    final categoryNameController = useTextEditingController();
-    final categoryIcon = useState<IconData?>(null);
-    final categoryColor = useState<Color?>(null);
+    final categoryNameController = useTextEditingController(
+      text: categoryToEdit?.categoryName ?? '',
+    );
+
+    final categoryIcon = useState<IconData?>(
+      categoryToEdit != null ? getAppIcon(categoryToEdit!.categoryIcon) : null,
+    );
+
+    final categoryColor = useState<Color?>(
+      categoryToEdit != null ? Color(categoryToEdit!.categoryColor) : null,
+    );
 
     Future<void> onConfirm() async {
       final name = categoryNameController.text.trim();
@@ -44,31 +80,55 @@ class CategoryFormDialog extends HookWidget {
         return;
       }
 
-      final newCategory = CreateCategoryRequest(
-        categoryName: name,
-        categoryIcon: icon.codePoint,
-        categoryColor: color.toInt(),
-      );
+      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
 
-      final result = await categoryService.createNewCategory(newCategory);
-      switch (result) {
-        case Ok(value: final Category category):
-          EasyLoading.showSuccess('類別新增成功', maskType: EasyLoadingMaskType.black);
-          onCategoryCreated?.call(category);
+      if (isEditing) {
+        final updateRequest = UpdateCategoryRequest(
+          categoryName: name,
+          categoryIcon: icon.codePoint,
+          categoryColor: color.toInt(),
+        );
+        final result = await categoryService.updateCategory(categoryToEdit!.id, updateRequest);
 
-          if (context.mounted && AutoRouter.of(context).canPop()) {
-            AutoRouter.of(context).pop();
-          }
-          break;
-        case Err():
-          EasyLoading.showError('新增失敗', maskType: EasyLoadingMaskType.black);
-          break;
+        switch (result) {
+          case Ok(value: final Category category):
+            EasyLoading.showSuccess('類別更新成功', maskType: EasyLoadingMaskType.black);
+            onCategoryUpdated?.call(category);
+            if (context.mounted && AutoRouter.of(context).canPop()) {
+              AutoRouter.of(context).pop();
+            }
+            break;
+          case Err():
+            EasyLoading.showError('類別更新失敗', maskType: EasyLoadingMaskType.black);
+            break;
+        }
+      } else {
+        final newCategory = CreateCategoryRequest(
+          categoryName: name,
+          categoryIcon: icon.codePoint,
+          categoryColor: color.toInt(),
+        );
+
+        final result = await categoryService.createNewCategory(newCategory);
+
+        switch (result) {
+          case Ok(value: final Category category):
+            EasyLoading.showSuccess('類別新增成功', maskType: EasyLoadingMaskType.black);
+            onCategoryCreated?.call(category);
+            if (context.mounted && AutoRouter.of(context).canPop()) {
+              AutoRouter.of(context).pop();
+            }
+            break;
+          case Err():
+            EasyLoading.showError('新增失敗', maskType: EasyLoadingMaskType.black);
+            break;
+        }
       }
     }
 
     return StatefulBuilder(
       builder: (context, setModalState) => AppDialog(
-        title: '新增類別',
+        title: isEditing ? '編輯類別' : '新增類別',
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -85,7 +145,8 @@ class CategoryFormDialog extends HookWidget {
             ),
             const SizedBox(height: 8),
             IconSelectorField(
-              initialIcon: Icons.face,
+              initialIcon: categoryIcon.value,
+              isEditing: isEditing,
               onSelect: (icon) {
                 setModalState(() {
                   categoryIcon.value = icon;
@@ -99,7 +160,8 @@ class CategoryFormDialog extends HookWidget {
             ),
             const SizedBox(height: 8),
             ColorSelectorField(
-              initialColor: Color(0xFFFF9A9E),
+              initialColor: categoryColor.value,
+              isEditing: isEditing,
               onSelect: (color) {
                 setModalState(() {
                   categoryColor.value = color;

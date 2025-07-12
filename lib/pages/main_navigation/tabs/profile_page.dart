@@ -97,7 +97,9 @@ class ProfilePage extends HookWidget {
                       AppMenuItem(
                         title: '類別設定',
                         icon: Icons.category,
-                        onTap: () {},
+                        onTap: () {
+                          AutoRouter.of(context).pushPath('/settings/category-settings');
+                        },
                       ),
                     ],
                   )

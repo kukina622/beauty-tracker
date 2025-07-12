@@ -36,7 +36,7 @@ class CategorySelectionSheet {
         text: '加入新類別',
         icon: Icons.add_circle_outline,
         onPressed: () {
-          CategoryFormDialog.show(
+          CategoryFormDialog.showCreate(
             context,
             onCategoryCreated: (category) {
               onCategoryCreated?.call(category);
