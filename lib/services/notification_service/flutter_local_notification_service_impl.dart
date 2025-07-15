@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beauty_tracker/constants.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -11,12 +12,12 @@ class FlutterLocalNotificationServiceImpl implements NotificationService {
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_notification');
 
     final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-      requestSoundPermission: false,
-      requestBadgePermission: false,
-      requestAlertPermission: false,
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
     );
 
     final InitializationSettings initializationSettings = InitializationSettings(
@@ -36,10 +37,11 @@ class FlutterLocalNotificationServiceImpl implements NotificationService {
     final iosResult = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-          alert: false,
-          badge: false,
-          sound: false,
+          alert: true,
+          badge: true,
+          sound: true,
         );
+
     if (Platform.isAndroid) {
       return androidResult ?? false;
     }
@@ -57,7 +59,40 @@ class FlutterLocalNotificationServiceImpl implements NotificationService {
     required String title,
     required String body,
     String? payload,
+    String? channelId,
   }) async {
-    await _flutterLocalNotificationsPlugin.show(id, title, body, null, payload: payload);
+    final selectedChannelId = channelId ?? NotificationChannels.general;
+    final channelInfo = NotificationChannels.channelInfo[selectedChannelId];
+
+    if (channelInfo == null) {
+      throw ArgumentError('Invalid channel ID: $selectedChannelId');
+    }
+
+    final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+      channelInfo.id,
+      channelInfo.name,
+      channelDescription: channelInfo.description,
+      importance: channelInfo.importance,
+      icon: '@drawable/ic_notification',
+    );
+
+    final DarwinNotificationDetails darwinNotificationDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: darwinNotificationDetails,
+    );
+
+    await _flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      notificationDetails,
+      payload: payload,
+    );
   }
 }

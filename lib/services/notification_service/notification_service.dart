@@ -8,5 +8,6 @@ abstract class NotificationService {
     required String title,
     required String body,
     String? payload,
+    String? channelId,
   });
 }

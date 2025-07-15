@@ -8,7 +8,10 @@ import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/services/brand_service/supabase_brand_service_impl.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/category_service/supabase_category_service_impl.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
+import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
+import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/services/product_service/supabase_product_service_impl.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +22,9 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'services/local_storage_service/local_storage_service.dart';
+final di = GetIt.instance;
 
 void setUpDi() {
-  final di = GetIt.instance;
-
   di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
   di.registerSingleton<LocalStorageService>(
     SharedPreferencesLocalStorageServiceImpl(),
@@ -39,6 +40,9 @@ void setUpDi() {
   );
   di.registerSingleton<AnalyticsService>(
     SupabaseAnalyticsServiceImpl(),
+  );
+  di.registerSingleton<NotificationService>(
+    FlutterLocalNotificationServiceImpl(),
   );
 }
 
@@ -70,8 +74,12 @@ Future<void> main() async {
     url: supabaseUrl,
     anonKey: supabaseKey,
   );
+
   setUpDi();
   configLoading();
+
+  final notificationService = di<NotificationService>();
+  await notificationService.initialize();
 
   runApp(
     MultiProvider(
