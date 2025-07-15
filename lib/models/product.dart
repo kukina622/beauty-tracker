@@ -45,7 +45,7 @@ class Product {
     return {
       'id': id,
       'name': name,
-      'brand': brand, // TODO: Handle brand serialization
+      'brand': brand?.id,
       'price': price,
       'purchase_date': tryFormatDate(purchaseDate),
       'expiry_date': tryFormatDate(expiryDate),
