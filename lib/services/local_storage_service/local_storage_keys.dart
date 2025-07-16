@@ -1,6 +1,7 @@
 enum LocalStorageKeys {
   userEmail,
   isFirstVisit,
+  expiryNotificationTaskRegistered,
 }
 
 extension LocalStorageKeysExtension on LocalStorageKeys {
