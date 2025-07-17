@@ -10,11 +10,13 @@ import 'package:workmanager/workmanager.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((taskKeyString, inputData) async {
     try {
+      print('Background task triggered: $taskKeyString');
       final taskKey = TaskKeyHelper.fromString(taskKeyString);
       final taskHandler = TaskRegistry.getHandler(taskKey);
       if (taskHandler == null) {
         return false;
       }
+      print('Executing task: $taskKey with input: $inputData');
       await setupBackgroundDependencies();
 
       return taskHandler(inputData);
@@ -36,13 +38,12 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
   @override
   Future<void> registerPeriodicTask({
     required TaskKey taskKey,
-    required String taskName,
     Duration frequency = const Duration(hours: 24),
     WorkPolicy? workPolicy,
   }) async {
     await Workmanager().registerPeriodicTask(
       taskKey.key,
-      taskName,
+      taskKey.key,
       frequency: frequency,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
       constraints: Constraints(
@@ -58,13 +59,12 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
   @override
   Future<void> registerOneOffTask({
     required TaskKey taskKey,
-    required String taskName,
     Duration delay = Duration.zero,
     WorkPolicy? workPolicy,
   }) async {
     await Workmanager().registerOneOffTask(
       taskKey.key,
-      taskName,
+      taskKey.key,
       initialDelay: delay,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
     );

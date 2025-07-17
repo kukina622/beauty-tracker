@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:beauty_tracker/constants.dart';
+import 'package:beauty_tracker/services/notification_service/notification_channel.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

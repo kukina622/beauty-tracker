@@ -5,13 +5,11 @@ abstract class BackgroundService {
   Future<void> initialize();
   Future<void> registerPeriodicTask({
     required TaskKey taskKey,
-    required String taskName,
     Duration frequency = const Duration(hours: 24),
     WorkPolicy? workPolicy,
   });
   Future<void> registerOneOffTask({
     required TaskKey taskKey,
-    required String taskName,
     Duration delay = Duration.zero,
     WorkPolicy? workPolicy,
   });
