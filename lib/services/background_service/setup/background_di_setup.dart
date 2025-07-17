@@ -1,3 +1,5 @@
+import 'package:beauty_tracker/services/auth_service/auth_service.dart';
+import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -35,6 +37,10 @@ class BackgroundDependencyManager {
 
   /// 註冊背景任務需要的服務
   static Future<void> _registerServices() async {
+    if (!_di.isRegistered<AuthService>()) {
+      _di.registerSingleton<AuthService>(SupabaseAuthServiceImpl());
+    }
+
     if (!_di.isRegistered<ProductService>()) {
       _di.registerSingleton<ProductService>(SupabaseProductServiceImpl());
     }
