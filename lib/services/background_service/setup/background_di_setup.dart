@@ -1,5 +1,3 @@
-import 'package:beauty_tracker/services/background_service/task_keys.dart';
-import 'package:beauty_tracker/services/background_service/task_registry.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -16,7 +14,6 @@ class BackgroundDependencyManager {
   static Future<void> setup() async {
     await _initializeSupabase();
     await _registerServices();
-    await _registerTaskHandlers();
   }
 
   /// 初始化 Supabase
@@ -47,17 +44,6 @@ class BackgroundDependencyManager {
       await notificationService.initialize();
       _di.registerSingleton<NotificationService>(notificationService);
     }
-  }
-
-  /// 註冊背景任務處理器
-  static Future<void> _registerTaskHandlers() async {
-    TaskRegistry().registerTaskHandler(
-      TaskKeys.expireNotifications,
-      (_) async {
-        print('Handling expire notifications task');
-        return true;
-      },
-    );
   }
 }
 

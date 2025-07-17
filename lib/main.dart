@@ -1,11 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/router/router.dart';
 import 'package:beauty_tracker/services/analytics_service/analytics_service.dart';
@@ -18,13 +10,20 @@ import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/services/brand_service/supabase_brand_service_impl.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/category_service/supabase_category_service_impl.dart';
+import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
-import 'package:beauty_tracker/services/notification_service/expiry/expiry_notification_service.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/services/product_service/supabase_product_service_impl.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final di = GetIt.instance;
 

@@ -1,38 +1,31 @@
-import 'package:get_it/get_it.dart';
-
 import 'package:beauty_tracker/services/background_service/background_service.dart';
-import 'package:beauty_tracker/services/background_service/task_keys.dart';
-import 'package:beauty_tracker/services/background_service/task_registry.dart';
+import 'package:beauty_tracker/services/background_service/task_key.dart';
+import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_handler.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
-import 'package:beauty_tracker/services/notification_service/expiry/expiry_notification_handler.dart';
+import 'package:get_it/get_it.dart';
 
 class ExpiryNotificationService {
   ExpiryNotificationService(this._backgroundService);
-  
+
   final BackgroundService _backgroundService;
 
   /// 初始化到期通知服務
   Future<void> initialize() async {
     final localStorage = GetIt.instance<LocalStorageService>();
-    
+
     // 檢查是否已經註冊過任務
-    final isTaskRegistered = await localStorage.getBool(LocalStorageKeys.expiryNotificationTaskRegistered) ?? false;
-    
-    // 總是註冊任務處理器（這個不會重複）
-    TaskRegistry().registerTaskHandler(
-      TaskKeys.expireNotifications,
-      ExpiryNotificationHandler.handle,
-    );
+    final isTaskRegistered =
+        await localStorage.getBool(LocalStorageKeys.expiryNotificationTaskRegistered) ?? false;
 
     // 只有在未註冊過時才註冊背景任務
     if (!isTaskRegistered) {
       await _backgroundService.registerPeriodicTask(
-        taskKey: TaskKeys.expireNotifications,
+        taskKey: TaskKey.expireNotifications,
         taskName: 'Check Expiring Products',
         frequency: const Duration(hours: 24),
       );
-      
+
       // 標記任務已註冊
       await localStorage.setBool(LocalStorageKeys.expiryNotificationTaskRegistered, true);
     }
@@ -41,9 +34,9 @@ class ExpiryNotificationService {
   /// 停止到期通知服務
   Future<void> stop() async {
     final localStorage = GetIt.instance<LocalStorageService>();
-    
-    await _backgroundService.cancelTask(TaskKeys.expireNotifications);
-    
+
+    await _backgroundService.cancelTask(TaskKey.expireNotifications);
+
     // 清除註冊標記，允許重新註冊
     await localStorage.setBool(LocalStorageKeys.expiryNotificationTaskRegistered, false);
   }

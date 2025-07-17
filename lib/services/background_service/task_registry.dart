@@ -1,20 +1,19 @@
-import 'package:beauty_tracker/services/background_service/task_keys.dart';
+import 'package:beauty_tracker/services/background_service/task_key.dart';
+import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_handler.dart';
+
+typedef TaskHandler = Future<bool> Function(Map<String, dynamic>?);
 
 class TaskRegistry {
-  factory TaskRegistry() => _instance;
-  TaskRegistry._internal();
-  static final TaskRegistry _instance = TaskRegistry._internal();
+  TaskRegistry._();
 
-  final Map<String, Future<bool> Function(Map<String, dynamic>?)> _taskHandlers = {};
+  static final Map<TaskKey, TaskHandler> _taskHandlers = {
+    TaskKey.expireNotifications: ExpiryNotificationHandler.handle,
+  };
 
-  void registerTaskHandler(
-    TaskKeys taskKey,
-    Future<bool> Function(Map<String, dynamic>?) handler,
-  ) {
-    _taskHandlers[taskKey.key] = handler;
-  }
-
-  Future<bool> Function(Map<String, dynamic>?)? getHandler(String taskKey) {
+  static TaskHandler? getHandler(TaskKey? taskKey) {
+    if (taskKey == null) {
+      return null;
+    }
     return _taskHandlers[taskKey];
   }
 }
