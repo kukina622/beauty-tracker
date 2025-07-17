@@ -12,20 +12,14 @@ class ExpiryNotificationHandler {
   static Future<bool> handle(Map<String, dynamic>? inputData) async {
     try {
       final authService = GetIt.instance<AuthService>();
-      // 檢查用戶是否已登入
+
       if (!authService.isLoggedIn) {
-        return false; // 用戶未登入，不執行通知邏輯
+        return false;
       }
 
       final productService = GetIt.instance<ProductService>();
       final notificationService = GetIt.instance<NotificationService>();
-      final isGranted = await notificationService.requestPermissions();
 
-      if (!isGranted) {
-        return false;
-      }
-
-      // 獲取即將到期的產品
       final result = await productService.getExpiringSoonProducts();
 
       switch (result) {
