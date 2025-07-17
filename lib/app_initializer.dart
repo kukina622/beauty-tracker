@@ -67,7 +67,6 @@ class AppInitializer {
     di.registerSingleton<ExpiryNotificationService>(
       ExpiryNotificationService(
         backgroundService: di<BackgroundService>(),
-        localStorageService: di<LocalStorageService>(),
       ),
     );
   }
