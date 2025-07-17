@@ -2,6 +2,7 @@ import 'package:beauty_tracker/services/background_service/background_service.da
 import 'package:beauty_tracker/services/background_service/setup/background_di_setup.dart';
 import 'package:beauty_tracker/services/background_service/task_key.dart';
 import 'package:beauty_tracker/services/background_service/task_registry.dart';
+import 'package:beauty_tracker/services/background_service/work_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -37,11 +38,13 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
     required TaskKey taskKey,
     required String taskName,
     Duration frequency = const Duration(hours: 24),
+    WorkPolicy? workPolicy,
   }) async {
     await Workmanager().registerPeriodicTask(
       taskKey.key,
       taskName,
       frequency: frequency,
+      existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
       constraints: Constraints(
         networkType: NetworkType.connected,
         requiresBatteryNotLow: false,
@@ -57,11 +60,13 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
     required TaskKey taskKey,
     required String taskName,
     Duration delay = Duration.zero,
+    WorkPolicy? workPolicy,
   }) async {
     await Workmanager().registerOneOffTask(
       taskKey.key,
       taskName,
       initialDelay: delay,
+      existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
     );
   }
 
