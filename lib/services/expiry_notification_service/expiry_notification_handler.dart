@@ -28,9 +28,9 @@ class ExpiryNotificationHandler {
             return true;
           }
 
-          final count = expiringProducts.length;
+          final productNames = expiringProducts.map((product) => product.name).join('、');
           final title = '產品到期提醒';
-          final body = '您有 $count 個產品即將在30天內到期';
+          final body = '您的美妝品 $productNames 即將到期，請多加留意。';
 
           await notificationService.showNotification(
             id: Random().nextInt(1000000),
