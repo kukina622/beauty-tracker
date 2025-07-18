@@ -40,11 +40,13 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
     required TaskKey taskKey,
     Duration frequency = const Duration(hours: 24),
     WorkPolicy? workPolicy,
+    Duration initialDelay = Duration.zero,
   }) async {
     await Workmanager().registerPeriodicTask(
       taskKey.key,
       taskKey.key,
       frequency: frequency,
+      initialDelay: initialDelay,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
       constraints: Constraints(
         networkType: NetworkType.connected,
@@ -59,13 +61,13 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
   @override
   Future<void> registerOneOffTask({
     required TaskKey taskKey,
-    Duration delay = Duration.zero,
+    Duration initialDelay = Duration.zero,
     WorkPolicy? workPolicy,
   }) async {
     await Workmanager().registerOneOffTask(
       taskKey.key,
       taskKey.key,
-      initialDelay: delay,
+      initialDelay: initialDelay,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
     );
   }
