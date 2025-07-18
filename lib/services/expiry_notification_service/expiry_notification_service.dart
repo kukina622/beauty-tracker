@@ -13,8 +13,8 @@ class ExpiryNotificationService {
   Future<void> initialize() async {
     await backgroundService.registerPeriodicTask(
       taskKey: TaskKey.expireNotifications,
-      frequency: const Duration(minutes: 15),
-      workPolicy: WorkPolicy.replace,
+      frequency: const Duration(hours: 24),
+      workPolicy: WorkPolicy.keep,
     );
   }
 
