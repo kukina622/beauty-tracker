@@ -54,11 +54,27 @@ class Product {
     };
   }
 
-  static List<Product> sortByExpiryDate(List<Product> products) {
+  static List<Product> sortByExpiryDate(List<Product> products, {bool todayFirst = false}) {
     final DateTime now = DateTime.now();
     return products.sorted((a, b) {
       final aExpiry = a.expiryDate.difference(now).inDays;
       final bExpiry = b.expiryDate.difference(now).inDays;
+
+      if (todayFirst) {
+        final aIsToday = aExpiry == 0;
+        final bIsToday = bExpiry == 0;
+
+        if (aIsToday && !bIsToday) {
+          return -1;
+        }
+
+        if (!aIsToday && bIsToday) {
+          return 1;
+        }
+
+        return aExpiry.compareTo(bExpiry);
+      }
+
       return aExpiry.compareTo(bExpiry);
     });
   }

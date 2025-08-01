@@ -52,7 +52,7 @@ class HomePage extends HookWidget {
         return <Product>[];
       }
 
-      return Product.sortByExpiryDate(productsResult.data!);
+      return Product.sortByExpiryDate(productsResult.data!, todayFirst: true);
     }, [productsResult.data]);
 
     useEffect(() {
