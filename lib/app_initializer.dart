@@ -8,6 +8,8 @@ import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/services/brand_service/supabase_brand_service_impl.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/category_service/supabase_category_service_impl.dart';
+import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
+import 'package:beauty_tracker/services/expiry_notification_record_service/supabase_expiry_notification_record_service_impl.dart';
 import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
@@ -56,10 +58,14 @@ class AppInitializer {
     di.registerSingleton<CategoryService>(SupabaseCategoryServiceImpl());
     di.registerSingleton<BrandService>(SupabaseBrandServiceImpl());
     di.registerSingleton<AnalyticsService>(SupabaseAnalyticsServiceImpl());
+    di.registerSingleton<ExpiryNotificationRecordService>(
+      SupabaseExpiryNotificationRecordServiceImpl(),
+    );
 
     di.registerSingleton<NotificationService>(
       FlutterLocalNotificationServiceImpl(),
     );
+
     di.registerSingleton<BackgroundService>(
       WorkmanagerBackgroundServiceImpl(),
     );
