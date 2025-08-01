@@ -1,6 +1,7 @@
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/models/expiry_notification_record.dart';
 import 'package:beauty_tracker/models/product.dart';
+import 'package:beauty_tracker/requests/expiry_notification_record_requests/create_expiry_notification_record_request.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_message.dart';
@@ -84,6 +85,8 @@ class ExpiryNotificationHandler {
 
         if (products.isNotEmpty) {
           await _sendNotification(notificationService, products, notificationType);
+
+          await _recordNotification(expiryNotificationRecordService, products, notificationType);
         }
         // wait for a short period to avoid overwhelming the notification system
         await Future<void>.delayed(const Duration(milliseconds: 500));
@@ -125,12 +128,12 @@ class ExpiryNotificationHandler {
 
   static Future<void> _sendNotification(
     NotificationService notificationService,
-    List<Product> product,
+    List<Product> products,
     ExpiryNotificationType type,
   ) async {
     final message = ExpiryNotificationMessage.fromType(
       type,
-      productName: product.map((p) => p.name).join(', '),
+      productName: products.map((p) => p.name).join(', '),
     );
 
     await notificationService.showNotification(
@@ -139,5 +142,20 @@ class ExpiryNotificationHandler {
       body: message.body,
       channelId: NotificationChannels.expiring,
     );
+  }
+
+  static Future<void> _recordNotification(
+    ExpiryNotificationRecordService expiryNotificationRecordService,
+    List<Product> products,
+    ExpiryNotificationType type,
+  ) async {
+    final payloads = products
+        .map((product) => CreateExpiryNotificationRecordRequest(
+              product: product,
+              notificationType: type,
+            ))
+        .toList();
+
+    await expiryNotificationRecordService.createMultiNotificationRecords(payloads);
   }
 }
