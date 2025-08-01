@@ -1,5 +1,7 @@
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
+import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
+import 'package:beauty_tracker/services/expiry_notification_record_service/supabase_expiry_notification_record_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -50,10 +52,15 @@ class BackgroundDependencyManager {
       await notificationService.initialize();
       _di.registerSingleton<NotificationService>(notificationService);
     }
+
+    if (!_di.isRegistered<ExpiryNotificationRecordService>()) {
+      _di.registerSingleton<ExpiryNotificationRecordService>(
+        SupabaseExpiryNotificationRecordServiceImpl(),
+      );
+    }
   }
 }
 
-/// 向後兼容的函數（保持現有的 API）
 Future<void> setupBackgroundDependencies() async {
   await BackgroundDependencyManager.setup();
 }
