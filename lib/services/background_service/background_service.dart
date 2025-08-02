@@ -17,14 +17,3 @@ abstract class BackgroundService {
   Future<void> cancelAllTasks();
   Future<void> cancelTask(TaskKey taskKey);
 }
-
-Duration calculateInitialDelay(int hour, int minute) {
-  final now = DateTime.now();
-  var scheduledTime = DateTime(now.year, now.month, now.day, hour, minute);
-
-  if (scheduledTime.isBefore(now)) {
-    scheduledTime = scheduledTime.add(Duration(days: 1));
-  }
-
-  return scheduledTime.difference(now);
-}
