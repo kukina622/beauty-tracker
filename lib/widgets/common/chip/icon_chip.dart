@@ -8,12 +8,14 @@ class IconChip extends StatelessWidget {
     required this.iconColor,
     this.iconSize = 24,
     this.size = 50,
+    this.borderRadius,
   });
   final IconData icon;
   final Color backgroundColor;
   final Color iconColor;
   final double iconSize;
   final double size;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class IconChip extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: borderRadius ?? BorderRadius.circular(12),
       ),
       child: Center(
         child: Icon(

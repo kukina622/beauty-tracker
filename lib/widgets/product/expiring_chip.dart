@@ -1,5 +1,6 @@
 import 'package:beauty_tracker/constants.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
+import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpiringChip extends StatelessWidget {
@@ -12,9 +13,19 @@ class ExpiringChip extends StatelessWidget {
     final isExpired = daysUntilExpiry < 0;
     final isExpiringSoon = daysUntilExpiry >= 0 && daysUntilExpiry <= AppConstants.expiringSoonDays;
 
-    Color statusColor;
+    String text;
+    if (daysUntilExpiry == 0) {
+      text = '今日過期';
+    } else if (isExpired) {
+      text = '已過期 ${daysUntilExpiry.abs()} 天';
+    } else {
+      text = '有效期還有 $daysUntilExpiry 天';
+    }
 
-    if (isExpired) {
+    Color statusColor;
+    if (daysUntilExpiry == 0) {
+      statusColor = const Color(0xFFE91E63);
+    } else if (isExpired) {
       statusColor = const Color(0xFFFF6B6B);
     } else if (isExpiringSoon) {
       statusColor = const Color(0xFFFF9F1C);
@@ -22,8 +33,20 @@ class ExpiringChip extends StatelessWidget {
       statusColor = const Color(0xFF5ECCC4);
     }
 
+    if (daysUntilExpiry == 0) {
+      return TextIconChip(
+        text: text,
+        icon: Icons.bookmark,
+        iconColor: statusColor,
+        textColor: statusColor,
+        backgroundColor: statusColor.withValues(alpha: .2),
+        borderColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
+      );
+    }
+
     return TextChip(
-      text: isExpired ? '過期 ${daysUntilExpiry.abs()} 天' : '有效期還有 $daysUntilExpiry 天',
+      text: text,
       backgroundColor: statusColor.withValues(alpha: .2),
       textColor: statusColor,
     );

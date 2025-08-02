@@ -6,10 +6,12 @@ class TextChip extends StatelessWidget {
     required this.text,
     required this.backgroundColor,
     required this.textColor,
+    this.borderRadius,
   });
   final String text;
   final Color backgroundColor;
   final Color textColor;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class TextChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: borderRadius ?? BorderRadius.circular(6),
       ),
       child: Text(
         text,
