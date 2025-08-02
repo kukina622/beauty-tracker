@@ -56,9 +56,9 @@ class ExpiryNotificationHandler {
 
         if (daysUntilExpiry == 0) {
           targetNotificationType = ExpiryNotificationType.today;
-        } else if (daysUntilExpiry <= 7) {
+        } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
           targetNotificationType = ExpiryNotificationType.sevenDays;
-        } else if (daysUntilExpiry <= 30) {
+        } else if (daysUntilExpiry <= 30 && daysUntilExpiry > 7) {
           targetNotificationType = ExpiryNotificationType.thirtyDays;
         }
 
