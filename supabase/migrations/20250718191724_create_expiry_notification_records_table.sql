@@ -6,6 +6,5 @@ create table public.expiry_notification_records (
   "user" uuid null default auth.uid (),
   constraint notifications_pkey primary key (id),
   constraint notifications_product_fkey foreign key (product_id) references products (id) on update cascade on delete cascade,
-  constraint notifications_user_fkey foreign key ("user") references auth.users (id) on update cascade on delete cascade,
-  constraint unique_notification unique (product_id, notification_type)
+  constraint notifications_user_fkey foreign key ("user") references auth.users (id) on update cascade on delete cascade
 );
