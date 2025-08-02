@@ -7,6 +7,8 @@ analyzer:
     strict-inference: true
 
   errors:
+    avoid_classes_with_only_static_members: ignore
+    avoid_types_on_closure_parameters: ignore
     missing_required_param: warning
     missing_return: warning
 
