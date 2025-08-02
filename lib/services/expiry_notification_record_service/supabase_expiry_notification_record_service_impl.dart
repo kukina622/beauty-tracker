@@ -52,14 +52,4 @@ class SupabaseExpiryNotificationRecordServiceImpl implements ExpiryNotificationR
       return insertedRecords.map((e) => ExpiryNotificationRecord.fromJson(e)).toList();
     });
   }
-
-  @override
-  Future<Result<bool>> hasNotificationBeenSent(
-    String productId,
-    ExpiryNotificationType notificationType,
-  ) async {
-    return resultGuard(() async {
-      return false;
-    });
-  }
 }

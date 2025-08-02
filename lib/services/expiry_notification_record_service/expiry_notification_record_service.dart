@@ -10,9 +10,4 @@ abstract class ExpiryNotificationRecordService {
   Future<Result<List<ExpiryNotificationRecord>>> createMultiNotificationRecords(
     List<CreateExpiryNotificationRecordRequest> payload,
   );
-
-  Future<Result<bool>> hasNotificationBeenSent(
-    String productId,
-    ExpiryNotificationType notificationType,
-  );
 }
