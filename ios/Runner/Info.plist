@@ -63,5 +63,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER).todayExpiryNotification</string>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER).dailyExpireNotificationScheduler</string>
+	</array>
+
 </dict>
 </plist>

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:beauty_tracker/services/background_service/background_service.dart';
 import 'package:beauty_tracker/services/background_service/setup/background_di_setup.dart';
 import 'package:beauty_tracker/services/background_service/task_key.dart';
@@ -10,7 +12,7 @@ import 'package:workmanager/workmanager.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((taskKeyString, inputData) async {
     try {
-      final taskKey = TaskKeyHelper.fromString(taskKeyString);
+      final taskKey = await TaskKeyHelper.fromString(taskKeyString);
       final taskHandler = TaskRegistry.getHandler(taskKey);
 
       if (taskHandler == null) {
@@ -44,9 +46,10 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
     WorkPolicy? workPolicy,
     Duration initialDelay = Duration.zero,
   }) async {
+    final key = await taskKey.key;
     await Workmanager().registerPeriodicTask(
-      taskKey.key,
-      taskKey.key,
+      key,
+      key,
       frequency: frequency,
       initialDelay: initialDelay,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
@@ -66,9 +69,22 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
     Duration initialDelay = Duration.zero,
     WorkPolicy? workPolicy,
   }) async {
+    final key = await taskKey.key;
+
+    // Because iOS does not support initialDelay for one-off tasks,
+    // we register it as a processing task instead.
+    if (Platform.isIOS) {
+      await Workmanager().registerProcessingTask(
+        key,
+        key,
+        initialDelay: initialDelay,
+      );
+      return;
+    }
+
     await Workmanager().registerOneOffTask(
-      taskKey.key,
-      taskKey.key,
+      key,
+      key,
       initialDelay: initialDelay,
       existingWorkPolicy: workPolicy?.toWorkmanagerPolicy(),
     );
@@ -81,6 +97,7 @@ class WorkmanagerBackgroundServiceImpl implements BackgroundService {
 
   @override
   Future<void> cancelTask(TaskKey taskKey) async {
-    await Workmanager().cancelByUniqueName(taskKey.key);
+    final key = await taskKey.key;
+    await Workmanager().cancelByUniqueName(key);
   }
 }
