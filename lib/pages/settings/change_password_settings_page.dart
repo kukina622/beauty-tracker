@@ -51,68 +51,70 @@ class ChangePasswordSettingsPage extends HookWidget {
       authService,
     ]);
 
-    return PageScrollView(
-      header: [
-        AppTitleBar(
-          title: '修改密碼',
-          backButtonEnabled: true,
-        )
-      ],
-      slivers: [
-        SliverToBoxAdapter(
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: [
-                PasswordFormField(
-                  labelText: '舊密碼',
-                  hintText: '輸入您的舊密碼',
-                  controller: oldPasswordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '請輸入舊密碼';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                PasswordFormField(
-                  labelText: '新密碼',
-                  hintText: '輸入您的新密碼',
-                  controller: newPasswordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '請輸入新密碼';
-                    }
-                    if (value.length < 6) {
-                      return '新密碼必須至少包含6個字';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                PasswordFormField(
-                  labelText: '確認新密碼',
-                  hintText: '再次輸入您的新密碼',
-                  controller: confirmPasswordController,
-                  validator: (value) {
-                    if (value != newPasswordController.text) {
-                      return '兩次輸入的密碼不一致';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                AppElevatedButton(
-                  text: '修改密碼',
-                  onPressed: onSubmit,
-                  isFilled: true,
-                )
-              ],
+    return Scaffold(
+      body: PageScrollView(
+        header: [
+          AppTitleBar(
+            title: '修改密碼',
+            backButtonEnabled: true,
+          )
+        ],
+        slivers: [
+          SliverToBoxAdapter(
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  PasswordFormField(
+                    labelText: '舊密碼',
+                    hintText: '輸入您的舊密碼',
+                    controller: oldPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '請輸入舊密碼';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  PasswordFormField(
+                    labelText: '新密碼',
+                    hintText: '輸入您的新密碼',
+                    controller: newPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '請輸入新密碼';
+                      }
+                      if (value.length < 6) {
+                        return '新密碼必須至少包含6個字';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  PasswordFormField(
+                    labelText: '確認新密碼',
+                    hintText: '再次輸入您的新密碼',
+                    controller: confirmPasswordController,
+                    validator: (value) {
+                      if (value != newPasswordController.text) {
+                        return '兩次輸入的密碼不一致';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  AppElevatedButton(
+                    text: '修改密碼',
+                    onPressed: onSubmit,
+                    isFilled: true,
+                  )
+                ],
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

@@ -30,17 +30,23 @@ class AppRouter extends RootStackRouter {
           page: EditProductRoute.page,
           guards: [AuthCheckGuard()],
         ),
-        AutoRoute(
+        CustomRoute<dynamic>(
           path: '/settings/brand-settings',
           page: BrandSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          duration: Duration(milliseconds: 400),
         ),
-        AutoRoute(
+        CustomRoute<dynamic>(
           path: '/settings/category-settings',
           page: CategorySettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          duration: Duration(milliseconds: 400),
         ),
-        AutoRoute(
+        CustomRoute<dynamic>(
           path: '/settings/change-password',
           page: ChangePasswordSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          duration: Duration(milliseconds: 400),
         ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(

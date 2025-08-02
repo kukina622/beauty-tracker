@@ -61,76 +61,78 @@ class CategorySettingsPage extends HookWidget {
       }
     }, [categoryResult]);
 
-    return PageScrollView(
-      header: [
-        AppTitleBar(
-          title: '類別設定',
-          actionButton: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AppFilledIconButton(
-                icon: Icons.add,
-                iconColor: const Color(0xFF2D3142),
-                backgroundColor: Colors.white,
-                size: 44.0,
-                borderRadius: BorderRadius.circular(12),
-                onPressed: () {
-                  CategoryFormDialog.showCreate(
-                    context,
-                    onCategoryCreated: (newCategory) {
-                      categoryResult.refresh();
-                      productProvider.triggerRefresh();
-                    },
-                  );
-                },
-              ),
-            ],
+    return Scaffold(
+      body: PageScrollView(
+        header: [
+          AppTitleBar(
+            title: '類別設定',
+            actionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppFilledIconButton(
+                  icon: Icons.add,
+                  iconColor: const Color(0xFF2D3142),
+                  backgroundColor: Colors.white,
+                  size: 44.0,
+                  borderRadius: BorderRadius.circular(12),
+                  onPressed: () {
+                    CategoryFormDialog.showCreate(
+                      context,
+                      onCategoryCreated: (newCategory) {
+                        categoryResult.refresh();
+                        productProvider.triggerRefresh();
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            backButtonEnabled: true,
+          )
+        ],
+        slivers: [
+          SliverToBoxAdapter(
+            child: AppSearchBar(
+              hintText: '搜尋類別',
+              onChanged: (p0) => searchQuery.value = p0,
+            ),
           ),
-          backButtonEnabled: true,
-        )
-      ],
-      slivers: [
-        SliverToBoxAdapter(
-          child: AppSearchBar(
-            hintText: '搜尋類別',
-            onChanged: (p0) => searchQuery.value = p0,
-          ),
-        ),
-        SliverGrid(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.1,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            childCount: filteredCategories.length,
-            (context, index) {
-              return CategoryManagementCard(
-                category: filteredCategories[index],
-                onEdit: () {
-                  CategoryFormDialog.showEdit(
-                    context,
-                    category: filteredCategories[index],
-                    onCategoryUpdated: (updatedCategory) {
-                      categoryResult.refresh();
-                      productProvider.triggerRefresh();
-                    },
-                  );
-                },
-                onDelete: () {
-                  DeleteDialog.show(
-                    context,
-                    title: '確認刪除類別嗎',
-                    description: '這個操作無法復原。',
-                    onConfirm: () => onDeleteCategory(filteredCategories[index].id),
-                  );
-                },
-              );
-            },
-          ),
-        )
-      ],
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1.1,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              childCount: filteredCategories.length,
+              (context, index) {
+                return CategoryManagementCard(
+                  category: filteredCategories[index],
+                  onEdit: () {
+                    CategoryFormDialog.showEdit(
+                      context,
+                      category: filteredCategories[index],
+                      onCategoryUpdated: (updatedCategory) {
+                        categoryResult.refresh();
+                        productProvider.triggerRefresh();
+                      },
+                    );
+                  },
+                  onDelete: () {
+                    DeleteDialog.show(
+                      context,
+                      title: '確認刪除類別嗎',
+                      description: '這個操作無法復原。',
+                      onConfirm: () => onDeleteCategory(filteredCategories[index].id),
+                    );
+                  },
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

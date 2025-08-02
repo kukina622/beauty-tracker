@@ -57,70 +57,72 @@ class BrandSettingsPage extends HookWidget {
       }
     }, [brandsResult]);
 
-    return PageScrollView(
-      header: [
-        AppTitleBar(
-          title: '品牌設定',
-          actionButton: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AppFilledIconButton(
-                icon: Icons.add,
-                iconColor: const Color(0xFF2D3142),
-                backgroundColor: Colors.white,
-                size: 44.0,
-                borderRadius: BorderRadius.circular(12),
-                onPressed: () {
-                  BrandFormDialog.showCreate(
-                    context,
-                    onBrandCreated: (brand) => brandsResult.refresh(),
-                  );
-                },
-              ),
-            ],
-          ),
-          backButtonEnabled: true,
-        )
-      ],
-      slivers: [
-        SliverToBoxAdapter(
-          child: AppSearchBar(
-            hintText: '搜尋品牌',
-            onChanged: (p0) => searchQuery.value = p0,
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: filteredBrands.length,
-            (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: BrandManagementCard(
-                  brand: filteredBrands[index],
-                  onEdit: () {
-                    BrandFormDialog.showEdit(
+    return Scaffold(
+      body: PageScrollView(
+        header: [
+          AppTitleBar(
+            title: '品牌設定',
+            actionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppFilledIconButton(
+                  icon: Icons.add,
+                  iconColor: const Color(0xFF2D3142),
+                  backgroundColor: Colors.white,
+                  size: 44.0,
+                  borderRadius: BorderRadius.circular(12),
+                  onPressed: () {
+                    BrandFormDialog.showCreate(
                       context,
-                      brand: filteredBrands[index],
-                      onBrandUpdated: (brand) {
-                        brandsResult.refresh();
-                        productProvider.triggerRefresh();
-                      },
-                    );
-                  },
-                  onDelete: () {
-                    DeleteDialog.show(
-                      context,
-                      title: '確認刪除品牌嗎',
-                      description: '這個操作無法復原。',
-                      onConfirm: () => onDeleteBrand(filteredBrands[index].id),
+                      onBrandCreated: (brand) => brandsResult.refresh(),
                     );
                   },
                 ),
-              );
-            },
+              ],
+            ),
+            backButtonEnabled: true,
+          )
+        ],
+        slivers: [
+          SliverToBoxAdapter(
+            child: AppSearchBar(
+              hintText: '搜尋品牌',
+              onChanged: (p0) => searchQuery.value = p0,
+            ),
           ),
-        )
-      ],
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: filteredBrands.length,
+              (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: BrandManagementCard(
+                    brand: filteredBrands[index],
+                    onEdit: () {
+                      BrandFormDialog.showEdit(
+                        context,
+                        brand: filteredBrands[index],
+                        onBrandUpdated: (brand) {
+                          brandsResult.refresh();
+                          productProvider.triggerRefresh();
+                        },
+                      );
+                    },
+                    onDelete: () {
+                      DeleteDialog.show(
+                        context,
+                        title: '確認刪除品牌嗎',
+                        description: '這個操作無法復原。',
+                        onConfirm: () => onDeleteBrand(filteredBrands[index].id),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
