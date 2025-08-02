@@ -32,6 +32,7 @@ class AppInitializer {
     _setupDependencyInjection();
     _configureEasyLoading();
     await _initializeServices();
+    await _requestPermissions();
   }
 
   static Future<void> _loadEnvironment() async {
@@ -102,5 +103,10 @@ class AppInitializer {
 
     final expiryNotificationService = di<ExpiryNotificationService>();
     await expiryNotificationService.initialize();
+  }
+
+  static Future<void> _requestPermissions() async {
+    final notificationService = di<NotificationService>();
+    await notificationService.requestPermissions();
   }
 }
