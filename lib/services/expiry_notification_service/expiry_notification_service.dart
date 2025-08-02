@@ -2,6 +2,7 @@ import 'package:beauty_tracker/services/background_service/background_service.da
 import 'package:beauty_tracker/services/background_service/task_key.dart';
 import 'package:beauty_tracker/services/background_service/work_policy.dart';
 import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_handler.dart';
+import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_scheduler.dart';
 
 class ExpiryNotificationService {
   ExpiryNotificationService({
@@ -12,14 +13,17 @@ class ExpiryNotificationService {
 
   Future<void> initialize() async {
     await backgroundService.registerPeriodicTask(
-      taskKey: TaskKey.expireNotifications,
+      taskKey: TaskKey.dailyExpireNotificationScheduler,
       frequency: const Duration(hours: 24),
-      workPolicy: WorkPolicy.keep,
+      workPolicy: WorkPolicy.replace,
     );
+
+    ExpiryNotificationScheduler.handle(null);
   }
 
   Future<void> stop() async {
-    await backgroundService.cancelTask(TaskKey.expireNotifications);
+    await backgroundService.cancelTask(TaskKey.dailyExpireNotificationScheduler);
+    await backgroundService.cancelTask(TaskKey.todayExpiryNotification);
   }
 
   Future<void> triggerManualCheck() async {

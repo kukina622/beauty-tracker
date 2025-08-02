@@ -3,7 +3,8 @@
 import 'package:collection/collection.dart';
 
 enum TaskKey {
-  expireNotifications,
+  todayExpiryNotification,
+  dailyExpireNotificationScheduler,
 }
 
 extension TaskKeysExtension on TaskKey {

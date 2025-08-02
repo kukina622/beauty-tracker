@@ -1,5 +1,7 @@
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/auth_service/supabase_auth_service_impl.dart';
+import 'package:beauty_tracker/services/background_service/background_service.dart';
+import 'package:beauty_tracker/services/background_service/workmanager_background_service_impl.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/supabase_expiry_notification_record_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
@@ -57,6 +59,12 @@ class BackgroundDependencyManager {
       _di.registerSingleton<ExpiryNotificationRecordService>(
         SupabaseExpiryNotificationRecordServiceImpl(),
       );
+    }
+
+    if (!_di.isRegistered<BackgroundService>()) {
+      final backgroundService = WorkmanagerBackgroundServiceImpl();
+      await backgroundService.initialize();
+      _di.registerSingleton<BackgroundService>(backgroundService);
     }
   }
 }
