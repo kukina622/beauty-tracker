@@ -13,6 +13,7 @@ class TextIconChip extends StatelessWidget {
     this.fontSize = 12,
     this.borderWidth = 1,
     this.suffixIcon,
+    this.borderRadius,
     this.onSuffixIconPressed,
   });
 
@@ -26,14 +27,16 @@ class TextIconChip extends StatelessWidget {
   final double fontSize;
   final double borderWidth;
   final IconData? suffixIcon;
+  final BorderRadiusGeometry? borderRadius;
   final void Function()? onSuffixIconPressed;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: borderRadius ?? BorderRadius.circular(14),
         border: Border.all(
           color: borderColor,
           width: borderWidth,
@@ -42,10 +45,13 @@ class TextIconChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: iconColor,
-            size: iconSize,
+          Padding(
+            padding: EdgeInsets.only(top: 1.0),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: iconSize,
+            ),
           ),
           const SizedBox(width: 4),
           Text(
@@ -54,6 +60,7 @@ class TextIconChip extends StatelessWidget {
               fontSize: fontSize,
               color: textColor,
               fontWeight: FontWeight.w500,
+              height: 1.0,
             ),
           ),
           if (suffixIcon != null) ...[

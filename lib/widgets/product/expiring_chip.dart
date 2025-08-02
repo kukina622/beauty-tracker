@@ -1,5 +1,6 @@
 import 'package:beauty_tracker/constants.dart';
 import 'package:beauty_tracker/widgets/common/chip/text_chip.dart';
+import 'package:beauty_tracker/widgets/common/chip/text_icon_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpiringChip extends StatelessWidget {
@@ -30,6 +31,18 @@ class ExpiringChip extends StatelessWidget {
       statusColor = const Color(0xFFFF9F1C);
     } else {
       statusColor = const Color(0xFF5ECCC4);
+    }
+
+    if (daysUntilExpiry == 0) {
+      return TextIconChip(
+        text: text,
+        icon: Icons.bookmark,
+        iconColor: statusColor,
+        textColor: statusColor,
+        backgroundColor: statusColor.withValues(alpha: .2),
+        borderColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
+      );
     }
 
     return TextChip(
