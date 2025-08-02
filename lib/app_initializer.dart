@@ -11,6 +11,7 @@ import 'package:beauty_tracker/services/category_service/supabase_category_servi
 import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/supabase_expiry_notification_record_service_impl.dart';
 import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_service.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
@@ -33,6 +34,7 @@ class AppInitializer {
     _configureEasyLoading();
     await _initializeServices();
     await _requestPermissions();
+    await _initializeDefaultLocalStorageValue();
   }
 
   static Future<void> _loadEnvironment() async {
@@ -108,5 +110,41 @@ class AppInitializer {
   static Future<void> _requestPermissions() async {
     final notificationService = di<NotificationService>();
     await notificationService.requestPermissions();
+  }
+
+  static Future<void> _initializeDefaultLocalStorageValue() async {
+    final localStorageService = di<LocalStorageService>();
+    final isFirstVisit = await localStorageService.getBool(LocalStorageKeys.isFirstVisit);
+
+    if (isFirstVisit == null) {
+      await localStorageService.setBool(LocalStorageKeys.isFirstVisit, true);
+    }
+
+    final rememberUserEmail = await localStorageService.getBool(LocalStorageKeys.userEmail);
+    if (rememberUserEmail == null) {
+      await localStorageService.setBool(LocalStorageKeys.userEmail, false);
+    }
+
+    // Initialize default notification settings
+    final thirtyDayExpiryNotificationEnabled = await localStorageService.getBool(
+      LocalStorageKeys.thirtyDayExpiryNotificationEnabled,
+    );
+    if (thirtyDayExpiryNotificationEnabled == null) {
+      await localStorageService.setBool(LocalStorageKeys.thirtyDayExpiryNotificationEnabled, true);
+    }
+
+    final sevenDayExpiryNotificationEnabled = await localStorageService.getBool(
+      LocalStorageKeys.sevenDayExpiryNotificationEnabled,
+    );
+    if (sevenDayExpiryNotificationEnabled == null) {
+      await localStorageService.setBool(LocalStorageKeys.sevenDayExpiryNotificationEnabled, true);
+    }
+
+    final todayExpiryNotificationEnabled = await localStorageService.getBool(
+      LocalStorageKeys.todayExpiryNotificationEnabled,
+    );
+    if (todayExpiryNotificationEnabled == null) {
+      await localStorageService.setBool(LocalStorageKeys.todayExpiryNotificationEnabled, true);
+    }
   }
 }
