@@ -93,7 +93,7 @@ class AppInitializer {
       ..textColor = Colors.black
       ..maskColor = Colors.black.withValues(alpha: .5)
       ..userInteractions = false
-      ..dismissOnTap = false;
+      ..dismissOnTap = true;
   }
 
   static Future<void> _initializeServices() async {
