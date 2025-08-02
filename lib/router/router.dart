@@ -48,9 +48,11 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.slideLeft,
           duration: Duration(milliseconds: 400),
         ),
-        AutoRoute(
+        CustomRoute<dynamic>(
           path: '/settings/notification-settings',
           page: NotificationSettingsRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          duration: Duration(milliseconds: 400),
         ),
         AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
         CustomRoute<dynamic>(

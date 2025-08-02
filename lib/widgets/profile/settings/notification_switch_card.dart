@@ -5,12 +5,10 @@ class NotificationSwitchCard extends StatelessWidget {
   const NotificationSwitchCard({
     super.key,
     required this.title,
-    required this.subtitle,
     required this.value,
     required this.onChanged,
   });
   final String title;
-  final String subtitle;
   final bool value;
   final ValueChanged<bool> onChanged;
 
@@ -42,22 +40,12 @@ class NotificationSwitchCard extends StatelessWidget {
                   title,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // const SizedBox(height: 4),
-                // Text(
-                //   subtitle,
-                //   style: TextStyle(
-                //     fontSize: 14,
-                //     color: Colors.grey.shade600,
-                //   ),
-                // ),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFFFF9A9E),
-            activeTrackColor: const Color(0xFFFF9A9E).withValues(alpha: 0.3),
           ),
         ],
       ),

@@ -172,6 +172,25 @@ class BeautyTrackerApp extends StatelessWidget {
         dividerTheme: const DividerThemeData(
           color: Color(0xFFf9f9f9),
         ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFFFF9A9E); // activeColor
+            }
+            return Colors.white; // inactiveThumbColor
+          }),
+          trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFFFF9A9E).withValues(alpha: 0.3); // activeTrackColor
+            }
+            return Colors.grey.shade300; // inactiveTrackColor
+          }),
+          trackOutlineColor: WidgetStateProperty.resolveWith(
+            (final Set<WidgetState> states) {
+              return Colors.transparent;
+            },
+          ),
+        ),
       ),
       builder: EasyLoading.init(),
     );
