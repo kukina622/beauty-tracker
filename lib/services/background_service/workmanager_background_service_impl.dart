@@ -10,13 +10,15 @@ import 'package:workmanager/workmanager.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((taskKeyString, inputData) async {
     try {
-      print('Background task triggered: $taskKeyString');
       final taskKey = TaskKeyHelper.fromString(taskKeyString);
       final taskHandler = TaskRegistry.getHandler(taskKey);
+
       if (taskHandler == null) {
         return false;
       }
-      print('Executing task: $taskKey with input: $inputData');
+
+      // setup the background task dependencies
+      // This is necessary to ensure that the dependencies are available in the background isolate.
       await setupBackgroundDependencies();
 
       return taskHandler(inputData);
