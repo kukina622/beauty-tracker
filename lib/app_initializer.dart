@@ -120,11 +120,6 @@ class AppInitializer {
       await localStorageService.setBool(LocalStorageKeys.isFirstVisit, true);
     }
 
-    final rememberUserEmail = await localStorageService.getBool(LocalStorageKeys.userEmail);
-    if (rememberUserEmail == null) {
-      await localStorageService.setBool(LocalStorageKeys.userEmail, false);
-    }
-
     // Initialize default notification settings
     final thirtyDayExpiryNotificationEnabled = await localStorageService.getBool(
       LocalStorageKeys.thirtyDayExpiryNotificationEnabled,

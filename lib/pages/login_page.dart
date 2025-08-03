@@ -56,7 +56,7 @@ class LoginPage extends HookWidget {
       if (snapshot.connectionState == ConnectionState.done) {
         final email = snapshot.data;
         emailController.text = email ?? '';
-        isRemember.value = (email != null);
+        isRemember.value = email != null && email.isNotEmpty;
       }
       return null;
     }, [snapshot.connectionState, snapshot.data]);
