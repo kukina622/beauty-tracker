@@ -5,12 +5,20 @@ import 'package:beauty_tracker/requests/expiry_notification_record_requests/crea
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_service/expiry_notification_message.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/services/notification_service/notification_channel.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:get_it/get_it.dart';
 
 class ExpiryNotificationHandler {
+  static final _enableNotificationTypesKey = {
+    ExpiryNotificationType.today: LocalStorageKeys.todayExpiryNotificationEnabled,
+    ExpiryNotificationType.sevenDays: LocalStorageKeys.sevenDayExpiryNotificationEnabled,
+    ExpiryNotificationType.thirtyDays: LocalStorageKeys.thirtyDayExpiryNotificationEnabled,
+  };
+
   static Future<bool> handle(Map<String, dynamic>? inputData) async {
     try {
       final authService = GetIt.instance<AuthService>();
@@ -19,6 +27,7 @@ class ExpiryNotificationHandler {
         return false;
       }
 
+      final localStorageService = GetIt.instance<LocalStorageService>();
       final productService = GetIt.instance<ProductService>();
       final notificationService = GetIt.instance<NotificationService>();
       final expiryNotificationRecordService = GetIt.instance<ExpiryNotificationRecordService>();
@@ -82,8 +91,12 @@ class ExpiryNotificationHandler {
       for (final entry in needNotificationProductsMap.entries) {
         final notificationType = entry.key;
         final products = entry.value;
+        final isNotificationEnabled = await checkEnableNotificationType(
+          localStorageService,
+          notificationType,
+        );
 
-        if (products.isNotEmpty) {
+        if (products.isNotEmpty && isNotificationEnabled) {
           await _sendNotification(notificationService, products, notificationType);
 
           await _recordNotification(expiryNotificationRecordService, products, notificationType);
@@ -157,5 +170,18 @@ class ExpiryNotificationHandler {
         .toList();
 
     await expiryNotificationRecordService.createMultiNotificationRecords(payloads);
+  }
+
+  static Future<bool> checkEnableNotificationType(
+    LocalStorageService localStorageService,
+    ExpiryNotificationType type,
+  ) async {
+    final key = _enableNotificationTypesKey[type];
+    if (key == null) {
+      return false;
+    }
+
+    final isEnabled = await localStorageService.getBool(key);
+    return isEnabled ?? true;
   }
 }
