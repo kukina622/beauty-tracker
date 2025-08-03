@@ -168,7 +168,7 @@ class LoginPage extends HookWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              // 忘記密碼功能
+                              AutoRouter.of(context).pushPath('/forget-password');
                             },
                             child: const Text(
                               '忘記密碼？',

@@ -69,5 +69,11 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.slideLeft,
           duration: Duration(milliseconds: 300),
         ),
+        CustomRoute<dynamic>(
+          path: '/forget-password',
+          page: ForgetPasswordRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          duration: Duration(milliseconds: 300),
+        ),
       ];
 }
