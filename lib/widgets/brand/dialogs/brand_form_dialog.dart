@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/requests/brand_requests/create_brand_request.dart';
 import 'package:beauty_tracker/requests/brand_requests/update_brand_request.dart';
@@ -8,7 +9,6 @@ import 'package:beauty_tracker/services/brand_service/brand_service.dart';
 import 'package:beauty_tracker/widgets/common/dialog/app_dialog.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class BrandFormDialog extends HookWidget {
@@ -50,6 +50,7 @@ class BrandFormDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final brandService = useDi<BrandService>();
+    final easyLoading = useEasyLoading();
 
     final brandNameController = useTextEditingController(
       text: brandToEdit?.brandName ?? '',
@@ -57,9 +58,9 @@ class BrandFormDialog extends HookWidget {
 
     Future<void> onConfirm() async {
       final name = brandNameController.text.trim();
-      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
+      easyLoading.show(status: '處理中...');
       if (name.isEmpty) {
-        EasyLoading.showError('請填寫所有欄位', maskType: EasyLoadingMaskType.black);
+        easyLoading.showError('請填寫所有欄位');
         return;
       }
 
@@ -71,14 +72,14 @@ class BrandFormDialog extends HookWidget {
         );
         switch (result) {
           case Ok(value: final Brand brand):
-            EasyLoading.showSuccess('品牌更新成功', maskType: EasyLoadingMaskType.black);
+            easyLoading.showSuccess('品牌更新成功');
             onBrandUpdated?.call(brand);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
             break;
           case Err():
-            EasyLoading.showError('品牌更新失敗', maskType: EasyLoadingMaskType.black);
+            easyLoading.showError('品牌更新失敗');
             break;
         }
       } else {
@@ -86,14 +87,14 @@ class BrandFormDialog extends HookWidget {
         final result = await brandService.createNewBrand(newBrand);
         switch (result) {
           case Ok(value: final Brand brand):
-            EasyLoading.showSuccess('品牌新增成功', maskType: EasyLoadingMaskType.black);
+            easyLoading.showSuccess('品牌新增成功');
             onBrandCreated?.call(brand);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
             break;
           case Err():
-            EasyLoading.showError('品牌新增失敗', maskType: EasyLoadingMaskType.black);
+            easyLoading.showError('品牌新增失敗');
             break;
         }
       }

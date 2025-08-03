@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/messages/auth_error_messages.dart';
 import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
@@ -19,47 +20,50 @@ class RegisterPage extends HookWidget {
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> signUpWithEmail(BuildContext context, String email, String password) async {
-    EasyLoading.show(status: '註冊中...', maskType: EasyLoadingMaskType.black);
-
-    final result = await di<AuthService>().signUpWithEmail(email, password).whenComplete(() {
-      EasyLoading.dismiss();
-    });
-    switch (result) {
-      case Ok():
-        if (context.mounted) {
-          EasyLoading.showSuccess('註冊成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/');
-        }
-        break;
-      case Err():
-        final String message = authErrorMessages[result.error.code] ?? '註冊失敗';
-        EasyLoading.showError(message, maskType: EasyLoadingMaskType.black);
-        break;
-    }
-  }
-
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final result = await di<AuthService>().signInWithGoogle();
-
-    switch (result) {
-      case Ok():
-        if (context.mounted) {
-          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/');
-        }
-        break;
-      case Err():
-        EasyLoading.showError('登入失敗', maskType: EasyLoadingMaskType.black);
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final confirmPasswordController = useTextEditingController();
+    final easyLoading = useEasyLoading();
+    final authService = useDi<AuthService>();
+
+    final signUpWithEmail = useCallback((String email, String password) async {
+      easyLoading.show(status: '註冊中...');
+
+      final result = await authService.signUpWithEmail(email, password).whenComplete(() {
+        easyLoading.dismiss();
+      });
+
+      switch (result) {
+        case Ok():
+          if (context.mounted) {
+            easyLoading.showSuccess('註冊成功');
+            AutoRouter.of(context).replacePath('/');
+          }
+          break;
+        case Err():
+          final String message = authErrorMessages[result.error.code] ?? '註冊失敗';
+          easyLoading.showError(message);
+          break;
+      }
+    }, [easyLoading, authService]);
+
+    final signInWithGoogle = useCallback(() async {
+      final result = await authService.signInWithGoogle();
+
+      switch (result) {
+        case Ok():
+          if (context.mounted) {
+            easyLoading.showSuccess('登入成功');
+            AutoRouter.of(context).replacePath('/');
+          }
+          break;
+        case Err():
+          easyLoading.showError('登入失敗');
+          break;
+      }
+    }, [easyLoading, authService]);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -130,7 +134,6 @@ class RegisterPage extends HookWidget {
 
                           if (isFormValid) {
                             signUpWithEmail(
-                              context,
                               emailController.text,
                               passwordController.text,
                             );
@@ -162,7 +165,7 @@ class RegisterPage extends HookWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
+                      child: GoogleLogin(onPressed: signInWithGoogle),
                     ),
                   ],
                 ),

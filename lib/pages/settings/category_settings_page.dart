@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
@@ -13,7 +14,6 @@ import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/profile/settings/category_management_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -23,6 +23,7 @@ class CategorySettingsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final productProvider = useProvider<ProductProvider>();
+    final easyLoading = useEasyLoading();
 
     final categoryService = useDi<CategoryService>();
 
@@ -44,11 +45,14 @@ class CategorySettingsPage extends HookWidget {
     }, [categories, searchQuery.value]);
 
     final onDeleteCategory = useCallback((String categoryId) async {
-      final result = await categoryService.deleteCategory(categoryId);
-      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
+      easyLoading.show(status: '處理中...');
+      final result = await categoryService.deleteCategory(categoryId).whenComplete(() {
+        easyLoading.dismiss();
+      });
+
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('類別刪除成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('類別刪除成功');
           categoryResult.refresh();
           productProvider.triggerRefresh();
           if (context.mounted && AutoRouter.of(context).canPop()) {
@@ -56,7 +60,7 @@ class CategorySettingsPage extends HookWidget {
           }
           break;
         case Err():
-          EasyLoading.showError('類別刪除失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('類別刪除失敗');
           break;
       }
     }, [categoryResult]);

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
@@ -12,7 +13,6 @@ import 'package:beauty_tracker/widgets/form/email_form_field.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/social_login/google_login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
@@ -35,59 +35,15 @@ class LoginPage extends HookWidget {
     }
   }
 
-  Future<void> signInWithEmail(
-    BuildContext context,
-    String email,
-    String password,
-    bool isRemember,
-  ) async {
-    EasyLoading.show(status: '登入中...', maskType: EasyLoadingMaskType.black);
-
-    final result = await di<AuthService>().signInWithEmail(email, password).whenComplete(() {
-      EasyLoading.dismiss();
-    });
-
-    switch (result) {
-      case Ok():
-        await rememberEmail(
-          di<LocalStorageService>(),
-          email,
-          isRemember,
-        );
-        if (context.mounted) {
-          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/');
-        }
-        break;
-      case Err():
-        EasyLoading.showError('帳號或密碼錯誤', maskType: EasyLoadingMaskType.black);
-        break;
-    }
-  }
-
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final result = await di<AuthService>().signInWithGoogle();
-
-    switch (result) {
-      case Ok():
-        if (context.mounted) {
-          EasyLoading.showSuccess('登入成功', maskType: EasyLoadingMaskType.black);
-          AutoRouter.of(context).replacePath('/');
-        }
-        break;
-      case Err():
-        EasyLoading.showError('登入失敗', maskType: EasyLoadingMaskType.black);
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final isRemember = useState(false);
+    final easyLoading = useEasyLoading();
 
-    final LocalStorageService localStorageService = useDi<LocalStorageService>();
+    final authService = useDi<AuthService>();
+    final localStorageService = useDi<LocalStorageService>();
 
     final futureRemeberEmail = useMemoized(
       () => localStorageService.getString(LocalStorageKeys.userEmail),
@@ -104,6 +60,44 @@ class LoginPage extends HookWidget {
       }
       return null;
     }, [snapshot.connectionState, snapshot.data]);
+
+    final signInWithEmail = useCallback((String email, String password, bool isRemember) async {
+      easyLoading.show(status: '登入中...');
+
+      final result = await authService.signInWithEmail(email, password).whenComplete(() {
+        easyLoading.dismiss();
+      });
+
+      switch (result) {
+        case Ok():
+          await rememberEmail(localStorageService, email, isRemember);
+
+          if (context.mounted) {
+            easyLoading.showSuccess('登入成功');
+            AutoRouter.of(context).replacePath('/');
+          }
+          break;
+        case Err():
+          easyLoading.showError('帳號或密碼錯誤');
+          break;
+      }
+    }, [easyLoading, authService, localStorageService]);
+
+    final signInWithGoogle = useCallback(() async {
+      final result = await authService.signInWithGoogle();
+
+      switch (result) {
+        case Ok():
+          if (context.mounted) {
+            easyLoading.showSuccess('登入成功');
+            AutoRouter.of(context).replacePath('/');
+          }
+          break;
+        case Err():
+          easyLoading.showError('登入失敗');
+          break;
+      }
+    }, [easyLoading, authService]);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -193,7 +187,6 @@ class LoginPage extends HookWidget {
                           final bool isFormValid = _formKey.currentState?.validate() ?? false;
                           if (isFormValid) {
                             signInWithEmail(
-                              context,
                               emailController.text,
                               passwordController.text,
                               isRemember.value,
@@ -236,7 +229,7 @@ class LoginPage extends HookWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: GoogleLogin(onPressed: () => signInWithGoogle(context)),
+                      child: GoogleLogin(onPressed: signInWithGoogle),
                     ),
                   ],
                 ),

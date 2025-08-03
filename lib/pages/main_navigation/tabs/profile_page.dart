@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/menu/app_menu_group.dart';
@@ -10,7 +11,6 @@ import 'package:beauty_tracker/widgets/profile/logout_dialog.dart';
 import 'package:beauty_tracker/widgets/profile/settings/setting_section.dart';
 import 'package:beauty_tracker/widgets/profile/user_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -20,22 +20,25 @@ class ProfilePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authService = useDi<AuthService>();
+    final easyLoading = useEasyLoading();
 
     final user = authService.currentUser!;
 
     final onLogout = useCallback(() async {
-      EasyLoading.show(status: '登出中...', maskType: EasyLoadingMaskType.black);
-      final result = await authService.signOut();
+      easyLoading.show(status: '登出中...');
+      final result = await authService.signOut().whenComplete(() {
+        easyLoading.dismiss();
+      });
 
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('登出成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('登出成功');
           if (context.mounted) {
             AutoRouter.of(context).replacePath('/login');
           }
           break;
         case Err():
-          EasyLoading.showError('登出失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('登出失敗');
           break;
       }
     }, [authService, context]);

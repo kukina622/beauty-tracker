@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/requests/category_requests/create_category_request.dart';
 import 'package:beauty_tracker/requests/category_requests/update_category_request.dart';
@@ -12,7 +13,6 @@ import 'package:beauty_tracker/widgets/category/dialogs/category_form_dialog/ico
 import 'package:beauty_tracker/widgets/common/dialog/app_dialog.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class CategoryFormDialog extends HookWidget {
@@ -57,6 +57,7 @@ class CategoryFormDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final categoryService = useDi<CategoryService>();
+    final easyLoading = useEasyLoading();
 
     final categoryNameController = useTextEditingController(
       text: categoryToEdit?.categoryName ?? '',
@@ -76,11 +77,11 @@ class CategoryFormDialog extends HookWidget {
       final color = categoryColor.value;
 
       if (name.isEmpty || icon == null || color == null) {
-        EasyLoading.showError('請填寫所有欄位', maskType: EasyLoadingMaskType.black);
+        easyLoading.showError('請填寫所有欄位');
         return;
       }
 
-      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
+      easyLoading.show(status: '處理中...');
 
       if (isEditing) {
         final updateRequest = UpdateCategoryRequest(
@@ -92,14 +93,14 @@ class CategoryFormDialog extends HookWidget {
 
         switch (result) {
           case Ok(value: final Category category):
-            EasyLoading.showSuccess('類別更新成功', maskType: EasyLoadingMaskType.black);
+            easyLoading.showSuccess('類別更新成功');
             onCategoryUpdated?.call(category);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
             break;
           case Err():
-            EasyLoading.showError('類別更新失敗', maskType: EasyLoadingMaskType.black);
+            easyLoading.showError('類別更新失敗');
             break;
         }
       } else {
@@ -113,14 +114,14 @@ class CategoryFormDialog extends HookWidget {
 
         switch (result) {
           case Ok(value: final Category category):
-            EasyLoading.showSuccess('類別新增成功', maskType: EasyLoadingMaskType.black);
+            easyLoading.showSuccess('類別新增成功');
             onCategoryCreated?.call(category);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
             break;
           case Err():
-            EasyLoading.showError('新增失敗', maskType: EasyLoadingMaskType.black);
+            easyLoading.showError('新增失敗');
             break;
         }
       }

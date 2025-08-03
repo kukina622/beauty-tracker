@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
@@ -13,7 +14,6 @@ import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/profile/settings/brand_management_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -23,6 +23,7 @@ class BrandSettingsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final productProvider = useProvider<ProductProvider>();
+    final easyLoading = useEasyLoading();
 
     final brandService = useDi<BrandService>();
     final brandsResult = useServiceData(() => brandService.getAllBrands());
@@ -40,11 +41,14 @@ class BrandSettingsPage extends HookWidget {
     }, [brands, searchQuery.value]);
 
     final onDeleteBrand = useCallback((String brandId) async {
-      final result = await brandService.deleteBrand(brandId);
-      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
+      easyLoading.show(status: '處理中...');
+      final result = await brandService.deleteBrand(brandId).whenComplete(() {
+        easyLoading.dismiss();
+      });
+
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('品牌刪除成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('品牌刪除成功');
           brandsResult.refresh();
           productProvider.triggerRefresh();
           if (context.mounted && AutoRouter.of(context).canPop()) {
@@ -52,7 +56,7 @@ class BrandSettingsPage extends HookWidget {
           }
           break;
         case Err():
-          EasyLoading.showError('品牌刪除失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('品牌刪除失敗');
           break;
       }
     }, [brandsResult]);

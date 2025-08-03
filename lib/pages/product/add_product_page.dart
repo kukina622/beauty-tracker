@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
@@ -18,7 +19,6 @@ import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -54,6 +54,7 @@ class AddProductPage extends HookWidget {
     final categoryService = useDi<CategoryService>();
     final productService = useDi<ProductService>();
     final brandService = useDi<BrandService>();
+    final easyLoading = useEasyLoading();
 
     final productNameController = useTextEditingController();
     final priceController = useTextEditingController();
@@ -94,18 +95,22 @@ class AddProductPage extends HookWidget {
           categories: categories,
         );
 
-        final result = await productService.createNewProduct(product);
+        easyLoading.show(status: '新增中...');
+
+        final result = await productService.createNewProduct(product).whenComplete(() {
+          easyLoading.dismiss();
+        });
 
         switch (result) {
           case Ok():
-            EasyLoading.showSuccess('新增成功', maskType: EasyLoadingMaskType.black);
+            easyLoading.showSuccess('新增成功');
             productProvider.triggerRefresh();
             if (context.mounted) {
               AutoRouter.of(context).pop();
             }
             break;
           case Err():
-            EasyLoading.showError('新增失敗', maskType: EasyLoadingMaskType.black);
+            easyLoading.showError('新增失敗');
             break;
         }
       }

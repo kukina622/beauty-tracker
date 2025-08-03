@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/services/auth_service/auth_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/password_form_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -18,6 +18,7 @@ class ChangePasswordSettingsPage extends HookWidget {
   Widget build(BuildContext context) {
     final formKey = useMemoized(() => GlobalKey<FormState>(), []);
     final authService = useDi<AuthService>();
+    final easyLoading = useEasyLoading();
 
     final oldPasswordController = useTextEditingController();
     final newPasswordController = useTextEditingController();
@@ -31,17 +32,20 @@ class ChangePasswordSettingsPage extends HookWidget {
       final oldPassword = oldPasswordController.text.trim();
       final newPassword = newPasswordController.text.trim();
 
-      EasyLoading.show(status: '處理中...', maskType: EasyLoadingMaskType.black);
-      final result = await authService.changePassword(oldPassword, newPassword);
+      easyLoading.show(status: '處理中...');
+      final result = await authService.changePassword(oldPassword, newPassword).whenComplete(() {
+        easyLoading.dismiss();
+      });
+
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('密碼修改成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('密碼修改成功');
           if (context.mounted) {
             AutoRouter.of(context).pop();
           }
           break;
         case Err():
-          EasyLoading.showError('密碼修改失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('密碼修改失敗');
           break;
       }
     }, [

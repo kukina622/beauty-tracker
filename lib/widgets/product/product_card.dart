@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/models/brand.dart';
 import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
@@ -16,7 +17,6 @@ import 'package:beauty_tracker/widgets/common/icon_button/app_standard_icon_butt
 import 'package:beauty_tracker/widgets/product/expiring_chip.dart';
 import 'package:beauty_tracker/widgets/product/selectable_status_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ProductCard extends HookWidget {
@@ -200,19 +200,20 @@ class ProductCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final productService = useDi<ProductService>();
+    final easyLoading = useEasyLoading();
 
     final onDeleteProduct = useCallback(() async {
       final result = await productService.deleteProduct(product.id);
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('刪除成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('刪除成功');
           if (context.mounted) {
             AutoRouter.of(context).pop();
           }
           onDelete?.call();
           break;
         case Err():
-          EasyLoading.showError('刪除失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('刪除失敗');
           break;
       }
     }, [productService, product.id]);

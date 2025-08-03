@@ -3,6 +3,7 @@ import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
 import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
@@ -20,7 +21,6 @@ import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dar
 import 'package:beauty_tracker/widgets/product/product_card.dart';
 import 'package:beauty_tracker/widgets/product/product_status_filter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -33,6 +33,7 @@ class HomePage extends HookWidget {
     final isEditStatusMode = useState(false);
     final productStatus = useState<ProductStatus>(ProductStatus.inUse);
     final pendingUpdates = useState<Map<String, ProductStatus>>({});
+    final easyLoading = useEasyLoading();
 
     final productService = useDi<ProductService>();
     final animatedListController = useAnimatedProductList();
@@ -57,12 +58,9 @@ class HomePage extends HookWidget {
 
     useEffect(() {
       if (productsResult.loading && isInitialLoad.value) {
-        EasyLoading.show(
-          status: '載入中...',
-          maskType: EasyLoadingMaskType.black,
-        );
+        easyLoading.show(status: '載入中...');
       } else {
-        EasyLoading.dismiss();
+        easyLoading.dismiss();
         isInitialLoad.value = false;
       }
       return null;
@@ -95,12 +93,12 @@ class HomePage extends HookWidget {
 
       switch (result) {
         case Ok():
-          EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('更新成功');
           pendingUpdates.value = {};
           productProvider.triggerRefresh();
           break;
         case Err():
-          EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('更新失敗');
           break;
       }
     }, [productService, pendingUpdates]);

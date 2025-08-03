@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_keys.dart';
 import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
@@ -7,7 +8,6 @@ import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/profile/settings/notification_switch_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -17,6 +17,7 @@ class NotificationSettingsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final localStorageService = useDi<LocalStorageService>();
+    final easyLoading = useEasyLoading();
 
     final loading = useState(true);
     final thirtyDayExpiryNotificationEnabled = useState(true);
@@ -47,12 +48,9 @@ class NotificationSettingsPage extends HookWidget {
 
     useEffect(() {
       if (loading.value) {
-        EasyLoading.show(
-          status: '載入中...',
-          maskType: EasyLoadingMaskType.black,
-        );
+        easyLoading.show(status: '載入中...');
       } else {
-        EasyLoading.dismiss();
+        easyLoading.dismiss();
       }
       return null;
     }, [loading.value]);
@@ -73,7 +71,7 @@ class NotificationSettingsPage extends HookWidget {
         todayExpiryNotificationEnabled.value,
       );
 
-      EasyLoading.showSuccess('設定已保存', maskType: EasyLoadingMaskType.black);
+      easyLoading.showSuccess('設定已保存');
 
       if (context.mounted) {
         AutoRouter.of(context).pop();

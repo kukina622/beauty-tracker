@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
@@ -18,7 +19,6 @@ import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
@@ -56,6 +56,7 @@ class EditProductPage extends HookWidget {
     final categoryService = useDi<CategoryService>();
     final productService = useDi<ProductService>();
     final brandService = useDi<BrandService>();
+    final easyLoading = useEasyLoading();
 
     // field controllers
     final productNameController = useTextEditingController();
@@ -102,12 +103,9 @@ class EditProductPage extends HookWidget {
 
     useEffect(() {
       if (currentProductResult.loading || allCategoriesResult.loading) {
-        EasyLoading.show(
-          status: '載入中...',
-          maskType: EasyLoadingMaskType.black,
-        );
+        easyLoading.show(status: '載入中...');
       } else {
-        EasyLoading.dismiss();
+        easyLoading.dismiss();
       }
       return null;
     }, [currentProductResult.loading, allCategoriesResult.loading]);
@@ -116,7 +114,7 @@ class EditProductPage extends HookWidget {
       final bool isFormValid = _formKey.currentState?.validate() ?? false;
 
       if (!isFormValid) {
-        EasyLoading.showError('請填寫所有必填欄位');
+        easyLoading.showError('請填寫所有必填欄位');
         return;
       }
 
@@ -129,19 +127,22 @@ class EditProductPage extends HookWidget {
         categories: selectedCategoryIds.value,
       );
 
-      EasyLoading.show(status: '更新中...', maskType: EasyLoadingMaskType.black);
-      final updatedProductResult = await productService.updateProduct(productId!, payload);
+      easyLoading.show(status: '更新中...');
+      final updatedProductResult =
+          await productService.updateProduct(productId!, payload).whenComplete(() {
+        easyLoading.dismiss();
+      });
 
       switch (updatedProductResult) {
         case Ok():
-          EasyLoading.showSuccess('更新成功', maskType: EasyLoadingMaskType.black);
+          easyLoading.showSuccess('更新成功');
           productProvider.triggerRefresh();
           if (context.mounted) {
             AutoRouter.of(context).pop();
           }
           break;
         case Err():
-          EasyLoading.showError('更新失敗', maskType: EasyLoadingMaskType.black);
+          easyLoading.showError('更新失敗');
           break;
       }
     }, [

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
+import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -17,10 +18,20 @@ class ExpiringSoonPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final productService = useDi<ProductService>();
+    final easyLoading = useEasyLoading();
 
     final productsResult = useServiceData(
       () => productService.getExpiringSoonProducts(),
     );
+
+    useEffect(() {
+      if (productsResult.loading) {
+        easyLoading.show(status: '載入中...');
+      } else {
+        easyLoading.dismiss();
+      }
+      return null;
+    }, [productsResult.loading]);
 
     final products = useMemoized(() {
       if (productsResult.hasError || !productsResult.hasData) {
