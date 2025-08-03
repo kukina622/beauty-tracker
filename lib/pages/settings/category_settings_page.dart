@@ -33,6 +33,15 @@ class CategorySettingsPage extends HookWidget {
 
     final categories = categoryResult.data ?? [];
 
+    useEffect(() {
+      if (categoryResult.loading) {
+        easyLoading.show(status: '載入中...');
+      } else {
+        easyLoading.dismiss();
+      }
+      return null;
+    }, [categoryResult.loading]);
+
     final searchQuery = useState<String>('');
 
     final filteredCategories = useMemoized(() {

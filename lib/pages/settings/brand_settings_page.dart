@@ -29,6 +29,15 @@ class BrandSettingsPage extends HookWidget {
     final brandsResult = useServiceData(() => brandService.getAllBrands());
     final brands = brandsResult.data ?? [];
 
+    useEffect(() {
+      if (brandsResult.loading) {
+        easyLoading.show(status: '載入中...');
+      } else {
+        easyLoading.dismiss();
+      }
+      return null;
+    }, [brandsResult.loading]);
+
     final searchQuery = useState<String>('');
 
     final filteredBrands = useMemoized(() {
