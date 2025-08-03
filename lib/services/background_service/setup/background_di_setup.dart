@@ -4,6 +4,8 @@ import 'package:beauty_tracker/services/background_service/background_service.da
 import 'package:beauty_tracker/services/background_service/workmanager_background_service_impl.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/expiry_notification_record_service.dart';
 import 'package:beauty_tracker/services/expiry_notification_record_service/supabase_expiry_notification_record_service_impl.dart';
+import 'package:beauty_tracker/services/local_storage_service/local_storage_service.dart';
+import 'package:beauty_tracker/services/local_storage_service/shared_preferences_local_storage_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/flutter_local_notification_service_impl.dart';
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
@@ -65,6 +67,10 @@ class BackgroundDependencyManager {
       final backgroundService = WorkmanagerBackgroundServiceImpl();
       await backgroundService.initialize();
       _di.registerSingleton<BackgroundService>(backgroundService);
+    }
+
+    if (!_di.isRegistered<LocalStorageService>()) {
+      _di.registerSingleton<LocalStorageService>(SharedPreferencesLocalStorageServiceImpl());
     }
   }
 }
