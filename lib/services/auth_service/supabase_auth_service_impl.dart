@@ -110,6 +110,33 @@ class SupabaseAuthServiceImpl extends ChangeNotifier implements AuthService {
     });
   }
 
+  @override
+  Future<Result<void>> resetPassword(String email) {
+    return resultGuard(() async {
+      await supabase.auth.resetPasswordForEmail(email);
+    });
+  }
+
+  @override
+  Future<Result<void>> verifyRecoveryOtp(String email, String token) {
+    return resultGuard(() async {
+      await supabase.auth.verifyOTP(
+        type: OtpType.recovery,
+        token: token,
+        email: email,
+      );
+    });
+  }
+
+  @override
+  Future<Result<void>> updateForgotPassword(String newPassword) {
+    return resultGuard(() async {
+      await supabase.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    });
+  }
+
   void _updateUser(AppUser? user) {
     _currentUser = user;
     notifyListeners();
