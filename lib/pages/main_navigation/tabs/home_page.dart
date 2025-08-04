@@ -6,15 +6,21 @@ import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
+import 'package:beauty_tracker/models/brand.dart';
+import 'package:beauty_tracker/models/category.dart';
 import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/models/product_status.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/update_product_status_request.dart';
+import 'package:beauty_tracker/services/brand_service/brand_service.dart';
+import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
 import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
+import 'package:beauty_tracker/widgets/home/filter_bottom_sheet.dart';
+import 'package:beauty_tracker/widgets/home/filter_button.dart';
 import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dart';
@@ -31,21 +37,37 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final isInitialLoad = useState(true);
     final isEditStatusMode = useState(false);
-    final productStatus = useState<ProductStatus>(ProductStatus.inUse);
     final pendingUpdates = useState<Map<String, ProductStatus>>({});
+    final statusFilter = useState<ProductStatus>(ProductStatus.inUse);
+    final brandFilter = useState<Brand?>(null);
+    final categoryFilter = useState<Category?>(null);
     final easyLoading = useEasyLoading();
 
     final productService = useDi<ProductService>();
+    final brandService = useDi<BrandService>();
+    final categoryService = useDi<CategoryService>();
     final animatedListController = useAnimatedProductList();
 
     final productProvider = useProvider<ProductProvider>();
 
     final productsResult = useServiceData(
-      () => productService.getProductByStatus(productStatus.value),
+      () => productService.getProductsWithFilters(
+        status: statusFilter.value,
+        brandId: brandFilter.value?.id,
+        categoryId: categoryFilter.value?.id,
+      ),
     );
 
     final productsExpiringResult = useServiceData(
       () => productService.getExpiringSoonProducts(),
+    );
+
+    final brandsResult = useServiceData(
+      () => brandService.getAllBrands(),
+    );
+
+    final categoriesResult = useServiceData(
+      () => categoryService.getAllCategories(),
     );
 
     final products = useMemoized(() {
@@ -53,7 +75,8 @@ class HomePage extends HookWidget {
         return <Product>[];
       }
 
-      return Product.sortByExpiryDate(productsResult.data!, todayFirst: true);
+      final filteredProducts = productsResult.data!;
+      return Product.sortByExpiryDate(filteredProducts, todayFirst: true);
     }, [productsResult.data]);
 
     useEffect(() {
@@ -103,6 +126,20 @@ class HomePage extends HookWidget {
       }
     }, [productService, pendingUpdates]);
 
+    final showFilterBottomSheet = useCallback(() {
+      FilterBottomSheet.show(
+        context,
+        statusNotifier: statusFilter,
+        brandNotifier: brandFilter,
+        categoryNotifier: categoryFilter,
+        brands: brandsResult.data ?? [],
+        categories: categoriesResult.data ?? [],
+        onApplyFilters: () {
+          productsResult.refresh();
+        },
+      );
+    }, [statusFilter, brandFilter, categoryFilter, brandsResult.data, categoriesResult.data]);
+
     return PageScrollView(
       enableRefresh: true,
       onRefresh: () => Future.wait([
@@ -139,12 +176,15 @@ class HomePage extends HookWidget {
                 },
               ),
               const SizedBox(height: 24),
-              SubTitleBar(title: '狀態篩選'),
+              SubTitleBar(
+                title: '狀態篩選',
+                action: [FilterButton(onTap: showFilterBottomSheet)],
+              ),
               SizedBox(height: 14),
               ProductStatusFilter(
-                initialStatus: ProductStatus.inUse,
+                selectedStatus: statusFilter.value,
                 onStatusChanged: (status) {
-                  productStatus.value = status;
+                  statusFilter.value = status;
                   productsResult.refresh();
                 },
               ),
