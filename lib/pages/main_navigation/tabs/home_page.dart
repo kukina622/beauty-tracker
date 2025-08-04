@@ -181,7 +181,12 @@ class HomePage extends HookWidget {
               const SizedBox(height: 24),
               SubTitleBar(
                 title: '狀態篩選',
-                action: [FilterButton(onTap: showFilterBottomSheet)],
+                action: [
+                  FilterButton(
+                    onTap: showFilterBottomSheet,
+                    isActive: brandFilter.value != null || categoryFilter.value != null,
+                  ),
+                ],
               ),
               SizedBox(height: 14),
               ProductStatusFilter(

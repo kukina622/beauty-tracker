@@ -4,9 +4,11 @@ class FilterButton extends StatelessWidget {
   const FilterButton({
     super.key,
     this.onTap,
+    this.isActive = false,
   });
 
   final VoidCallback? onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +23,20 @@ class FilterButton extends StatelessWidget {
             Icons.tune_rounded,
             color: const Color(0xFF2D3142),
           ),
-          Positioned(
-            right: -3,
-            top: 0,
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
+          if (isActive) ...[
+            Positioned(
+              right: -3,
+              top: 0,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-          ),
+            )
+          ]
         ],
       ),
     );
