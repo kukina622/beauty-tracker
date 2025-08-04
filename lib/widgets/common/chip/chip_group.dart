@@ -21,7 +21,7 @@ class ChipGroup<T> extends HookWidget {
     super.key,
     this.chips = const [],
     this.onSelected,
-    this.defaultValue,
+    this.selectedValue,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     this.margin = const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
     this.iconSize = 16,
@@ -29,14 +29,19 @@ class ChipGroup<T> extends HookWidget {
   });
   final List<ChipData<T>> chips;
   final void Function(T)? onSelected;
-  final T? defaultValue;
+  final T? selectedValue;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final double iconSize;
   final double fontSize;
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<T?> selected = useState(defaultValue);
+    final ValueNotifier<T?> selected = useState(selectedValue);
+    
+    useEffect(() {
+      selected.value = selectedValue;
+      return null;
+    }, [selectedValue]);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(22),

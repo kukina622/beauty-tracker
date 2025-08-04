@@ -33,7 +33,7 @@ class CategoryFilter extends HookWidget {
         onSelected: (value) {
           selectedCategory.value = value;
         },
-        defaultValue: selectedCategory.value,
+        selectedValue: selectedCategory.value,
       ),
     );
   }

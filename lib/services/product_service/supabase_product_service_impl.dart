@@ -50,6 +50,41 @@ class SupabaseProductServiceImpl implements ProductService {
   }
 
   @override
+  Future<Result<List<Product>>> getProductsWithFilters({
+    ProductStatus? status,
+    String? brandId,
+    String? categoryId,
+  }) {
+    return resultGuard(() async {
+      var query = supabase.from('products').select(
+        '''
+          *, 
+          categories(*), 
+          brands(*), 
+          product_category!inner(category_id)
+        ''',
+      );
+
+      if (status != null && status != ProductStatus.all) {
+        query = query.eq('status', status.value);
+      }
+
+      if (brandId != null) {
+        query = query.eq('brand', brandId);
+      }
+
+      if (categoryId != null) {
+        query = query.eq('product_category.category_id', categoryId);
+      }
+
+      final fetchedProductData = await query;
+      final products = fetchedProductData.map((item) => Product.fromJson(item)).toList();
+
+      return products;
+    });
+  }
+
+  @override
   Future<Result<List<Product>>> getExpiringSoonProducts() {
     return resultGuard(() async {
       final fetchedProductData = await supabase
@@ -81,8 +116,11 @@ class SupabaseProductServiceImpl implements ProductService {
             );
       }
 
-      final fetchedProductData =
-          await supabase.from('products').select('*, categories(*), brands(*)').eq('id', productId).single();
+      final fetchedProductData = await supabase
+          .from('products')
+          .select('*, categories(*), brands(*)')
+          .eq('id', productId)
+          .single();
 
       return Product.fromJson(fetchedProductData);
     });

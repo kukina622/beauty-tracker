@@ -37,7 +37,7 @@ class SelectableStatusBar extends HookWidget {
       iconSize: 14,
       fontSize: 12,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      defaultValue: status,
+      selectedValue: status,
       margin: const EdgeInsets.symmetric(horizontal: 4),
       onSelected: (value) {
         selectedStatus.value = value;
