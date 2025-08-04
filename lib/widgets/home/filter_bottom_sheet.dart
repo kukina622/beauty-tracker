@@ -8,22 +8,22 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class FilterBottomSheet extends HookWidget {
   const FilterBottomSheet({
     super.key,
-    required this.statusNotifier,
-    required this.brandNotifier,
-    required this.categoryNotifier,
+    required this.initialStatus,
+    required this.initialBrand,
+    required this.initialCategory,
     required this.brands,
     required this.categories,
     required this.onApplyFilters,
   });
 
-  static Future<void> show(
+  static Future<bool?> show(
     BuildContext context, {
-    required ValueNotifier<ProductStatus?> statusNotifier,
-    required ValueNotifier<Brand?> brandNotifier,
-    required ValueNotifier<Category?> categoryNotifier,
+    required ProductStatus? initialStatus,
+    required Brand? initialBrand,
+    required Category? initialCategory,
     required List<Brand> brands,
     required List<Category> categories,
-    required VoidCallback onApplyFilters,
+    required void Function(ProductStatus?, Brand?, Category?) onApplyFilters,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -31,9 +31,9 @@ class FilterBottomSheet extends HookWidget {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return FilterBottomSheet(
-          statusNotifier: statusNotifier,
-          brandNotifier: brandNotifier,
-          categoryNotifier: categoryNotifier,
+          initialStatus: initialStatus,
+          initialBrand: initialBrand,
+          initialCategory: initialCategory,
           brands: brands,
           categories: categories,
           onApplyFilters: onApplyFilters,
@@ -42,15 +42,19 @@ class FilterBottomSheet extends HookWidget {
     );
   }
 
-  final ValueNotifier<ProductStatus?> statusNotifier;
-  final ValueNotifier<Brand?> brandNotifier;
-  final ValueNotifier<Category?> categoryNotifier;
+  final ProductStatus? initialStatus;
+  final Brand? initialBrand;
+  final Category? initialCategory;
   final List<Brand> brands;
   final List<Category> categories;
-  final VoidCallback onApplyFilters;
+  final void Function(ProductStatus?, Brand?, Category?) onApplyFilters;
 
   @override
   Widget build(BuildContext context) {
+    // 內部管理暫時狀態
+    final tempStatus = useState<ProductStatus?>(initialStatus);
+    final tempBrand = useState<Brand?>(initialBrand);
+    final tempCategory = useState<Category?>(initialCategory);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
@@ -77,9 +81,9 @@ class FilterBottomSheet extends HookWidget {
               ),
               TextButton(
                 onPressed: () {
-                  statusNotifier.value = ProductStatus.inUse;
-                  brandNotifier.value = null;
-                  categoryNotifier.value = null;
+                  tempStatus.value = ProductStatus.inUse;
+                  tempBrand.value = null;
+                  tempCategory.value = null;
                 },
                 child: const Text(
                   '清除全部',
@@ -97,7 +101,7 @@ class FilterBottomSheet extends HookWidget {
             items: ProductStatus.values,
             chipBuilder: (status) {
               return ValueListenableBuilder<ProductStatus?>(
-                valueListenable: statusNotifier,
+                valueListenable: tempStatus,
                 builder: (context, currentStatus, _) {
                   final isSelected = currentStatus == status;
                   return _buildStatusFilterChip(
@@ -105,7 +109,7 @@ class FilterBottomSheet extends HookWidget {
                     status: status,
                     isSelected: isSelected,
                     onTap: () {
-                      statusNotifier.value = status;
+                      tempStatus.value = status;
                     },
                   );
                 },
@@ -119,7 +123,7 @@ class FilterBottomSheet extends HookWidget {
             emptyMessage: '無品牌資料',
             chipBuilder: (brand) {
               return ValueListenableBuilder<Brand?>(
-                valueListenable: brandNotifier,
+                valueListenable: tempBrand,
                 builder: (context, currentBrand, _) {
                   final isSelected = currentBrand?.id == brand.id;
                   return _buildFilterChip(
@@ -127,7 +131,7 @@ class FilterBottomSheet extends HookWidget {
                     label: brand.brandName,
                     isSelected: isSelected,
                     onTap: () {
-                      brandNotifier.value = isSelected ? null : brand;
+                      tempBrand.value = isSelected ? null : brand;
                     },
                   );
                 },
@@ -141,7 +145,7 @@ class FilterBottomSheet extends HookWidget {
             emptyMessage: '無類別資料',
             chipBuilder: (category) {
               return ValueListenableBuilder<Category?>(
-                valueListenable: categoryNotifier,
+                valueListenable: tempCategory,
                 builder: (context, currentCategory, _) {
                   final isSelected = currentCategory?.id == category.id;
                   return _buildCategoryFilterChip(
@@ -149,7 +153,7 @@ class FilterBottomSheet extends HookWidget {
                     category: category,
                     isSelected: isSelected,
                     onTap: () {
-                      categoryNotifier.value = isSelected ? null : category;
+                      tempCategory.value = isSelected ? null : category;
                     },
                   );
                 },
@@ -162,8 +166,8 @@ class FilterBottomSheet extends HookWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    onApplyFilters();
-                    Navigator.of(context).pop();
+                    onApplyFilters(tempStatus.value, tempBrand.value, tempCategory.value);
+                    Navigator.of(context).pop(true);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

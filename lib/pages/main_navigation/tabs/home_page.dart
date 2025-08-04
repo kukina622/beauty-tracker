@@ -129,12 +129,15 @@ class HomePage extends HookWidget {
     final showFilterBottomSheet = useCallback(() {
       FilterBottomSheet.show(
         context,
-        statusNotifier: statusFilter,
-        brandNotifier: brandFilter,
-        categoryNotifier: categoryFilter,
+        initialStatus: statusFilter.value,
+        initialBrand: brandFilter.value,
+        initialCategory: categoryFilter.value,
         brands: brandsResult.data ?? [],
         categories: categoriesResult.data ?? [],
-        onApplyFilters: () {
+        onApplyFilters: (status, brand, category) {
+          statusFilter.value = status ?? ProductStatus.inUse;
+          brandFilter.value = brand;
+          categoryFilter.value = category;
           productsResult.refresh();
         },
       );
