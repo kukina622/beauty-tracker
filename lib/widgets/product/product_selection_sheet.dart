@@ -165,7 +165,27 @@ class ProductSelectionSheet extends HookWidget {
   Widget build(BuildContext context) {
     final productService = useDi<ProductService>();
     final productsResult = useServiceData(() => productService.getAllProducts());
-    final allProducts = productsResult.data ?? [];
+
+    final allProducts = useMemoized(() {
+      final products = productsResult.data ?? [];
+      final uniqueProducts = <Product>[];
+      final seenCombinations = <String>{};
+
+      for (final product in products) {
+        final brandId = product.brand?.id ?? '';
+        final categoryNames = product.categories?.map((c) => c.categoryName).toList()?..sort();
+        final productName = product.name;
+
+        final combination = '$brandId|$categoryNames|$productName';
+
+        if (!seenCombinations.contains(combination)) {
+          seenCombinations.add(combination);
+          uniqueProducts.add(product);
+        }
+      }
+
+      return uniqueProducts;
+    }, [productsResult.data]);
 
     final searchQuery = useState<String>('');
 
