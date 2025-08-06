@@ -10,6 +10,7 @@ import 'package:beauty_tracker/services/notification_service/flutter_local_notif
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/services/product_service/supabase_product_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -27,10 +28,10 @@ class BackgroundDependencyManager {
   /// 初始化 Supabase
   static Future<void> _initializeSupabase() async {
     try {
-      // 嘗試獲取現有的 Supabase 客戶端
       final _ = Supabase.instance.client;
     } catch (e) {
-      await dotenv.load(fileName: '.env');
+      final String fileName = kDebugMode ? '.env.development' : '.env.production';
+      await dotenv.load(fileName: fileName);
       final supabaseUrl = dotenv.get('SUPABASE_URL');
       final supabaseKey = dotenv.get('SUPABASE_ANON_KEY');
 

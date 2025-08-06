@@ -18,6 +18,7 @@ import 'package:beauty_tracker/services/notification_service/flutter_local_notif
 import 'package:beauty_tracker/services/notification_service/notification_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/services/product_service/supabase_product_service_impl.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -38,7 +39,8 @@ class AppInitializer {
   }
 
   static Future<void> _loadEnvironment() async {
-    await dotenv.load(fileName: '.env');
+    final String fileName = kDebugMode ? '.env.development' : '.env.production';
+    await dotenv.load(fileName: fileName);
   }
 
   static Future<void> _initializeSupabase() async {
