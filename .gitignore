@@ -50,6 +50,3 @@ app.*.map.json
 
 ios/Env.xcconfig
 ios/build
-
-.env.development
-.env.production

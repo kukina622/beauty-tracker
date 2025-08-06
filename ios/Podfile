@@ -46,10 +46,6 @@ post_install do |installer|
 end
 
 def generate_env_xcconfig
-  debug_mode = ENV['CONFIGURATION'] == 'Debug' || ENV['FLUTTER_BUILD_MODE'] == 'debug'
-  
-  env_filename = debug_mode ? '.env.development' : '.env.production'
-
   env_file = File.join(File.dirname(__FILE__), '../.env')
   xcconfig_file = File.join(File.dirname(__FILE__), 'Env.xcconfig')
   
