@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/router/router.gr.dart';
 import 'package:beauty_tracker/widgets/common/icon_button/app_filled_icon_button.dart';
-import 'package:beauty_tracker/widgets/home/product_selection_sheet.dart';
+import 'package:beauty_tracker/widgets/product/product_selection_sheet.dart';
 import 'package:flutter/material.dart';
 
 class CopyProductButton extends StatelessWidget {

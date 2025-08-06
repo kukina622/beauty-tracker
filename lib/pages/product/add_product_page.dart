@@ -19,8 +19,8 @@ import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
-import 'package:beauty_tracker/widgets/home/copy_product_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/product/copy_product_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
