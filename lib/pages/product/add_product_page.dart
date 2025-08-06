@@ -5,6 +5,7 @@ import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
 import 'package:beauty_tracker/services/brand_service/brand_service.dart';
@@ -14,17 +15,20 @@ import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selector.dart'
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
+import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
+import 'package:beauty_tracker/widgets/product/copy_product_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
 class AddProductPage extends HookWidget {
-  AddProductPage({super.key});
+  AddProductPage({super.key, this.productToCopy});
 
+  final Product? productToCopy;
   final _formKey = GlobalKey<FormState>();
 
   Widget _buildSelectCategoryItems(
@@ -63,6 +67,17 @@ class AddProductPage extends HookWidget {
     final purchaseDate = useState<DateTime?>(null);
     final expirationDate = useState<DateTime?>(null);
     final productProvider = useProvider<ProductProvider>();
+
+    useEffect(() {
+      if (productToCopy != null) {
+        productNameController.text = productToCopy!.name;
+        priceController.text = productToCopy!.price?.toString() ?? '';
+        selectedBrandId.value = productToCopy!.brand?.id;
+        selectedCategoryIds.value = productToCopy!.categories?.map((c) => c.id).toList() ?? [];
+        expirationDate.value = null;
+      }
+      return null;
+    }, [productToCopy]);
 
     final categoryResult = useServiceData(
       () => categoryService.getAllCategories(),
@@ -126,15 +141,19 @@ class AddProductPage extends HookWidget {
     ]);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('新增美妝品'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () => AutoRouter.of(context).pop(),
-        ),
-      ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: PageScrollView(
+        header: [
+          AppTitleBar(
+            title: '新增美妝品',
+            backButtonEnabled: true,
+            margin: const EdgeInsets.only(bottom: 4),
+            actionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [CopyProductButton()],
+            ),
+          ),
+        ],
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         slivers: [
           SliverToBoxAdapter(
@@ -250,7 +269,8 @@ class AddProductPage extends HookWidget {
                     text: '新增美妝品',
                     onPressed: onCreateNewProduct,
                     isFilled: true,
-                  )
+                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

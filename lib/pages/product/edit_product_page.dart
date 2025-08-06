@@ -14,6 +14,7 @@ import 'package:beauty_tracker/widgets/brand/brand_selector/brand_selector.dart'
 import 'package:beauty_tracker/widgets/category/category_selector/category_selector.dart';
 import 'package:beauty_tracker/widgets/category/dismissible_category_chip.dart';
 import 'package:beauty_tracker/widgets/common/app_card.dart';
+import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/button/app_elevated_button.dart';
 import 'package:beauty_tracker/widgets/form/base_form_field.dart';
 import 'package:beauty_tracker/widgets/form/date_picker_field.dart';
@@ -157,15 +158,15 @@ class EditProductPage extends HookWidget {
     ]);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('編輯美妝品'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () => AutoRouter.of(context).pop(),
-        ),
-      ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: PageScrollView(
+        header: [
+          AppTitleBar(
+            title: '編輯美妝品',
+            backButtonEnabled: true,
+            margin: const EdgeInsets.only(bottom: 4),
+          ),
+        ],
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         slivers: [
           SliverToBoxAdapter(
@@ -273,7 +274,8 @@ class EditProductPage extends HookWidget {
                     backgroundColor: const Color(0xFF5ECCC4),
                     onPressed: onUpdateProduct,
                     isFilled: true,
-                  )
+                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

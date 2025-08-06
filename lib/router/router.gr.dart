@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i16;
+import 'package:beauty_tracker/models/product.dart' as _i18;
 import 'package:beauty_tracker/pages/forget_password_page.dart' as _i8;
 import 'package:beauty_tracker/pages/login_page.dart' as _i10;
 import 'package:beauty_tracker/pages/main_navigation/root_navigation_page.dart'
@@ -38,12 +39,15 @@ import 'package:flutter/material.dart' as _i17;
 /// generated route for
 /// [_i1.AddProductPage]
 class AddProductRoute extends _i16.PageRouteInfo<AddProductRouteArgs> {
-  AddProductRoute({_i17.Key? key, List<_i16.PageRouteInfo>? children})
-    : super(
-        AddProductRoute.name,
-        args: AddProductRouteArgs(key: key),
-        initialChildren: children,
-      );
+  AddProductRoute({
+    _i17.Key? key,
+    _i18.Product? productToCopy,
+    List<_i16.PageRouteInfo>? children,
+  }) : super(
+         AddProductRoute.name,
+         args: AddProductRouteArgs(key: key, productToCopy: productToCopy),
+         initialChildren: children,
+       );
 
   static const String name = 'AddProductRoute';
 
@@ -53,19 +57,24 @@ class AddProductRoute extends _i16.PageRouteInfo<AddProductRouteArgs> {
       final args = data.argsAs<AddProductRouteArgs>(
         orElse: () => const AddProductRouteArgs(),
       );
-      return _i1.AddProductPage(key: args.key);
+      return _i1.AddProductPage(
+        key: args.key,
+        productToCopy: args.productToCopy,
+      );
     },
   );
 }
 
 class AddProductRouteArgs {
-  const AddProductRouteArgs({this.key});
+  const AddProductRouteArgs({this.key, this.productToCopy});
 
   final _i17.Key? key;
 
+  final _i18.Product? productToCopy;
+
   @override
   String toString() {
-    return 'AddProductRouteArgs{key: $key}';
+    return 'AddProductRouteArgs{key: $key, productToCopy: $productToCopy}';
   }
 }
 
