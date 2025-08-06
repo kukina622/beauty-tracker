@@ -149,6 +149,7 @@ class OnboardingPage extends HookWidget {
                         child: const Text('跳過'),
                       ),
                       AppElevatedButton(
+                        width: 85,
                         onPressed: () {
                           if (currentItem.value < items.length - 1) {
                             pageViewController.nextPage(
