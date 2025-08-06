@@ -17,9 +17,11 @@ class SpendingBarChart extends StatelessWidget {
 
   double get maxAmount {
     if (spendingData.isEmpty) {
-      return 0;
+      return 1;
     }
-    return spendingData.map((data) => data.amount).fold(0, (a, b) => a > b ? a : b);
+
+    final double amounts = spendingData.map((data) => data.amount).fold(0, (a, b) => a > b ? a : b);
+    return amounts > 0 ? amounts : 1; // Avoid division by zero
   }
 
   @override
