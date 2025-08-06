@@ -20,7 +20,10 @@ class StatusProgressChart extends StatelessWidget {
     return Column(
       children: statusData.map((status) {
         final count = status.count;
-        final total = statusData.fold<int>(0, (sum, item) => sum + (item.count));
+        int total = statusData.fold<int>(0, (sum, item) => sum + (item.count));
+        if (total == 0) {
+          total = 1; // Avoid division by zero
+        }
         final percentage = (count / total * 100).round();
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
