@@ -17,8 +17,18 @@ class CopyProductButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       onPressed: () async {
         final selectedProduct = await ProductSelectionSheet.show(context);
-        
-        if (selectedProduct != null && context.mounted) {
+
+        if (selectedProduct == null || !context.mounted) {
+          return;
+        }
+
+        final currentRoute = AutoRouter.of(context).current;
+
+        if (currentRoute.path == '/product/add') {
+          AutoRouter.of(context).replace(
+            AddProductRoute(productToCopy: selectedProduct),
+          );
+        } else {
           AutoRouter.of(context).push(
             AddProductRoute(productToCopy: selectedProduct),
           );
