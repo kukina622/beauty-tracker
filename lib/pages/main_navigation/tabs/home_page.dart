@@ -148,6 +148,8 @@ class HomePage extends HookWidget {
       onRefresh: () => Future.wait([
         productsResult.refresh(),
         productsExpiringResult.refresh(),
+        brandsResult.refresh(),
+        categoriesResult.refresh(),
       ]),
       header: [
         AppTitleBar(
@@ -201,6 +203,16 @@ class HomePage extends HookWidget {
             ],
           ),
         ),
+        if (!productsResult.loading && animatedListController.products.isEmpty) ...[
+          SliverToBoxAdapter(
+            child: Center(
+              child: Text(
+                '沒有符合條件的產品',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+              ),
+            ),
+          ),
+        ],
         SliverAnimatedList(
           key: animatedListController.listKey,
           initialItemCount: animatedListController.products.length,
