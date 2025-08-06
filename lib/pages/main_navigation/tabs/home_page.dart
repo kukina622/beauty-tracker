@@ -17,11 +17,11 @@ import 'package:beauty_tracker/services/category_service/category_service.dart';
 import 'package:beauty_tracker/services/product_service/product_service.dart';
 import 'package:beauty_tracker/widgets/common/app_title_bar.dart';
 import 'package:beauty_tracker/widgets/common/sub_title_bar.dart';
+import 'package:beauty_tracker/widgets/home/copy_product_button.dart';
 import 'package:beauty_tracker/widgets/home/edit_mode_toggle_button.dart';
 import 'package:beauty_tracker/widgets/home/expiring_soon_tile.dart';
 import 'package:beauty_tracker/widgets/home/filter_bottom_sheet.dart';
 import 'package:beauty_tracker/widgets/home/filter_button.dart';
-import 'package:beauty_tracker/widgets/home/notification_button.dart';
 import 'package:beauty_tracker/widgets/page/page_scroll_view.dart';
 import 'package:beauty_tracker/widgets/product/animated_product_card_wrapper.dart';
 import 'package:beauty_tracker/widgets/product/product_card.dart';
@@ -162,7 +162,7 @@ class HomePage extends HookWidget {
                 onConfirm: onConfirmUpdateProductStatus,
               ),
               SizedBox(width: 12),
-              NotificationButton(),
+              CopyProductButton(),
             ],
           ),
         ),

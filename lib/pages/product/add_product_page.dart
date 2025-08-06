@@ -5,6 +5,7 @@ import 'package:beauty_tracker/hooks/use_easy_loading.dart';
 import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/hooks/use_service_data.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/models/product.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/requests/product_requests/create_product_request.dart';
 import 'package:beauty_tracker/services/brand_service/brand_service.dart';
@@ -23,8 +24,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 @RoutePage()
 class AddProductPage extends HookWidget {
-  AddProductPage({super.key});
+  AddProductPage({super.key, this.productToCopy});
 
+  final Product? productToCopy;
   final _formKey = GlobalKey<FormState>();
 
   Widget _buildSelectCategoryItems(
@@ -63,6 +65,17 @@ class AddProductPage extends HookWidget {
     final purchaseDate = useState<DateTime?>(null);
     final expirationDate = useState<DateTime?>(null);
     final productProvider = useProvider<ProductProvider>();
+
+    useEffect(() {
+      if (productToCopy != null) {
+        productNameController.text = productToCopy!.name;
+        priceController.text = productToCopy!.price?.toString() ?? '';
+        selectedBrandId.value = productToCopy!.brand?.id;
+        selectedCategoryIds.value = productToCopy!.categories?.map((c) => c.id).toList() ?? [];
+        expirationDate.value = null;
+      }
+      return null;
+    }, [productToCopy]);
 
     final categoryResult = useServiceData(
       () => categoryService.getAllCategories(),
