@@ -46,7 +46,10 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
-.env
 
 ios/Env.xcconfig
 ios/build
+
+.env
+.env.development
+.env.production
