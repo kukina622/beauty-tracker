@@ -59,9 +59,9 @@ class SupabaseProductServiceImpl implements ProductService {
       var query = supabase.from('products').select(
         '''
           *, 
-          categories(*), 
-          brands(*), 
-          product_category!inner(category_id)
+          categories(*),
+          brands(*)
+          ${categoryId != null ? ', product_category!inner(category_id)' : ''}
         ''',
       );
 
