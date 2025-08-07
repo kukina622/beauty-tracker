@@ -2,6 +2,9 @@
 
 Beauty Tracker 是一款使用 Flutter 和 Supabase 開發的應用程式，旨在幫助使用者追蹤與記錄個人美容品相關的期限。
 
+<img width="200" height="415" alt="image" src="https://github.com/user-attachments/assets/57bfbe17-3b52-41bb-99a2-c07dcaedbb99" />
+
+
 ## 🚀 開始使用 (Getting Started)
 
 在開始之前，請確保您已經安裝了 Flutter SDK 與 FVM。
