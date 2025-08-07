@@ -65,8 +65,8 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER).todayExpiryNotification</string>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER).dailyExpireNotificationScheduler</string>
+    <string>io.github.kukina622.beautytracker.dailyExpireNotificationScheduler</string>
+    <string>io.github.kukina622.beautytracker.todayExpiryNotification</string>
 	</array>
 
 </dict>

@@ -9,30 +9,30 @@ import workmanager
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    UNUserNotificationCenter.current().delegate = self
+
     // This is required to make any communication available in the action isolate.
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
       GeneratedPluginRegistrant.register(with: registry)
     }
 
-    if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+    WorkmanagerPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
     }
 
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60 * 15))
 
-    let bundleId = Bundle.main.bundleIdentifier
-
     // Register the Workmanager plugin
     WorkmanagerPlugin.registerBGProcessingTask(
-      withIdentifier: "\(bundleId).todayExpiryNotification"
+      withIdentifier: "io.github.kukina622.beautytracker.todayExpiryNotification"
     )
 
     WorkmanagerPlugin.registerPeriodicTask(
-      withIdentifier: "\(bundleId).dailyExpireNotificationScheduler", 
+      withIdentifier: "io.github.kukina622.beautytracker.dailyExpireNotificationScheduler", 
       frequency: NSNumber(value: 24 * 60 * 60)
     )
 
-    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
