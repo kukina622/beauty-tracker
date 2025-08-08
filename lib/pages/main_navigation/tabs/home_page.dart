@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
+import 'package:beauty_tracker/hooks/brand/use_brand_refresh_listener.dart';
+import 'package:beauty_tracker/hooks/category/use_category_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/product/use_animated_product_list.dart';
 import 'package:beauty_tracker/hooks/product/use_product_refresh_listener.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
@@ -98,6 +100,16 @@ class HomePage extends HookWidget {
     useProductRefreshListener(() {
       productsResult.refresh();
       productsExpiringResult.refresh();
+    });
+
+    useCategoryRefreshListener(() {
+      categoriesResult.refresh();
+      productsResult.refresh();
+    });
+
+    useBrandRefreshListener(() {
+      brandsResult.refresh();
+      productsResult.refresh();
     });
 
     final onConfirmUpdateProductStatus = useCallback(() async {

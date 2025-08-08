@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_easy_loading.dart';
+import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/models/brand.dart';
+import 'package:beauty_tracker/providers/brand_provider.dart';
 import 'package:beauty_tracker/requests/brand_requests/create_brand_request.dart';
 import 'package:beauty_tracker/requests/brand_requests/update_brand_request.dart';
 import 'package:beauty_tracker/services/brand_service/brand_service.dart';
@@ -50,6 +52,8 @@ class BrandFormDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final brandService = useDi<BrandService>();
+    final brandProvider = useProvider<BrandProvider>();
+
     final easyLoading = useEasyLoading();
 
     final brandNameController = useTextEditingController(
@@ -73,6 +77,7 @@ class BrandFormDialog extends HookWidget {
         switch (result) {
           case Ok(value: final Brand brand):
             easyLoading.showSuccess('品牌更新成功');
+            brandProvider.triggerRefresh();
             onBrandUpdated?.call(brand);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
@@ -88,6 +93,7 @@ class BrandFormDialog extends HookWidget {
         switch (result) {
           case Ok(value: final Brand brand):
             easyLoading.showSuccess('品牌新增成功');
+            brandProvider.triggerRefresh();
             onBrandCreated?.call(brand);
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
