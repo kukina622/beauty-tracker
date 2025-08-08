@@ -109,12 +109,14 @@ class ProductCard extends HookWidget {
         color: Theme.of(context).colorScheme.primary,
       ),
       SizedBox(width: 8),
-      Text(
-        brand.brandName,
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey.shade700,
-          fontWeight: FontWeight.w600,
+      Flexible(
+        child: Text(
+          brand.brandName,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       )
     ]);
@@ -255,7 +257,10 @@ class ProductCard extends HookWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildProductBrand(context, brand: product.brand),
+                Expanded(
+                  child: _buildProductBrand(context, brand: product.brand),
+                ),
+                SizedBox(width: 8),
                 _buildProductReminder(),
               ],
             ),
