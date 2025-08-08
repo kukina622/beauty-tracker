@@ -64,24 +64,36 @@ class AppDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (title != null) ...[
-              Center(
-                child: Text(
-                  title!,
-                  style: Theme.of(context).textTheme.titleLarge,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxWidth: MediaQuery.of(context).size.width * 0.9,
+        ),
+        child: IntrinsicHeight(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (title != null) ...[
+                  Center(
+                    child: Text(
+                      title!,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: content,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-            ],
-            SingleChildScrollView(child: content),
-            const SizedBox(height: 20),
-            _buildButtons(context),
-          ],
+                const SizedBox(height: 20),
+                _buildButtons(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
