@@ -1,4 +1,6 @@
 // scripts/setup_env.dart
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 void main(List<String> args) {
