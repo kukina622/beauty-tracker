@@ -15,7 +15,7 @@ class ExpiringChip extends StatelessWidget {
 
     String text;
     if (daysUntilExpiry == 0) {
-      text = '今日過期';
+      text = '今日到期';
     } else if (isExpired) {
       text = '已過期 ${daysUntilExpiry.abs()} 天';
     } else {
