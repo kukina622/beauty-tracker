@@ -24,6 +24,7 @@ class BrandSelectionSheet {
       allItems: allBrands,
       initialSelectedItems: initialSelectedBrands,
       allowMultipleSelection: false,
+      isSearchable: true,
       onConfirmed: (selectedBrands) {
         final selectedIds = selectedBrands.map((c) => c.id).toList();
         onConfirmed(selectedIds);

@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/widgets/common/app_search_bar.dart';
 import 'package:flutter/material.dart';
 
 class SelectionSheet<T> extends StatefulWidget {
@@ -8,6 +9,7 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.initialSelectedItems,
     required this.onConfirmed,
     required this.itemBuilder,
+    this.isSearchable = false,
     this.bottomActionWidget,
     this.allowMultipleSelection = true,
     this.clearAllText = '清除全部',
@@ -15,6 +17,7 @@ class SelectionSheet<T> extends StatefulWidget {
   });
 
   final String title;
+  final bool isSearchable;
   final List<T> allItems;
   final List<T> initialSelectedItems;
   final void Function(List<T>) onConfirmed;
@@ -31,6 +34,7 @@ class SelectionSheet<T> extends StatefulWidget {
     required List<T> initialSelectedItems,
     required void Function(List<T>) onConfirmed,
     required Widget Function(T item, bool isSelected, VoidCallback onSelected) itemBuilder,
+    bool isSearchable = false,
     Widget? bottomActionWidget,
     bool allowMultipleSelection = true,
     String clearAllText = '清除全部',
@@ -44,6 +48,7 @@ class SelectionSheet<T> extends StatefulWidget {
         title: title,
         allItems: allItems,
         initialSelectedItems: initialSelectedItems,
+        isSearchable: isSearchable,
         onConfirmed: onConfirmed,
         itemBuilder: itemBuilder,
         bottomActionWidget: bottomActionWidget,
@@ -123,6 +128,17 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 children: [
+                  if (widget.isSearchable) ...[
+                    AppSearchBar(
+                      hintText: '搜尋...',
+                      onChanged: (query) {
+                        setModalState(() {
+                          // Implement search logic here if needed
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   ...widget.allItems.map(
                     (item) => widget.itemBuilder(
                       item,
