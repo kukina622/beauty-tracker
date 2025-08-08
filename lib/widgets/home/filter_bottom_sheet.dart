@@ -51,11 +51,16 @@ class FilterBottomSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 內部管理暫時狀態
+    final mediaQuery = MediaQuery.of(context);
+
     final tempStatus = useState<ProductStatus?>(initialStatus);
     final tempBrand = useState<Brand?>(initialBrand);
     final tempCategory = useState<Category?>(initialCategory);
+
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: mediaQuery.size.height * 0.85,
+      ),
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -65,102 +70,113 @@ class FilterBottomSheet extends HookWidget {
         ),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '篩選選項',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D3142),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  tempStatus.value = ProductStatus.inUse;
-                  tempBrand.value = null;
-                  tempCategory.value = null;
-                },
-                child: const Text(
-                  '清除全部',
-                  style: TextStyle(
-                    color: Color(0xFFFF9A9E),
-                    fontSize: 14,
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '篩選選項',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2D3142),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          tempStatus.value = ProductStatus.inUse;
+                          tempBrand.value = null;
+                          tempCategory.value = null;
+                        },
+                        child: const Text(
+                          '清除全部',
+                          style: TextStyle(
+                            color: Color(0xFFFF9A9E),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 24),
+                  _buildFilterSection<ProductStatus>(
+                    title: '狀態',
+                    items: ProductStatus.values,
+                    chipBuilder: (status) {
+                      return ValueListenableBuilder<ProductStatus?>(
+                        valueListenable: tempStatus,
+                        builder: (context, currentStatus, _) {
+                          final isSelected = currentStatus == status;
+                          return _buildStatusFilterChip(
+                            label: status.displayName,
+                            status: status,
+                            isSelected: isSelected,
+                            onTap: () {
+                              tempStatus.value = status;
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  _buildFilterSection<Brand>(
+                    title: '品牌',
+                    items: brands,
+                    emptyMessage: '無品牌資料',
+                    chipBuilder: (brand) {
+                      return ValueListenableBuilder<Brand?>(
+                        valueListenable: tempBrand,
+                        builder: (context, currentBrand, _) {
+                          final isSelected = currentBrand?.id == brand.id;
+                          return _buildFilterChip(
+                            context,
+                            label: brand.brandName,
+                            isSelected: isSelected,
+                            onTap: () {
+                              tempBrand.value = isSelected ? null : brand;
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  _buildFilterSection<Category>(
+                    title: '類別',
+                    items: categories,
+                    emptyMessage: '無類別資料',
+                    chipBuilder: (category) {
+                      return ValueListenableBuilder<Category?>(
+                        valueListenable: tempCategory,
+                        builder: (context, currentCategory, _) {
+                          final isSelected = currentCategory?.id == category.id;
+                          return _buildCategoryFilterChip(
+                            label: category.categoryName,
+                            category: category,
+                            isSelected: isSelected,
+                            onTap: () {
+                              tempCategory.value = isSelected ? null : category;
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-            ],
+            ),
           ),
-          const SizedBox(height: 24),
-          _buildFilterSection<ProductStatus>(
-            title: '狀態',
-            items: ProductStatus.values,
-            chipBuilder: (status) {
-              return ValueListenableBuilder<ProductStatus?>(
-                valueListenable: tempStatus,
-                builder: (context, currentStatus, _) {
-                  final isSelected = currentStatus == status;
-                  return _buildStatusFilterChip(
-                    label: status.displayName,
-                    status: status,
-                    isSelected: isSelected,
-                    onTap: () {
-                      tempStatus.value = status;
-                    },
-                  );
-                },
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          _buildFilterSection<Brand>(
-            title: '品牌',
-            items: brands,
-            emptyMessage: '無品牌資料',
-            chipBuilder: (brand) {
-              return ValueListenableBuilder<Brand?>(
-                valueListenable: tempBrand,
-                builder: (context, currentBrand, _) {
-                  final isSelected = currentBrand?.id == brand.id;
-                  return _buildFilterChip(
-                    context,
-                    label: brand.brandName,
-                    isSelected: isSelected,
-                    onTap: () {
-                      tempBrand.value = isSelected ? null : brand;
-                    },
-                  );
-                },
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          _buildFilterSection<Category>(
-            title: '類別',
-            items: categories,
-            emptyMessage: '無類別資料',
-            chipBuilder: (category) {
-              return ValueListenableBuilder<Category?>(
-                valueListenable: tempCategory,
-                builder: (context, currentCategory, _) {
-                  final isSelected = currentCategory?.id == category.id;
-                  return _buildCategoryFilterChip(
-                    label: category.categoryName,
-                    category: category,
-                    isSelected: isSelected,
-                    onTap: () {
-                      tempCategory.value = isSelected ? null : category;
-                    },
-                  );
-                },
-              );
-            },
-          ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
@@ -184,7 +200,7 @@ class FilterBottomSheet extends HookWidget {
               ),
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 24),
+          SizedBox(height: mediaQuery.viewInsets.bottom + 8),
         ],
       ),
     );
