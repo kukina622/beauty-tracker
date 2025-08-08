@@ -12,7 +12,8 @@ class SupabaseBrandServiceImpl implements BrandService {
   @override
   Future<Result<List<Brand>>> getAllBrands() {
     return resultGuard(() async {
-      final fetchedBrandData = await supabase.from('brands').select();
+      final fetchedBrandData =
+          await supabase.from('brands').select().order('brand_name', ascending: true);
       return fetchedBrandData.map((e) => Brand.fromJson(e)).toList();
     });
   }
