@@ -104,12 +104,10 @@ class HomePage extends HookWidget {
 
     useCategoryRefreshListener(() {
       categoriesResult.refresh();
-      productsResult.refresh();
     });
 
     useBrandRefreshListener(() {
       brandsResult.refresh();
-      productsResult.refresh();
     });
 
     final onConfirmUpdateProductStatus = useCallback(() async {
