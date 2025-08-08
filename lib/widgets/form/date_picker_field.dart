@@ -18,7 +18,7 @@ class DatePickerField extends HookWidget {
   final DateTime? selectedDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
-  final void Function(DateTime)? onDateChanged;
+  final void Function(DateTime?)? onDateChanged;
   final String? labelText;
   final String? Function(DateTime?)? validator;
   final AutovalidateMode? autovalidateMode;
@@ -116,7 +116,19 @@ class DatePickerField extends HookWidget {
                         color: pickedDate.value == null ? Colors.grey : Colors.black,
                       ),
                     ),
-                    const Icon(Icons.calendar_today, color: Color(0xFF2D3142)),
+                    GestureDetector(
+                      onTap: () {
+                        if (pickedDate.value != null) {
+                          pickedDate.value = null;
+                          field.didChange(null);
+                          onDateChanged?.call(null);
+                        }
+                      },
+                      child: Icon(
+                        pickedDate.value == null ? Icons.calendar_today : Icons.close,
+                        color: Color(0xFF2D3142),
+                      ),
+                    ),
                   ],
                 ),
               ),
