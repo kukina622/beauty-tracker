@@ -50,11 +50,14 @@ class BrandSelector extends HookWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              selectedBrand.value?.brandName ?? '選擇品牌',
-              style: TextStyle(
-                fontSize: 16,
-                color: const Color(0xFF2D3142),
+            Expanded(
+              child: Text(
+                selectedBrand.value?.brandName ?? '選擇品牌',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: const Color(0xFF2D3142),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
             const Icon(
