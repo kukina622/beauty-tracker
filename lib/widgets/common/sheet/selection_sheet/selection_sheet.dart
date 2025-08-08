@@ -1,3 +1,4 @@
+import 'package:beauty_tracker/widgets/common/app_search_bar.dart';
 import 'package:flutter/material.dart';
 
 class SelectionSheet<T> extends StatefulWidget {
@@ -8,6 +9,8 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.initialSelectedItems,
     required this.onConfirmed,
     required this.itemBuilder,
+    this.isSearchable = false,
+    this.onSearchChanged,
     this.bottomActionWidget,
     this.allowMultipleSelection = true,
     this.clearAllText = '清除全部',
@@ -19,6 +22,8 @@ class SelectionSheet<T> extends StatefulWidget {
   final List<T> initialSelectedItems;
   final void Function(List<T>) onConfirmed;
   final Widget Function(T item, bool isSelected, VoidCallback onSelected) itemBuilder;
+  final bool isSearchable;
+  final void Function(String)? onSearchChanged;
   final Widget? bottomActionWidget;
   final bool allowMultipleSelection;
   final String clearAllText;
@@ -31,6 +36,8 @@ class SelectionSheet<T> extends StatefulWidget {
     required List<T> initialSelectedItems,
     required void Function(List<T>) onConfirmed,
     required Widget Function(T item, bool isSelected, VoidCallback onSelected) itemBuilder,
+    bool isSearchable = false,
+    void Function(String)? onSearchChanged,
     Widget? bottomActionWidget,
     bool allowMultipleSelection = true,
     String clearAllText = '清除全部',
@@ -44,6 +51,8 @@ class SelectionSheet<T> extends StatefulWidget {
         title: title,
         allItems: allItems,
         initialSelectedItems: initialSelectedItems,
+        isSearchable: isSearchable,
+        onSearchChanged: onSearchChanged,
         onConfirmed: onConfirmed,
         itemBuilder: itemBuilder,
         bottomActionWidget: bottomActionWidget,
@@ -123,6 +132,15 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 children: [
+                  if (widget.isSearchable) ...[
+                    AppSearchBar(
+                      hintText: '搜尋',
+                      onChanged: (query) {
+                        setModalState(() => widget.onSearchChanged?.call(query));
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   ...widget.allItems.map(
                     (item) => widget.itemBuilder(
                       item,

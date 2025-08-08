@@ -4,9 +4,22 @@ import 'package:beauty_tracker/widgets/brand/dialogs/brand_form_dialog.dart';
 import 'package:beauty_tracker/widgets/common/button/app_outlined_button.dart';
 import 'package:beauty_tracker/widgets/common/sheet/selection_sheet/selection_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-// ignore: avoid_classes_with_only_static_members
-class BrandSelectionSheet {
+class BrandSelectionSheet extends HookWidget {
+  const BrandSelectionSheet({
+    super.key,
+    required this.allBrands,
+    this.initialSelectedId,
+    required this.onConfirmed,
+    this.onBrandCreated,
+  });
+
+  final List<Brand> allBrands;
+  final String? initialSelectedId;
+  final void Function(List<String>) onConfirmed;
+  final void Function(Brand)? onBrandCreated;
+
   static Future<void> show(
     BuildContext context, {
     required List<Brand> allBrands,
@@ -14,16 +27,38 @@ class BrandSelectionSheet {
     required void Function(List<String>) onConfirmed,
     void Function(Brand)? onBrandCreated,
   }) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => BrandSelectionSheet(
+        allBrands: allBrands,
+        initialSelectedId: initialSelectedId,
+        onConfirmed: onConfirmed,
+        onBrandCreated: onBrandCreated,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final initialSelectedBrands = initialSelectedId == null
         ? List<Brand>.empty()
         : allBrands.where((brand) => initialSelectedId == brand.id).toList();
 
-    return SelectionSheet.show<Brand>(
-      context,
+    final brands = useState<List<Brand>>(allBrands);
+
+    return SelectionSheet<Brand>(
       title: '選擇品牌',
-      allItems: allBrands,
+      allItems: brands.value,
       initialSelectedItems: initialSelectedBrands,
       allowMultipleSelection: false,
+      isSearchable: true,
+      onSearchChanged: (query) {
+        brands.value = allBrands
+            .where((brand) => brand.brandName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      },
       onConfirmed: (selectedBrands) {
         final selectedIds = selectedBrands.map((c) => c.id).toList();
         onConfirmed(selectedIds);
