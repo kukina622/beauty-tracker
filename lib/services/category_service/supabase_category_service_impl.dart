@@ -12,7 +12,8 @@ class SupabaseCategoryServiceImpl implements CategoryService {
   @override
   Future<Result<List<Category>>> getAllCategories() {
     return resultGuard(() async {
-      final fetchedCategoryData = await supabase.from('categories').select();
+      final fetchedCategoryData =
+          await supabase.from('categories').select().order('category_name', ascending: true);
       return fetchedCategoryData.map((e) => Category.fromJson(e)).toList();
     });
   }
