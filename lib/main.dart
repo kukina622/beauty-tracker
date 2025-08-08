@@ -1,4 +1,6 @@
 import 'package:beauty_tracker/app_initializer.dart';
+import 'package:beauty_tracker/providers/brand_provider.dart';
+import 'package:beauty_tracker/providers/category_provider.dart';
 import 'package:beauty_tracker/providers/product_provider.dart';
 import 'package:beauty_tracker/router/router.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => BrandProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: BeautyTrackerApp(),
     ),
