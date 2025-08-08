@@ -264,6 +264,12 @@ class EditProductPage extends HookWidget {
                           onDateChanged: (date) {
                             expiryDate.value = date;
                           },
+                          validator: (p0) {
+                            if (p0 == null) {
+                              return '請選擇過期日';
+                            }
+                            return null;
+                          },
                         )
                       ],
                     ),
