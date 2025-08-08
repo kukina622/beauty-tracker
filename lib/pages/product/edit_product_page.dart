@@ -215,7 +215,11 @@ class EditProductPage extends HookWidget {
                           onBrandSelected: (brand) => selectedBrandId.value = brand,
                           onBrandCreated: (brand) {
                             final currentBrands = brandResult.data ?? [];
-                            brandResult.mutate([...currentBrands, brand]);
+                            // sort the brands by name
+                            final newBrands = [...currentBrands, brand]
+                              ..sort((a, b) => a.brandName.compareTo(b.brandName));
+
+                            brandResult.mutate(newBrands);
                           },
                         ),
                         const SizedBox(height: 16),
@@ -232,7 +236,11 @@ class EditProductPage extends HookWidget {
                           },
                           onCategoryCreated: (category) {
                             final currentCategories = allCategoriesResult.data ?? [];
-                            allCategoriesResult.mutate([...currentCategories, category]);
+                            // sort the categories by name
+                            final newCategories = [...currentCategories, category]
+                              ..sort((a, b) => a.categoryName.compareTo(b.categoryName));
+
+                            allCategoriesResult.mutate(newCategories);
                           },
                         ),
                         const SizedBox(height: 8),

@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 class DatePickerField extends HookWidget {
   const DatePickerField({
     super.key,
-    this.initialDate,
     this.selectedDate,
     this.onDateChanged,
     this.firstDate,
@@ -14,7 +13,6 @@ class DatePickerField extends HookWidget {
     this.validator,
     this.autovalidateMode,
   });
-  final DateTime? initialDate;
   final DateTime? selectedDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -25,7 +23,7 @@ class DatePickerField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pickedDate = useState(selectedDate ?? initialDate);
+    final pickedDate = useState(selectedDate);
     final errorText = useState<String?>(null);
 
     final firstDateValue = firstDate ?? DateTime(2000);
@@ -46,7 +44,7 @@ class DatePickerField extends HookWidget {
     }, [pickedDate.value]);
 
     return FormField<DateTime>(
-      initialValue: initialDate,
+      initialValue: pickedDate.value,
       validator: validator != null ? (value) => validator!(value) : null,
       autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
       onSaved: (newValue) {

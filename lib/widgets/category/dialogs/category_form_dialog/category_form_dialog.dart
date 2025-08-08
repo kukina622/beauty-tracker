@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:beauty_tracker/errors/result.dart';
 import 'package:beauty_tracker/hooks/use_di.dart';
 import 'package:beauty_tracker/hooks/use_easy_loading.dart';
+import 'package:beauty_tracker/hooks/use_provider.dart';
 import 'package:beauty_tracker/models/category.dart';
+import 'package:beauty_tracker/providers/category_provider.dart';
 import 'package:beauty_tracker/requests/category_requests/create_category_request.dart';
 import 'package:beauty_tracker/requests/category_requests/update_category_request.dart';
 import 'package:beauty_tracker/services/category_service/category_service.dart';
@@ -57,6 +59,8 @@ class CategoryFormDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final categoryService = useDi<CategoryService>();
+    final categoryProvider = useProvider<CategoryProvider>();
+
     final easyLoading = useEasyLoading();
 
     final categoryNameController = useTextEditingController(
@@ -95,6 +99,7 @@ class CategoryFormDialog extends HookWidget {
           case Ok(value: final Category category):
             easyLoading.showSuccess('類別更新成功');
             onCategoryUpdated?.call(category);
+            categoryProvider.triggerRefresh();
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
@@ -116,6 +121,7 @@ class CategoryFormDialog extends HookWidget {
           case Ok(value: final Category category):
             easyLoading.showSuccess('類別新增成功');
             onCategoryCreated?.call(category);
+            categoryProvider.triggerRefresh();
             if (context.mounted && AutoRouter.of(context).canPop()) {
               AutoRouter.of(context).pop();
             }
