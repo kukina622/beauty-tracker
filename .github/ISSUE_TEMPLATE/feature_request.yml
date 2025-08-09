@@ -1,0 +1,40 @@
+# .github/ISSUE_TEMPLATE/feature_request.yml
+
+name: "✨ App Feature Request"
+description: "Suggest a new feature for the app."
+title: "[FEATURE] "
+labels: ["enhancement", "needs-discussion"]
+assignees: []
+
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: "Describe the Feature"
+      description: "A clear and concise description of the feature you are requesting."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-benefit
+    attributes:
+      label: "Why is this feature needed?"
+      description: "Explain the problem this feature would solve or the benefit it would provide."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots/Mockups (Optional)"
+      description: "If you have any visual representations of your idea, please attach them here. You can drag and drop images or paste links."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional Context"
+      description: "Add any other relevant details or thoughts about the feature."
+    validations:
+      required: false
