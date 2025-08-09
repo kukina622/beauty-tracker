@@ -4,7 +4,6 @@ name: "🐛 App Bug Report"
 description: "Report a bug encountered in the app."
 title: "[BUG] "
 labels: ["bug", "triage"]
-assignees: []
 
 body:
   - type: textarea

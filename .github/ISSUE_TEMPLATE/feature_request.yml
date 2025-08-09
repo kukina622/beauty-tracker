@@ -4,7 +4,6 @@ name: "✨ App Feature Request"
 description: "Suggest a new feature for the app."
 title: "[FEATURE] "
 labels: ["enhancement", "help wanted"]
-assignees: []
 
 body:
   - type: textarea
