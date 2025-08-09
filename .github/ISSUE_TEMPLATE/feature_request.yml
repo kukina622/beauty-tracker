@@ -3,7 +3,7 @@
 name: "✨ App Feature Request"
 description: "Suggest a new feature for the app."
 title: "[FEATURE] "
-labels: ["enhancement", "needs-discussion"]
+labels: ["enhancement", "help wanted"]
 assignees: []
 
 body:
